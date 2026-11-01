@@ -319,6 +319,13 @@ button.tn-rod:focus-visible,button.tn-units:focus-visible{outline:2px solid var(
 .bl-verdict{margin:0;font-weight:700;font-size:var(--cds-font-size-heading);color:var(--ink-dim)}
 .bl-verdict.win{color:var(--slime)}
 .bl-pick button.elsewhere{opacity:.55}
+.hw-confetti{position:fixed;inset:0;pointer-events:none;z-index:80;overflow:hidden}
+.hw-confetti .cf{position:fixed;display:block;background:var(--c);will-change:transform,opacity}
+.hw-confetti .cf0{width:10px;height:10px;border-radius:50%;box-shadow:inset -2px -2px 0 rgba(0,0,0,.2)}
+.hw-confetti .cf1{width:6px;height:14px;border-radius:2px}
+.hw-confetti .cf2{width:12px;height:8px;border-radius:4px;box-shadow:-6px 0 0 -2px var(--c),6px 0 0 -2px var(--c)}
+@media (prefers-reduced-motion: no-preference){ .bl-stmt.yay{animation:bl-yay .7s cubic-bezier(.2,.8,.2,1)} }
+@keyframes bl-yay{0%{transform:scale(.6)}55%{transform:scale(1.25) rotate(-3deg)}80%{transform:scale(.95) rotate(2deg)}100%{transform:scale(1)}}
 .hw-chart text.mnum{font-weight:800;font-size:15px;fill:#1a1020}
 .hw-chart text.tname{fill:#efeaff;font-weight:700;font-size:var(--cds-font-size-caption)}
 .hw-chart text.tnum{font-family:var(--chunky);font-weight:900;font-size:1.9rem;font-variant-numeric:tabular-nums}
@@ -705,6 +712,13 @@ button.tn-rod:focus-visible,button.tn-units:focus-visible{outline:2px solid var(
       <div class="hw-guess dash-skeleton" data-draw="guess" data-source="categories bonbons"></div>
     </div>
   </section>
+  <section class="hw-grid hw-tens-wrap">
+    <div class="hw-card hw-reveal" id="balance">
+      <h2>La balance</h2>
+      <p class="note">Coche une ou plusieurs familles de chaque côté, fais ta prédiction, puis touche la balance pour peser!</p>
+      <div class="hw-balance dash-skeleton" data-draw="balance" data-source="categories"></div>
+    </div>
+  </section>
 
   <div class="hw-chapter hw-reveal"><svg class="ico" viewBox="0 0 48 48" aria-hidden="true"><path d="M14 11 H8 Q8 23 17 24" stroke="#e0a800" stroke-width="3.5" fill="none" stroke-linecap="round"/><path d="M34 11 H40 Q40 23 31 24" stroke="#e0a800" stroke-width="3.5" fill="none" stroke-linecap="round"/><path d="M13 6 H35 V17 Q35 31 24 31 Q13 31 13 17 Z" fill="#ffd60a"/><path d="M18 10 V18 Q18 24 22 26" stroke="#fff3b0" stroke-width="2.5" fill="none" stroke-linecap="round" opacity=".7"/><rect x="21" y="31" width="6" height="5" fill="#e0a800"/><rect x="14" y="36" width="20" height="6" rx="2" fill="#a86f00"/></svg><div><span class="k">Chapitre 2</span><h3>Qui a gagné la nuit?</h3></div></div>
   <section class="hw-grid">
@@ -739,13 +753,6 @@ button.tn-rod:focus-visible,button.tn-units:focus-visible{outline:2px solid var(
       <h2>Les bonbons en dizaines</h2>
       <p class="note">Chaque bâton contient 10 bonbons : c’est une dizaine. Les bonbons tout seuls, ce sont les unités.</p>
       <div class="hw-tens dash-skeleton" data-draw="tens" data-source="categories"></div>
-    </div>
-  </section>
-  <section class="hw-grid hw-tens-wrap">
-    <div class="hw-card hw-reveal" id="balance">
-      <h2>La balance</h2>
-      <p class="note">Coche une ou plusieurs familles de chaque côté, fais ta prédiction, puis touche la balance pour peser!</p>
-      <div class="hw-balance dash-skeleton" data-draw="balance" data-source="categories"></div>
     </div>
   </section>
 
@@ -1522,6 +1529,36 @@ dash.draw('tens', (el) => {
   hwReveal('tens', el, (mode) => hwTens(el, cats, mode));
 });
 
+/* Pluie de confettis-bonbons, pour fêter une bonne réponse. */
+window.hwConfetti = (anchor) => {
+  if (!hwMotion || !anchor || !anchor.animate) return;
+  const r = anchor.getBoundingClientRect();
+  const x0 = r.left + r.width / 2, y0 = r.top + r.height / 2;
+  const box = document.createElement('div');
+  box.className = 'hw-confetti';
+  box.setAttribute('aria-hidden', 'true');
+  (anchor.closest('.hw') || document.body).append(box);
+  const colors = ['#ff7a1a', '#7cff4f', '#b46cff', '#ff4fa3', '#ffd60a', '#00e5ff'];
+  for (let i = 0; i < 48; i++) {
+    const p = document.createElement('span');
+    p.className = 'cf cf' + (i % 3);
+    p.style.setProperty('--c', colors[i % colors.length]);
+    p.style.left = x0 + 'px';
+    p.style.top = y0 + 'px';
+    box.append(p);
+    const ang = -Math.PI / 2 + (Math.random() - 0.5) * Math.PI * 1.15;
+    const v = 150 + Math.random() * 210;
+    const dx = Math.cos(ang) * v, dy = Math.sin(ang) * v;
+    const rot = (Math.random() - 0.5) * 760;
+    p.animate([
+      {transform: 'translate(-50%,-50%) scale(.3)', opacity: 1},
+      {transform: `translate(-50%,-50%) translate(${dx * 0.7}px,${dy * 0.7}px) rotate(${rot * 0.6}deg) scale(1)`, opacity: 1, offset: 0.45},
+      {transform: `translate(-50%,-50%) translate(${dx}px,${dy + 280}px) rotate(${rot}deg) scale(.85)`, opacity: 0}
+    ], {duration: 1100 + Math.random() * 700, easing: 'cubic-bezier(.2,.6,.4,1)', fill: 'forwards'});
+  }
+  setTimeout(() => box.remove(), 2100);
+};
+
 /* ---------- La balance : plusieurs familles de chaque côté, prédiction <, = ou >, puis on pèse ---------- */
 window.hwBalState = {a: null, b: null, guess: null, shown: false, tilt: 0};
 window.hwBalance = (el, cats, mode) => {
@@ -1707,7 +1744,12 @@ window.hwBalance = (el, cats, mode) => {
       d3.select(p.num.node()).transition().delay(150).duration(1100).ease(d3.easeCubicOut)
         .tween('text', () => { const k = d3.interpolateNumber(0, p.n); return (u) => { p.num.text(hwFmt.format(Math.round(k(u)))); }; });
     });
-    setTimeout(() => { res.style.transition = 'opacity .4s'; res.style.opacity = '1'; verdict.classList.add('gs-pop'); }, 1300);
+    setTimeout(() => {
+      res.style.transition = 'opacity .4s';
+      res.style.opacity = '1';
+      verdict.classList.add('gs-pop');
+      if (S.guess === truth) { stmt.classList.add('yay'); hwConfetti(stmt); }
+    }, 1300);
   } else {
     place(target);
     pans.forEach((p) => p.num.text(hwFmt.format(p.n)));
@@ -2438,7 +2480,7 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(cbGo); els
 <script>
 /* Bouton « Mettre à jour » : compare la version de cette page à version.json sur GitHub. */
 (function () {
-  const APP_VERSION = '2026.11.01-6';
+  const APP_VERSION = '2026.11.01-7';
   const bar = document.querySelector('.hw-update');
   const msg = bar.querySelector('.msg');
   const btn = bar.querySelector('button');
