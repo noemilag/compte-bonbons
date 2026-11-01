@@ -538,6 +538,31 @@ button.tn-rod:focus-visible,button.tn-units:focus-visible{outline:2px solid var(
   font-family:'Fredoka','Fredoka Variable',ui-rounded,'SF Pro Rounded',system-ui,sans-serif;color:var(--ink)}
 .cb-hint{margin:0;font-size:var(--cds-font-size-caption);color:var(--ink-dim);text-align:center}
 .cb-hint b{font-family:var(--chunky);color:var(--candle);font-weight:900}
+
+/* Installer sur le téléphone */
+.cb-install{display:flex;flex-direction:column;align-items:center;gap:.5rem;width:100%;max-width:22rem;padding:1rem;border-radius:1.2rem;background:rgba(124,255,79,.08);box-shadow:inset 0 0 0 1px rgba(124,255,79,.35)}
+.cb-install[hidden]{display:none}
+.cb-install .cb-big{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;width:100%}
+.cb-install .cb-big svg{width:1.2em;height:1.2em}
+.cb-install-tip{margin:0;font-size:var(--cds-font-size-caption);font-weight:600;color:var(--ink)}
+.cb-howto{position:fixed;inset:0;z-index:65;display:flex;align-items:flex-end;justify-content:center;background:rgba(3,2,8,.65);backdrop-filter:blur(4px);
+  --orange:#ff7a1a;--slime:#7cff4f;--purple:#b46cff;--candle:#ffd60a;--ink:#f1ecff;--ink-dim:#b3a9d6;--chunky:'Luckiest Guy',ui-rounded,system-ui,sans-serif;
+  font-family:'Fredoka','Fredoka Variable',ui-rounded,'SF Pro Rounded',system-ui,sans-serif;color:var(--ink)}
+.cb-howto[hidden]{display:none}
+.cb-howto-sheet{display:flex;flex-direction:column;align-items:center;gap:.8rem;padding:1.4rem 1.2rem 1.2rem;text-align:left}
+.cb-howto-sheet .logo{width:3.4rem;height:3.4rem;border-radius:.9rem}
+.cb-howto-sheet h3{margin:0;font-family:var(--chunky);font-weight:900;font-size:1.35rem;letter-spacing:.02em;color:var(--orange);text-align:center}
+.cb-howto-sheet ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.7rem;width:100%}
+.cb-howto-sheet li{display:grid;grid-template-columns:2rem 1fr auto;align-items:center;gap:.7rem;padding:.7rem .8rem;border-radius:1rem;background:rgba(255,255,255,.05)}
+.cb-howto-sheet li .n{display:grid;place-items:center;width:2rem;height:2rem;border-radius:50%;background:var(--candle);color:#2a1b00;font-family:var(--chunky);font-weight:900}
+.cb-howto-sheet li .t{font-weight:500;line-height:1.4}
+.cb-howto-sheet li .t b{color:var(--candle);font-weight:700}
+.cb-howto-sheet li .ic{display:grid;place-items:center;width:2.4rem;height:2.4rem;border-radius:.7rem;background:rgba(0,122,255,.18);color:#5aa9ff}
+.cb-howto-sheet li .ic svg{width:1.4rem;height:1.4rem}
+.cb-howto-sheet .cb-big{margin-top:.2rem;width:100%}
+.cb-sheet button.cb-big{justify-content:center;font-family:var(--chunky);font-weight:900;font-size:1.15rem;letter-spacing:.03em;padding:.75em 1.5em;border-radius:999px;background:var(--orange);color:#2a0d00;box-shadow:0 4px 0 #9a3b00,0 0 22px rgba(255,122,26,.5)}
+.cb-sheet button.cb-big:hover{background:var(--orange)}
+.cb-install .cb-big{font-size:1.02rem;padding:.75em 1em}
 </style>
 
 <div class="hw">
@@ -554,6 +579,10 @@ button.tn-rod:focus-visible,button.tn-units:focus-visible{outline:2px solid var(
     <h1>Compte-Bonbons</h1>
     <p class="pitch cb-pitch-first">Compte ton butin d’Halloween et découvre tes statistiques : podium hanté, chaudron de sorcière et plus encore!</p>
     <p class="pitch cb-pitch-more" hidden>Un autre chasseur de bonbons dans la famille?</p>
+    <div class="cb-install" hidden>
+      <button class="cb-big green cb-install-btn" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><rect x="4" y="18" width="16" height="3" rx="1.5" fill="currentColor"/></svg>Installer sur mon téléphone</button>
+      <p class="cb-install-tip">Installe l’app avant de commencer : ton butin sera bien gardé pour l’an prochain.</p>
+    </div>
     <form class="cb-start" autocomplete="off">
       <label for="cb-prenom">Comment s’appelle le chasseur de bonbons?</label>
       <input id="cb-prenom" class="cb-input" name="prenom" maxlength="24" placeholder="Son prénom" required>
@@ -788,10 +817,19 @@ button.tn-rod:focus-visible,button.tn-units:focus-visible{outline:2px solid var(
       <hr>
       <button type="button" data-act="export" role="menuitem"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Sauvegarder mes données</button>
       <button type="button" data-act="import" role="menuitem"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20V9M7 14l5-5 5 5M5 4h14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Restaurer une sauvegarde</button>
+      <button type="button" data-act="install" role="menuitem"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="2.5" width="12" height="19" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7v7M9 11l3 3 3-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Installer sur mon téléphone</button>
       <button type="button" data-act="demo" role="menuitem"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3" fill="currentColor"/><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z" fill="none" stroke="currentColor" stroke-width="2"/></svg>Voir l’exemple de Léo</button>
       <hr>
       <button type="button" data-act="delete" class="danger" role="menuitem"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M10 7V4h4v3M7 7l1 13h8l1-13" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg><span>Supprimer <span class="cb-kid">—</span></span></button>
       <button type="button" data-act="close" class="close">Fermer</button>
+    </div>
+  </div>
+  <div class="cb-howto" hidden>
+    <div class="cb-sheet cb-howto-sheet" role="dialog" aria-modal="true" aria-labelledby="cb-howto-title">
+      <img class="logo" src="icon-192.png" alt="">
+      <h3 id="cb-howto-title">Installer</h3>
+      <ol></ol>
+      <button type="button" class="cb-big cb-howto-close">J’ai compris</button>
     </div>
   </div>
   <div class="cb-toast" hidden role="status" aria-live="polite"></div>
@@ -2191,6 +2229,7 @@ document.querySelectorAll('.hw-search').forEach((inp) => {
       case 'count': show('count'); break;
       case 'dash': show('dash'); break;
       case 'add': addingKid = true; show('welcome'); break;
+      case 'install': installNow(); break;
       case 'demo': startDemo(); break;
       case 'rename': {
         const n = (prompt('Nouveau prénom', k.prenom) || '').trim().replace(/\s+/g, ' ');
@@ -2269,6 +2308,82 @@ document.querySelectorAll('.hw-search').forEach((inp) => {
     }
   });
 
+
+  /* ---------- Installer sur le téléphone ---------- */
+  const UA = navigator.userAgent;
+  const IS_IOS = /iPhone|iPad|iPod/.test(UA) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const IS_ANDROID = /Android/.test(UA);
+  const IOS_CHROME = IS_IOS && /CriOS/.test(UA);
+  const IOS_OTHER = IS_IOS && /FxiOS|EdgiOS|OPiOS/.test(UA);
+  const installed = () => window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+  let deferredPrompt = null;
+  const syncInstall = () => {
+    const show = !installed() && !demo;
+    $$('.cb-install').forEach((e) => { e.hidden = !show; });
+    $$('[data-act="install"]').forEach((e) => { e.hidden = installed(); });
+  };
+  window.addEventListener('beforeinstallprompt', (ev) => { ev.preventDefault(); deferredPrompt = ev; syncInstall(); });
+  window.addEventListener('appinstalled', () => { deferredPrompt = null; syncInstall(); toast('Compte-Bonbons est installé! Ouvre-le depuis ton écran d’accueil.'); });
+
+  const shareIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7.5 7.5L12 3l4.5 4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 11H6v10h12V11h-2" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>';
+  const dotsIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="2" fill="currentColor"/><circle cx="12" cy="12" r="2" fill="currentColor"/><circle cx="19" cy="12" r="2" fill="currentColor"/></svg>';
+  const kebabIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="2" fill="currentColor"/><circle cx="12" cy="12" r="2" fill="currentColor"/><circle cx="12" cy="19" r="2" fill="currentColor"/></svg>';
+  const plusIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 8v8M8 12h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+  const steps = () => {
+    if (IS_IOS && IOS_CHROME) return {title: 'Installer avec Chrome sur iPhone', steps: [
+      [shareIcon, 'Touche le bouton <b>Partager</b>, en haut à droite dans la barre d’adresse (ou dans le menu <b>⋯</b>).'],
+      [plusIcon, 'Choisis <b>Ajouter à l’écran d’accueil</b>.'],
+      [null, 'Touche <b>Ajouter</b>. L’icône de Compte-Bonbons apparaît sur ton écran d’accueil!']]};
+    if (IS_IOS && IOS_OTHER) return {title: 'Installer sur iPhone', steps: [
+      [shareIcon, 'Ouvre le menu de ton navigateur et touche <b>Partager</b>.'],
+      [plusIcon, 'Choisis <b>Ajouter à l’écran d’accueil</b>, puis <b>Ajouter</b>.'],
+      [null, 'Si l’option n’y est pas, ouvre cette page dans <b>Safari</b> et recommence.']]};
+    if (IS_IOS) return {title: 'Installer avec Safari sur iPhone', steps: [
+      [shareIcon, 'Touche le bouton <b>Partager</b>. Sur les iPhone récents, il est dans le menu <b>⋯</b> en bas de l’écran.'],
+      [plusIcon, 'Fais défiler et choisis <b>Sur l’écran d’accueil</b>.'],
+      [null, 'Touche <b>Ajouter</b>. L’icône de Compte-Bonbons apparaît sur ton écran d’accueil!']]};
+    if (IS_ANDROID) return {title: 'Installer sur Android', steps: [
+      [kebabIcon, 'Dans Chrome, touche le menu <b>⋮</b> en haut à droite.'],
+      [plusIcon, 'Choisis <b>Installer l’application</b> ou <b>Ajouter à l’écran d’accueil</b>.'],
+      [null, 'Confirme. L’icône de Compte-Bonbons apparaît avec tes autres apps!']]};
+    return {title: 'Installer sur cet ordinateur', steps: [
+      [plusIcon, 'Dans Chrome ou Edge, clique sur l’icône d’installation au bout de la barre d’adresse.'],
+      [dotsIcon, 'Ou ouvre le menu du navigateur et choisis <b>Installer Compte-Bonbons</b>.'],
+      [null, 'Sur un téléphone, ouvre ce lien et touche <b>Installer sur mon téléphone</b>.']]};
+  };
+  const howto = $('.cb-howto');
+  const openHowto = () => {
+    const s = steps();
+    $('.cb-howto h3').textContent = s.title;
+    const ol = $('.cb-howto ol');
+    ol.replaceChildren(...s.steps.map(([icon, html], i) => {
+      const li = document.createElement('li');
+      const n = document.createElement('span'); n.className = 'n'; n.textContent = String(i + 1);
+      const t = document.createElement('span'); t.className = 't'; t.innerHTML = html;
+      li.append(n, t);
+      if (icon) { const ic = document.createElement('span'); ic.className = 'ic'; ic.innerHTML = icon; li.append(ic); }
+      return li;
+    }));
+    howto.hidden = false;
+  };
+  const installNow = async () => {
+    if (deferredPrompt) {
+      const p = deferredPrompt;
+      deferredPrompt = null;
+      p.prompt();
+      try { const r = await p.userChoice; if (r && r.outcome === 'accepted') syncInstall(); } catch (e) { /* rien */ }
+      return;
+    }
+    openHowto();
+  };
+  $$('.cb-install-btn').forEach((b) => b.addEventListener('click', installNow));
+  $('.cb-howto-close').addEventListener('click', () => { howto.hidden = true; });
+  howto.addEventListener('click', (ev) => { if (ev.target === howto) howto.hidden = true; });
+  window.matchMedia('(display-mode: standalone)').addEventListener('change', syncInstall);
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => {}); });
+  }
+
   /* ---------- Navigation ---------- */
   const homeView = () => {
     const k = kid();
@@ -2286,6 +2401,7 @@ document.querySelectorAll('.hw-search').forEach((inp) => {
     if (v === 'welcome') renderWelcome();
     if (v === 'count') renderCount();
     if (v === 'dash') renderDash();
+    syncInstall();
     window.scrollTo(0, 0);
   };
 
@@ -2320,7 +2436,7 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(cbGo); els
 <script>
 /* Bouton « Mettre à jour » : compare la version de cette page à version.json sur GitHub. */
 (function () {
-  const APP_VERSION = '2026.11.01-4';
+  const APP_VERSION = '2026.11.01-5';
   const bar = document.querySelector('.hw-update');
   const msg = bar.querySelector('.msg');
   const btn = bar.querySelector('button');
