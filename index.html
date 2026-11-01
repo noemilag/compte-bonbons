@@ -383,6 +383,32 @@ button.tn-rod:focus-visible,button.tn-units:focus-visible{outline:2px solid var(
 .tg-win{margin:0;font-weight:700;font-size:1.15rem;color:var(--ink-dim)}
 .hw .tg-win b{font-family:var(--chunky);font-weight:900;font-size:1.6rem;color:var(--candle)}
 .tg-tip{margin:0;font-weight:700;color:var(--pink)}
+/* Balance v3 : compacte, familles et sortes */
+.hw-balance{gap:.45rem}
+.bl-pick{gap:.3rem}
+.bl-side{font-size:.7rem;letter-spacing:.18em;margin-top:.15rem}
+.bl-chip{display:inline-flex;align-items:stretch;border-radius:999px;background:rgba(10,4,20,.6);box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--c) 60%,transparent);overflow:hidden}
+.bl-chip.all{background:var(--c);box-shadow:0 0 14px color-mix(in srgb,var(--c) 55%,transparent)}
+.bl-chip.some{background:color-mix(in srgb,var(--c) 35%,rgba(10,4,20,.6))}
+.bl-chip.elsewhere{opacity:.55}
+.bl-pick .bl-chip button{appearance:none;border:0;margin:0;cursor:pointer;font:inherit;background:transparent;box-shadow:none;color:var(--ink);-webkit-tap-highlight-color:transparent}
+.bl-pick .bl-chip .bl-main{display:inline-flex;align-items:center;gap:.35rem;font-weight:700;font-size:.85rem;padding:.38em .55em .38em .7em}
+.bl-pick .bl-chip.all .bl-main{color:#14081f}
+.bl-pick .bl-chip .bl-more{padding:0 .55em 0 .4em;font-size:.8rem;color:var(--ink-dim);border-left:1px solid color-mix(in srgb,var(--c) 45%,transparent)}
+.bl-pick .bl-chip.all .bl-more{color:#14081f;border-left-color:rgba(20,8,31,.3)}
+.bl-pick .bl-chip .bl-more[aria-expanded=true]{transform:rotate(180deg)}
+.bl-chip.all .bl-check{background:#14081f;color:var(--c);box-shadow:none}
+.bl-chip.some .bl-check{background:var(--c);color:#14081f;box-shadow:none}
+.bl-sub{width:100%;display:flex;flex-wrap:wrap;justify-content:center;gap:.3rem;padding:.45rem;margin-top:.15rem;border-radius:.9rem;background:color-mix(in srgb,var(--c) 10%,rgba(5,2,12,.5));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c) 40%,transparent)}
+.bl-pick .bl-sub .bl-item{appearance:none;border:0;cursor:pointer;font:inherit;display:inline-flex;align-items:center;gap:.3rem;font-weight:600;font-size:.8rem;padding:.3em .65em;border-radius:999px;background:rgba(10,4,20,.6);color:var(--ink);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c) 55%,transparent)}
+.bl-pick .bl-sub .bl-item.on{background:var(--c);color:#14081f;box-shadow:none}
+.bl-pick .bl-sub .bl-item.on .bl-check{background:#14081f;color:var(--c);box-shadow:none}
+.bl-pick .bl-sub .bl-item.elsewhere{opacity:.55}
+.bl-sub .bl-check{width:.9rem;height:.9rem;font-size:.65rem}
+.hw-balance svg{margin-top:0}
+.bl-unit{margin:-.5rem 0 0}
+.bl-need{margin:0;text-align:center;font-size:var(--cds-font-size-caption);font-weight:700;color:var(--ink-dim)}
+.bl-syms.tn-no{animation:tn-no .4s ease-in-out}
 .hw-chart text.mnum{font-weight:800;font-size:15px;fill:#1a1020}
 .hw-chart text.tname{fill:#efeaff;font-weight:700;font-size:var(--cds-font-size-caption)}
 .hw-chart text.tnum{font-family:var(--chunky);font-weight:900;font-size:1.9rem;font-variant-numeric:tabular-nums}
@@ -772,8 +798,8 @@ button.tn-rod:focus-visible,button.tn-units:focus-visible{outline:2px solid var(
   <section class="hw-grid hw-tens-wrap">
     <div class="hw-card hw-reveal" id="balance">
       <h2>La balance</h2>
-      <p class="note">Coche une ou plusieurs familles de chaque côté, fais ta prédiction, puis touche la balance pour peser!</p>
-      <div class="hw-balance dash-skeleton" data-draw="balance" data-source="categories"></div>
+      <p class="note">Coche des bonbons de chaque côté (la flèche ▾ montre les sortes), choisis ton symbole, puis touche la balance!</p>
+      <div class="hw-balance dash-skeleton" data-draw="balance" data-source="categories bonbons"></div>
     </div>
   </section>
 
@@ -1642,101 +1668,153 @@ window.hwConfetti = (anchor) => {
   setTimeout(() => box.remove(), 3000);
 };
 
-/* ---------- La balance : plusieurs familles de chaque côté, prédiction <, = ou >, puis on pèse ---------- */
-window.hwBalState = {a: null, b: null, guess: null, shown: false, tilt: 0};
-window.hwBalance = (el, cats, mode) => {
+/* ---------- La balance : familles ou sortes précises de chaque côté, prédiction <, = ou >, puis on pèse ---------- */
+window.hwBalState = {a: null, b: null, guess: null, shown: false, tilt: 0, open: {a: null, b: null}, justAdded: null};
+window.hwBalance = (el, cats, mode, allItems) => {
   el.replaceChildren();
-  const mk = (tag, cls) => { const n = document.createElement(tag); if (cls) n.className = cls; return n; };
-  if (cats.length < 2) {
-    const p = mk('p', 'bl-msg'); p.textContent = 'Il faut au moins deux familles de bonbons pour jouer avec la balance.';
-    el.append(p);
+  const mk = (tag, cls, txt) => { const n = document.createElement(tag); if (cls) n.className = cls; if (txt != null) n.textContent = txt; return n; };
+  const items = (allItems || []).filter((i) => i.q > 0);
+  const key = (i) => i.cat + '|' + i.name;
+  const byKey = new Map(items.map((i) => [key(i), i]));
+  const famItems = (c) => items.filter((i) => i.cat === c);
+  const names = cats.map((c) => c.categorie).filter((c) => famItems(c).length);
+  if (names.length < 2 && items.length < 2) {
+    el.append(mk('p', 'bl-msg', 'Il faut au moins deux sortes de bonbons pour jouer avec la balance.'));
     return;
   }
-  const names = cats.map((c) => c.categorie);
   const S = hwBalState;
-  S.a = (S.a || []).filter((n) => names.includes(n));
-  S.b = (S.b || []).filter((n) => names.includes(n) && !S.a.includes(n));
-  if (!S.a.length && !S.b.length) { S.a = [names[0]]; S.b = [names[1]]; }
-  const val = (n) => (cats.find((c) => c.categorie === n) || {quantite: 0}).quantite;
-  const sum = (list) => list.reduce((s, n) => s + val(n), 0);
-  const reset = () => { S.shown = false; S.guess = null; S.tilt = 0; hwBalance(el, cats, 'change'); };
-
-  /* 1. Choisir les familles de chaque côté */
-  const pick = (side) => {
-    const row = mk('div', 'bl-pick');
-    const lab = mk('span', 'bl-side'); lab.textContent = side === 'a' ? 'Côté gauche' : 'Côté droit';
-    row.append(lab);
+  if (!S.open) S.open = {a: null, b: null};
+  S.a = (S.a || []).filter((k) => byKey.has(k));
+  S.b = (S.b || []).filter((k) => byKey.has(k) && !S.a.includes(k));
+  if (!S.a.length && !S.b.length) {
+    if (names.length >= 2) { S.a = famItems(names[0]).map(key); S.b = famItems(names[1]).map(key); }
+    else { S.a = [key(items[0])]; S.b = [key(items[1])]; }
+  }
+  const redraw = (m) => hwBalance(el, cats, m, allItems);
+  const reset = () => { S.shown = false; S.guess = null; S.tilt = 0; redraw('change'); };
+  const move = (side, keys, add) => {
     const other = side === 'a' ? 'b' : 'a';
-    names.forEach((n) => {
-      const bt = mk('button');
-      bt.type = 'button';
-      bt.style.setProperty('--c', hwColor(n));
-      const on = S[side].includes(n);
-      const box = mk('span', 'bl-check'); box.textContent = on ? '✓' : '';
-      bt.append(box, n);
-      bt.setAttribute('aria-pressed', on ? 'true' : 'false');
-      if (S[other].includes(n)) bt.classList.add('elsewhere');
-      bt.addEventListener('click', () => {
-        if (on) { S[side] = S[side].filter((x) => x !== n); S.justAdded = null; }
-        else { S[side] = [...S[side], n]; S[other] = S[other].filter((x) => x !== n); S.justAdded = n; }
+    if (add) { S[side] = [...new Set([...S[side], ...keys])]; S[other] = S[other].filter((k) => !keys.includes(k)); }
+    else S[side] = S[side].filter((k) => !keys.includes(k));
+  };
+
+  /* 1. Choisir les familles (ou des sortes précises) de chaque côté */
+  const pick = (side) => {
+    const other = side === 'a' ? 'b' : 'a';
+    const row = mk('div', 'bl-pick');
+    row.append(mk('span', 'bl-side', side === 'a' ? 'Gauche' : 'Droite'));
+    names.forEach((c) => {
+      const fk = famItems(c).map(key);
+      const nIn = fk.filter((k) => S[side].includes(k)).length;
+      const state = nIn === 0 ? 'none' : nIn === fk.length ? 'all' : 'some';
+      const chip = mk('span', 'bl-chip ' + state);
+      chip.style.setProperty('--c', hwColor(c));
+      if (state === 'none' && fk.some((k) => S[other].includes(k))) chip.classList.add('elsewhere');
+      const main = mk('button', 'bl-main');
+      main.type = 'button';
+      main.append(mk('span', 'bl-check', state === 'all' ? '✓' : state === 'some' ? '–' : ''), c);
+      main.setAttribute('aria-pressed', state === 'all' ? 'true' : state === 'some' ? 'mixed' : 'false');
+      main.addEventListener('click', () => {
+        const add = state !== 'all';
+        move(side, fk, add);
+        S.justAdded = add ? c : null;
         reset();
       });
-      row.append(bt);
+      chip.append(main);
+      if (fk.length > 1) {
+        const more = mk('button', 'bl-more', '▾');
+        more.type = 'button';
+        more.setAttribute('aria-label', 'Choisir des sortes de ' + c);
+        more.setAttribute('aria-expanded', S.open[side] === c ? 'true' : 'false');
+        more.addEventListener('click', () => { S.open[side] = S.open[side] === c ? null : c; redraw('keep'); });
+        chip.append(more);
+      }
+      row.append(chip);
     });
+    const oc = S.open[side];
+    if (oc && names.includes(oc)) {
+      const sub = mk('div', 'bl-sub');
+      sub.style.setProperty('--c', hwColor(oc));
+      famItems(oc).forEach((i) => {
+        const k = key(i);
+        const on = S[side].includes(k);
+        const b = mk('button', 'bl-item' + (on ? ' on' : '') + (!on && S[other].includes(k) ? ' elsewhere' : ''));
+        b.type = 'button';
+        b.append(mk('span', 'bl-check', on ? '✓' : ''), i.name);
+        b.setAttribute('aria-pressed', on ? 'true' : 'false');
+        b.addEventListener('click', () => { move(side, [k], !on); S.justAdded = on ? null : k; reset(); });
+        sub.append(b);
+      });
+      row.append(sub);
+    }
     return row;
   };
   el.append(pick('a'), pick('b'));
 
-  const A = sum(S.a), B = sum(S.b);
-  const ready = S.a.length > 0 && S.b.length > 0;
+  /* What is on each side, as terms: a whole family, or single candies. */
+  const terms = (list) => {
+    const out = [];
+    names.forEach((c) => {
+      const fi = famItems(c);
+      const sel = fi.filter((i) => list.includes(key(i)));
+      if (!sel.length) return;
+      if (sel.length === fi.length) out.push({key: c, label: c, n: sel.reduce((s, i) => s + i.q, 0), color: hwColor(c)});
+      else sel.forEach((i) => out.push({key: key(i), fam: c, label: i.name, n: i.q, color: hwColor(c)}));
+    });
+    return out;
+  };
+  const TA = terms(S.a), TB = terms(S.b);
+  const A = TA.reduce((s, t) => s + t.n, 0), B = TB.reduce((s, t) => s + t.n, 0);
+  const ready = TA.length > 0 && TB.length > 0;
   const truth = A < B ? '<' : A > B ? '>' : '=';
 
   /* 2. La balance */
   const target = A === B ? 0 : Math.max(-16, Math.min(16, (B - A) / Math.max(A, B) * 20));
   const W = Math.max(260, Math.floor(el.clientWidth || 320));
-  const H = 318, cx = W / 2, py = 50, SL = 108;
+  const H = 262, cx = W / 2, py = 44, SL = 100;
   const L = Math.min(W * 0.8, 340) / 2;
   const svg = d3.select(el).append('svg').attr('class', 'bl-svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'button')
     .attr('tabindex', 0).attr('aria-label', S.shown ? ('Gauche ' + A + ' bonbons, droite ' + B + ' bonbons') : 'Toucher la balance pour peser');
-  svg.append('path').attr('d', `M${cx},${py} L${cx - 34},${H - 26} L${cx + 34},${H - 26} Z`).style('fill', '#3a2a55');
-  svg.append('rect').attr('x', cx - 70).attr('y', H - 28).attr('width', 140).attr('height', 12).attr('rx', 6).style('fill', '#2a1d40');
+  svg.append('path').attr('d', `M${cx},${py} L${cx - 30},${H - 22} L${cx + 30},${H - 22} Z`).style('fill', '#3a2a55');
+  svg.append('rect').attr('x', cx - 64).attr('y', H - 24).attr('width', 128).attr('height', 11).attr('rx', 5.5).style('fill', '#2a1d40');
   const beam = svg.append('line').style('stroke', '#b46cff').style('stroke-width', 8).style('stroke-linecap', 'round').style('filter', hwGlow('#b46cff'));
   svg.append('circle').attr('cx', cx).attr('cy', py).attr('r', 9).style('fill', '#ffd60a').style('filter', hwGlow('#ffd60a'));
 
   /* Piles on the same scale on both sides: at most 55 points, one point = UNIT candies. */
   const CAP = 55;
   const UNIT = Math.max(1, Math.ceil(Math.max(A, B) / CAP));
-  const pile = (list) => {
-    const fams = [];
-    list.forEach((f) => { const k = val(f) > 0 ? Math.max(1, Math.round(val(f) / UNIT)) : 0; for (let i = 0; i < k; i++) fams.push(f); });
-    fams.length = Math.min(fams.length, CAP);
+  const pile = (ts) => {
+    const marks = [];
+    ts.forEach((t) => { const k = t.n > 0 ? Math.max(1, Math.round(t.n / UNIT)) : 0; for (let i = 0; i < k; i++) marks.push(t); });
+    marks.length = Math.min(marks.length, CAP);
     const pts = [], rows = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1];
-    let left = fams.length, y = 0, c = 0;
+    let left = marks.length, y = 0, c = 0;
     for (const r of rows) {
       if (left <= 0) break;
       const m = Math.min(r, left);
-      for (let i = 0; i < m; i++) { pts.push([(i - (m - 1) / 2) * 8.6, y, fams[c]]); c++; }
+      for (let i = 0; i < m; i++) { pts.push([(i - (m - 1) / 2) * 8.6, y, marks[c]]); c++; }
       left -= m; y -= 7.6;
     }
     return pts;
   };
-  const pans = [{side: -1, list: S.a, n: A}, {side: 1, list: S.b, n: B}].map((p) => {
+  const isNew = (t) => S.justAdded && (t.key === S.justAdded || t.fam === S.justAdded || S.justAdded.startsWith(t.key + '|'));
+  const pans = [{side: -1, ts: TA, n: A}, {side: 1, ts: TB, n: B}].map((p) => {
     const g = svg.append('g');
     const s1 = g.append('line').style('stroke', 'rgba(241,236,255,.45)').style('stroke-width', 1.5);
     const s2 = g.append('line').style('stroke', 'rgba(241,236,255,.45)').style('stroke-width', 1.5);
-    g.append('path').attr('d', 'M-50,0 Q0,30 50,0 Z').style('fill', '#4a3a66');
+    g.append('path').attr('d', 'M-50,0 Q0,28 50,0 Z').style('fill', '#4a3a66');
     let drop = 0;
-    pile(p.list).forEach(([x, y, f]) => {
-      const c = g.append('circle').attr('cx', x).attr('r', 3.8).style('fill', hwColor(f));
-      if (hwMotion && f === S.justAdded) {
+    pile(p.ts).forEach(([x, y, t]) => {
+      const c = g.append('circle').attr('cx', x).attr('r', 3.8).style('fill', t.color);
+      if (hwMotion && isNew(t)) {
         c.attr('cy', y - 60).style('opacity', 0)
           .transition().delay(drop++ * 22).duration(420).ease(d3.easeBounceOut).attr('cy', y - 5).style('opacity', 1);
       } else {
         c.attr('cy', y - 5);
       }
     });
-    if (!p.list.length) g.append('text').attr('class', 'bl-mystery').attr('text-anchor', 'middle').attr('y', -6).text('?');
-    const num = g.append('text').attr('class', 'bl-num').attr('text-anchor', 'middle').attr('y', 52).text(S.shown ? '0' : '');
+    if (!p.ts.length) g.append('text').attr('class', 'bl-mystery').attr('text-anchor', 'middle').attr('y', -6).text('?');
+    const num = g.append('text').attr('class', 'bl-num').attr('text-anchor', 'middle').attr('y', 48).text(S.shown ? '0' : '');
     return {...p, g, s1, s2, num};
   });
   const place = (deg) => {
@@ -1749,83 +1827,65 @@ window.hwBalance = (el, cats, mode) => {
       p.s2.attr('x1', 0).attr('y1', -SL).attr('x2', 46).attr('y2', 0);
     });
   };
-
   S.justAdded = null;
-  const unitNote = mk('p', 'bl-unit');
-  unitNote.textContent = UNIT === 1 ? '1 point = 1 bonbon' : '1 point = ' + UNIT + ' bonbons';
+  const unitNote = mk('p', 'bl-unit', UNIT === 1 ? '1 point = 1 bonbon' : '1 point = ' + UNIT + ' bonbons');
   el.append(unitNote);
 
-  /* 3. La prédiction */
-  const guessBox = mk('div', 'bl-guess');
-  const gq = mk('p', 'bl-q');
-  gq.textContent = S.shown ? 'Ta prédiction :' : (ready ? 'Regarde les tas. Selon toi, le côté gauche est…' : 'Coche au moins une famille de chaque côté.');
+  /* 3. La prédiction : Gauche [<] [=] [>] Droite */
   const sym = mk('div', 'bl-syms');
-  const lg = mk('span', 'bl-tot'); lg.textContent = S.shown ? hwFmt.format(A) : 'Gauche';
-  const rg = mk('span', 'bl-tot'); rg.textContent = S.shown ? hwFmt.format(B) : 'Droite';
-  sym.append(lg);
+  sym.append(mk('span', 'bl-tot', S.shown ? hwFmt.format(A) : 'Gauche'));
   [['<', 'plus petit'], ['=', 'égal'], ['>', 'plus grand']].forEach(([s, txt]) => {
     const bt = mk('button', 'bl-sym');
     bt.type = 'button';
-    const big = mk('span', 'sy'); big.textContent = s;
-    const small = mk('span', 'tx'); small.textContent = txt;
-    bt.append(big, small);
+    bt.append(mk('span', 'sy', s), mk('span', 'tx', txt));
     bt.setAttribute('aria-label', 'Le côté gauche est ' + txt + (s === '=' ? ' au' : ' que le') + ' côté droit');
     bt.setAttribute('aria-pressed', S.guess === s ? 'true' : 'false');
     bt.disabled = !ready || S.shown;
     if (S.shown && s === truth) bt.classList.add('truth');
-    bt.addEventListener('click', () => { S.guess = s; hwBalance(el, cats, 'change'); });
+    bt.addEventListener('click', () => { S.guess = s; redraw('keep'); });
     sym.append(bt);
   });
-  sym.append(rg);
-  guessBox.append(gq, sym);
+  sym.append(mk('span', 'bl-tot', S.shown ? hwFmt.format(B) : 'Droite'));
+  el.append(sym);
+  if (!ready) el.append(mk('p', 'bl-need', 'Mets des bonbons des deux côtés.'));
 
-  const go = mk('button', 'bl-go');
+  const go = mk('button', 'bl-go', 'Peser!');
   go.type = 'button';
-  go.textContent = 'Peser!';
   go.disabled = !ready || !S.guess;
   go.hidden = S.shown;
-
   const res = mk('div', 'bl-res');
   res.setAttribute('aria-live', 'polite');
-
   const weigh = () => {
-    if (!ready || !S.guess || S.shown) {
-      if (ready && !S.guess && !S.shown) { gq.classList.remove('tn-no'); void gq.offsetWidth; gq.classList.add('tn-no'); }
-      return;
-    }
+    if (!ready || S.shown) return;
+    if (!S.guess) { sym.classList.remove('tn-no'); void sym.offsetWidth; sym.classList.add('tn-no'); return; }
     S.shown = true;
-    hwBalance(el, cats, 'weigh');
+    redraw('weigh');
   };
   go.addEventListener('click', weigh);
   svg.on('click', weigh).on('keydown', (ev) => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); weigh(); } });
-
-  el.append(guessBox, go, res);
+  el.append(go, res);
 
   if (!S.shown) { place(0); return; }
 
   /* 4. Le résultat */
-  const eqLine = (list, total) => {
+  const eqLine = (ts, total) => {
     const line = mk('div', 'bl-eq');
-    list.forEach((n, i) => {
+    ts.forEach((t, i) => {
       if (i) line.append(' + ');
-      const x = mk('b'); x.textContent = hwFmt.format(val(n)); x.style.color = hwColor(n);
-      const nm = mk('span', 'nm'); nm.textContent = ' ' + n;
-      line.append(x, nm);
+      const x = mk('b', null, hwFmt.format(t.n)); x.style.color = t.color;
+      line.append(x, mk('span', 'nm', ' ' + t.label));
     });
-    if (list.length > 1) { const t = mk('b'); t.textContent = hwFmt.format(total); line.append(' = ', t); }
+    if (ts.length > 1) line.append(' = ', mk('b', null, hwFmt.format(total)));
     return line;
   };
-  const left = mk('div', 'bl-col'); const lh = mk('span', 'bl-h'); lh.textContent = 'Gauche'; left.append(lh, eqLine(S.a, A));
-  const right = mk('div', 'bl-col'); const rh = mk('span', 'bl-h'); rh.textContent = 'Droite'; right.append(rh, eqLine(S.b, B));
+  const left = mk('div', 'bl-col'); left.append(mk('span', 'bl-h', 'Gauche'), eqLine(TA, A));
+  const right = mk('div', 'bl-col'); right.append(mk('span', 'bl-h', 'Droite'), eqLine(TB, B));
   const stmt = mk('div', 'bl-stmt');
-  const sa = mk('b'); sa.textContent = hwFmt.format(A);
-  const ss = mk('span', 'op'); ss.textContent = truth;
-  const sb = mk('b'); sb.textContent = hwFmt.format(B);
-  stmt.append(sa, ss, sb);
+  stmt.append(mk('b', null, hwFmt.format(A)), mk('span', 'op', truth), mk('b', null, hwFmt.format(B)));
   const verdict = mk('p', 'bl-verdict');
   if (S.guess === truth) { verdict.textContent = 'Bravo! Ta prédiction était juste!'; verdict.classList.add('win'); }
   else verdict.textContent = 'Oups! Tu avais choisi « ' + S.guess + ' », mais c’est « ' + truth + ' ».';
-  const again = mk('button', 'bl-again'); again.type = 'button'; again.textContent = 'Rejouer';
+  const again = mk('button', 'bl-again', 'Rejouer'); again.type = 'button';
   again.addEventListener('click', reset);
   res.append(left, right, stmt, verdict, again);
 
@@ -1916,11 +1976,13 @@ window.hwGuess = (el, qs) => {
 
 dash.draw('balance', (el) => {
   const d = dash.data('categories');
+  const b = dash.data('bonbons');
   const t = dash.data('totaux');
-  if (!hwState(el, d.status === 'ok' ? t : d)) return;
+  if (!hwState(el, d.status !== 'ok' ? d : b.status !== 'ok' ? b : t)) return;
   hwSelYear(t.data);
   const cats = hwOfYear(d.data).filter((c) => c.quantite > 0);
-  hwReveal('balance', el, (mode) => hwBalance(el, cats, mode));
+  const items = hwOfYear(b.data).map((r) => ({cat: r.categorie, name: r.bonbon, q: Number(r.quantite)}));
+  hwReveal('balance', el, (mode) => hwBalance(el, cats, mode, items));
 });
 
 dash.draw('guess', (el) => {
@@ -2804,7 +2866,7 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(cbGo); els
 <script>
 /* Bouton « Mettre à jour » : compare la version de cette page à version.json sur GitHub. */
 (function () {
-  const APP_VERSION = '2026.11.01-10';
+  const APP_VERSION = '2026.11.01-11';
   const bar = document.querySelector('.hw-update');
   const msg = bar.querySelector('.msg');
   const btn = bar.querySelector('button');
