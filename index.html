@@ -281,6 +281,43 @@ button.tn-rod:focus-visible,button.tn-units:focus-visible{outline:2px solid var(
 .gs-verdict{margin:0;font-weight:700;font-size:var(--cds-font-size-heading);color:var(--ink-dim);transition:opacity .3s}
 .gs-verdict.win{color:var(--candle)}
 @media (prefers-reduced-motion: no-preference){ .gs-pop{animation:hw-boo .6s var(--cds-ease-out)} }
+/* Balance v2 : cases à cocher, prédiction, pesée */
+.bl-pick button{display:inline-flex;align-items:center;gap:.4rem}
+.bl-check{display:inline-grid;place-items:center;width:1.05rem;height:1.05rem;border-radius:.3rem;font-size:.75rem;font-weight:900;box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--c) 70%,transparent)}
+.bl-pick button[aria-pressed=true] .bl-check{background:#14081f;color:var(--c);box-shadow:none}
+.hw-balance .bl-svg{cursor:pointer;outline:none;-webkit-tap-highlight-color:transparent}
+.hw-balance .bl-svg:focus-visible{outline:2px solid var(--candle);outline-offset:4px;border-radius:12px}
+.hw-balance text.bl-mystery{font-family:var(--chunky);font-weight:900;font-size:1.9rem;fill:var(--candle);filter:drop-shadow(0 0 8px rgba(255,214,10,.6))}
+.hw-balance text.bl-num{fill:var(--candle);filter:drop-shadow(0 0 8px rgba(255,214,10,.5))}
+.bl-guess{display:flex;flex-direction:column;align-items:center;gap:.5rem}
+.bl-q{margin:0;font-weight:700;font-size:var(--cds-font-size-heading);color:var(--ink);text-align:center}
+.bl-syms{display:flex;align-items:center;justify-content:center;gap:.5rem;flex-wrap:nowrap}
+.bl-tot{min-width:3.6rem;text-align:center;font-family:var(--chunky);font-weight:900;font-size:1.1rem;color:var(--ink-dim)}
+.bl-sym{appearance:none;border:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:.1rem;width:4.2rem;padding:.45rem 0 .4rem;border-radius:1rem;background:rgba(10,4,20,.6);color:var(--ink);box-shadow:inset 0 0 0 1.5px rgba(255,214,10,.45);touch-action:manipulation}
+.bl-sym .sy{font-family:var(--chunky);font-weight:900;font-size:2rem;line-height:1}
+.bl-sym .tx{font-size:.68rem;font-weight:700;color:var(--ink-dim)}
+.bl-sym[aria-pressed=true]{background:var(--candle);color:#2a1b00;box-shadow:0 0 18px rgba(255,214,10,.55)}
+.bl-sym[aria-pressed=true] .tx{color:#5a4200}
+.bl-sym[disabled]{cursor:default}
+.bl-sym[disabled]:not([aria-pressed=true]):not(.truth){opacity:.35}
+.bl-sym.truth{box-shadow:inset 0 0 0 3px var(--slime),0 0 16px rgba(124,255,79,.5)}
+.bl-go,.bl-again{appearance:none;border:0;cursor:pointer;align-self:center;font-family:var(--chunky);font-weight:900;font-size:1.2rem;letter-spacing:.03em;padding:.65em 1.7em;border-radius:999px;background:var(--candle);color:#2a1b00;box-shadow:0 4px 0 #8a6a00,0 0 20px rgba(255,214,10,.45)}
+.bl-go:active,.bl-again:active{transform:translateY(2px);box-shadow:0 2px 0 #8a6a00}
+.bl-go[disabled]{opacity:.35;cursor:default}
+.bl-go[hidden]{display:none}
+.bl-again{background:var(--purple);color:#1a0730;box-shadow:0 4px 0 #4a1d80,0 0 20px rgba(180,108,255,.45)}
+.bl-res{display:flex;flex-direction:column;align-items:center;gap:.45rem;text-align:center}
+.bl-res:empty{display:none}
+.bl-col{display:flex;flex-direction:column;align-items:center;gap:.1rem}
+.bl-h{font-size:var(--cds-font-size-caption);font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:var(--purple)}
+.bl-eq{font-weight:600;color:var(--ink-dim);line-height:1.6}
+.hw .bl-eq b{font-family:var(--chunky);font-weight:900;font-size:1.15rem;color:var(--candle)}
+.bl-eq .nm{color:var(--ink)}
+.bl-stmt{display:flex;align-items:center;gap:.7rem;margin-top:.2rem;font-family:var(--chunky);font-weight:900;font-size:2.4rem;line-height:1}
+.hw .bl-stmt b{color:var(--candle);text-shadow:0 0 14px rgba(255,214,10,.45)}
+.bl-stmt .op{color:var(--slime);text-shadow:0 0 14px rgba(124,255,79,.55)}
+.bl-verdict{margin:0;font-weight:700;font-size:var(--cds-font-size-heading);color:var(--ink-dim)}
+.bl-verdict.win{color:var(--slime)}
 .hw-chart text.mnum{font-weight:800;font-size:15px;fill:#1a1020}
 .hw-chart text.tname{fill:#efeaff;font-weight:700;font-size:var(--cds-font-size-caption)}
 .hw-chart text.tnum{font-family:var(--chunky);font-weight:900;font-size:1.9rem;font-variant-numeric:tabular-nums}
@@ -677,7 +714,7 @@ button.tn-rod:focus-visible,button.tn-units:focus-visible{outline:2px solid var(
   <section class="hw-grid hw-tens-wrap">
     <div class="hw-card hw-reveal" id="balance">
       <h2>La balance</h2>
-      <p class="note">Choisis une famille pour chaque côté : la balance penche du côté qui a le plus de bonbons.</p>
+      <p class="note">Coche une ou plusieurs familles de chaque côté, fais ta prédiction, puis touche la balance pour peser!</p>
       <div class="hw-balance dash-skeleton" data-draw="balance" data-source="categories"></div>
     </div>
   </section>
@@ -1446,8 +1483,8 @@ dash.draw('tens', (el) => {
   hwReveal('tens', el, (mode) => hwTens(el, cats, mode));
 });
 
-/* ---------- La balance : deux familles, la plus lourde fait pencher ---------- */
-window.hwBalState = {a: null, b: null, tilt: 0};
+/* ---------- La balance : plusieurs familles de chaque côté, prédiction <, = ou >, puis on pèse ---------- */
+window.hwBalState = {a: null, b: null, guess: null, shown: false, tilt: 0};
 window.hwBalance = (el, cats, mode) => {
   el.replaceChildren();
   const mk = (tag, cls) => { const n = document.createElement(tag); if (cls) n.className = cls; return n; };
@@ -1458,93 +1495,184 @@ window.hwBalance = (el, cats, mode) => {
   }
   const names = cats.map((c) => c.categorie);
   const S = hwBalState;
-  if (!names.includes(S.a)) S.a = names[0];
-  if (!names.includes(S.b) || S.b === S.a) S.b = names.find((n) => n !== S.a);
+  S.a = (S.a || []).filter((n) => names.includes(n));
+  S.b = (S.b || []).filter((n) => names.includes(n) && !S.a.includes(n));
+  if (!S.a.length && !S.b.length) { S.a = [names[0]]; S.b = [names[1]]; }
   const val = (n) => (cats.find((c) => c.categorie === n) || {quantite: 0}).quantite;
+  const sum = (list) => list.reduce((s, n) => s + val(n), 0);
+  const reset = () => { S.shown = false; S.guess = null; S.tilt = 0; hwBalance(el, cats, 'change'); };
+
+  /* 1. Choisir les familles de chaque côté */
   const pick = (side) => {
     const row = mk('div', 'bl-pick');
-    const lab = mk('span', 'bl-side'); lab.textContent = side === 'a' ? 'Gauche' : 'Droite';
+    const lab = mk('span', 'bl-side'); lab.textContent = side === 'a' ? 'Côté gauche' : 'Côté droit';
     row.append(lab);
     const other = side === 'a' ? 'b' : 'a';
     names.forEach((n) => {
       const bt = mk('button');
       bt.type = 'button';
-      bt.textContent = n;
       bt.style.setProperty('--c', hwColor(n));
-      bt.setAttribute('aria-pressed', S[side] === n ? 'true' : 'false');
-      bt.disabled = S[other] === n;
-      bt.addEventListener('click', () => { S[side] = n; hwBalance(el, cats, 'change'); });
+      const on = S[side].includes(n);
+      const box = mk('span', 'bl-check'); box.textContent = on ? '✓' : '';
+      bt.append(box, n);
+      bt.setAttribute('aria-pressed', on ? 'true' : 'false');
+      bt.disabled = S[other].includes(n);
+      bt.addEventListener('click', () => {
+        S[side] = on ? S[side].filter((x) => x !== n) : [...S[side], n];
+        reset();
+      });
       row.append(bt);
     });
     return row;
   };
   el.append(pick('a'), pick('b'));
 
-  const A = val(S.a), B = val(S.b);
+  const A = sum(S.a), B = sum(S.b);
+  const ready = S.a.length > 0 && S.b.length > 0;
+  const truth = A < B ? '<' : A > B ? '>' : '=';
+
+  /* 2. La balance */
   const target = A === B ? 0 : Math.max(-16, Math.min(16, (B - A) / Math.max(A, B) * 20));
   const W = Math.max(260, Math.floor(el.clientWidth || 320));
   const H = 270, cx = W / 2, py = 58;
   const L = Math.min(W * 0.8, 340) / 2;
-  const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img')
-    .attr('aria-label', S.a + ' : ' + A + ' bonbons, ' + S.b + ' : ' + B + ' bonbons');
+  const svg = d3.select(el).append('svg').attr('class', 'bl-svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'button')
+    .attr('tabindex', 0).attr('aria-label', S.shown ? ('Gauche ' + A + ' bonbons, droite ' + B + ' bonbons') : 'Toucher la balance pour peser');
   svg.append('path').attr('d', `M${cx},${py} L${cx - 34},${H - 26} L${cx + 34},${H - 26} Z`).style('fill', '#3a2a55');
   svg.append('rect').attr('x', cx - 70).attr('y', H - 28).attr('width', 140).attr('height', 12).attr('rx', 6).style('fill', '#2a1d40');
   const beam = svg.append('line').style('stroke', '#b46cff').style('stroke-width', 8).style('stroke-linecap', 'round').style('filter', hwGlow('#b46cff'));
   svg.append('circle').attr('cx', cx).attr('cy', py).attr('r', 9).style('fill', '#ffd60a').style('filter', hwGlow('#ffd60a'));
 
-  const pile = (n) => {
+  /* A pile of at most 28 candies, colored by the share of each family on that side. */
+  const pile = (list) => {
+    const total = sum(list), n = Math.min(28, total), cols = [];
+    list.forEach((f) => { const k = total ? Math.round(val(f) / total * n) : 0; for (let i = 0; i < k; i++) cols.push(hwColor(f)); });
+    while (cols.length < n && list.length) cols.push(hwColor(list[0]));
+    cols.length = n;
     const pts = [], rows = [7, 6, 5, 4, 3, 2, 1];
-    let left = Math.min(n, 28), y = 0;
+    let left = n, y = 0, c = 0;
     for (const r of rows) {
       if (left <= 0) break;
       const m = Math.min(r, left);
-      for (let i = 0; i < m; i++) pts.push([(i - (m - 1) / 2) * 9.5, y]);
+      for (let i = 0; i < m; i++) pts.push([(i - (m - 1) / 2) * 9.5, y, cols[c++]]);
       left -= m; y -= 8.5;
     }
     return pts;
   };
-  const pans = [{side: -1, name: S.a, n: A}, {side: 1, name: S.b, n: B}].map((p) => {
+  const pans = [{side: -1, list: S.a, n: A}, {side: 1, list: S.b, n: B}].map((p) => {
     const g = svg.append('g');
     const s1 = g.append('line').style('stroke', 'rgba(241,236,255,.45)').style('stroke-width', 1.5);
     const s2 = g.append('line').style('stroke', 'rgba(241,236,255,.45)').style('stroke-width', 1.5);
-    const dish = g.append('path').attr('d', 'M-46,0 Q0,30 46,0 Z').style('fill', '#4a3a66');
-    const dots = g.append('g');
-    pile(p.n).forEach(([x, y]) => dots.append('circle').attr('cx', x).attr('cy', y - 5).attr('r', 4.2).style('fill', hwColor(p.name)));
-    const num = g.append('text').attr('class', 'bl-num').attr('text-anchor', 'middle').attr('y', 52).style('fill', hwColor(p.name)).style('filter', hwGlow(hwColor(p.name))).text(hwFmt.format(p.n));
-    const lab = g.append('text').attr('class', 'bl-lab').attr('text-anchor', 'middle').attr('y', 72).text(p.name);
-    return {...p, g, s1, s2, num, lab, dish};
+    g.append('path').attr('d', 'M-46,0 Q0,30 46,0 Z').style('fill', '#4a3a66');
+    if (S.shown) {
+      pile(p.list).forEach(([x, y, col]) => g.append('circle').attr('cx', x).attr('cy', y - 5).attr('r', 4.2).style('fill', col));
+    } else {
+      g.append('text').attr('class', 'bl-mystery').attr('text-anchor', 'middle').attr('y', -6).text('?');
+    }
+    const num = g.append('text').attr('class', 'bl-num').attr('text-anchor', 'middle').attr('y', 50).text(S.shown ? '0' : '');
+    return {...p, g, s1, s2, num};
   });
   const place = (deg) => {
     const t = deg * Math.PI / 180;
     const ex = (s) => cx + s * L * Math.cos(t), ey = (s) => py + s * L * Math.sin(t);
     beam.attr('x1', ex(-1)).attr('y1', ey(-1)).attr('x2', ex(1)).attr('y2', ey(1));
     pans.forEach((p) => {
-      const x = ex(p.side), y = ey(p.side) + 74;
-      p.g.attr('transform', `translate(${x},${y})`);
+      p.g.attr('transform', `translate(${ex(p.side)},${ey(p.side) + 74})`);
       p.s1.attr('x1', 0).attr('y1', -74).attr('x2', -42).attr('y2', 0);
       p.s2.attr('x1', 0).attr('y1', -74).attr('x2', 42).attr('y2', 0);
     });
   };
-  const from = mode === 'change' ? S.tilt : 0;
-  if (mode === 'static') { place(target); S.tilt = target; }
-  else if (mode === 'zero') { place(0); S.tilt = 0; }
-  else {
-    place(from);
-    const i = d3.interpolateNumber(from, target);
-    svg.transition().delay(mode === 'change' ? 0 : 250).duration(1700).ease(d3.easeElasticOut.amplitude(1).period(0.45))
-      .tween('tilt', () => (u) => { S.tilt = i(u); place(S.tilt); })
-      .on('end', () => { S.tilt = target; });
-  }
 
-  const msg = mk('p', 'bl-msg');
-  const strong = (txt, col) => { const x = mk('b'); x.textContent = txt; if (col) x.style.color = col; return x; };
-  if (A === B) {
-    msg.append('Égalité! Il y a ', strong(hwFmt.format(A)), ' bonbons des deux côtés.');
+  /* 3. La prédiction */
+  const guessBox = mk('div', 'bl-guess');
+  const gq = mk('p', 'bl-q');
+  gq.textContent = S.shown ? 'Ta prédiction :' : (ready ? 'Selon toi, le côté gauche est…' : 'Coche au moins une famille de chaque côté.');
+  const sym = mk('div', 'bl-syms');
+  const lg = mk('span', 'bl-tot'); lg.textContent = S.shown ? hwFmt.format(A) : 'Gauche';
+  const rg = mk('span', 'bl-tot'); rg.textContent = S.shown ? hwFmt.format(B) : 'Droite';
+  sym.append(lg);
+  [['<', 'plus petit'], ['=', 'égal'], ['>', 'plus grand']].forEach(([s, txt]) => {
+    const bt = mk('button', 'bl-sym');
+    bt.type = 'button';
+    const big = mk('span', 'sy'); big.textContent = s;
+    const small = mk('span', 'tx'); small.textContent = txt;
+    bt.append(big, small);
+    bt.setAttribute('aria-label', 'Le côté gauche est ' + txt + (s === '=' ? ' au' : ' que le') + ' côté droit');
+    bt.setAttribute('aria-pressed', S.guess === s ? 'true' : 'false');
+    bt.disabled = !ready || S.shown;
+    if (S.shown && s === truth) bt.classList.add('truth');
+    bt.addEventListener('click', () => { S.guess = s; hwBalance(el, cats, 'change'); });
+    sym.append(bt);
+  });
+  sym.append(rg);
+  guessBox.append(gq, sym);
+
+  const go = mk('button', 'bl-go');
+  go.type = 'button';
+  go.textContent = 'Peser!';
+  go.disabled = !ready || !S.guess;
+  go.hidden = S.shown;
+
+  const res = mk('div', 'bl-res');
+  res.setAttribute('aria-live', 'polite');
+
+  const weigh = () => {
+    if (!ready || !S.guess || S.shown) {
+      if (ready && !S.guess && !S.shown) { gq.classList.remove('tn-no'); void gq.offsetWidth; gq.classList.add('tn-no'); }
+      return;
+    }
+    S.shown = true;
+    hwBalance(el, cats, 'weigh');
+  };
+  go.addEventListener('click', weigh);
+  svg.on('click', weigh).on('keydown', (ev) => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); weigh(); } });
+
+  el.append(guessBox, go, res);
+
+  if (!S.shown) { place(0); return; }
+
+  /* 4. Le résultat */
+  const eqLine = (list, total) => {
+    const line = mk('div', 'bl-eq');
+    list.forEach((n, i) => {
+      if (i) line.append(' + ');
+      const x = mk('b'); x.textContent = hwFmt.format(val(n)); x.style.color = hwColor(n);
+      const nm = mk('span', 'nm'); nm.textContent = ' ' + n;
+      line.append(x, nm);
+    });
+    if (list.length > 1) { const t = mk('b'); t.textContent = hwFmt.format(total); line.append(' = ', t); }
+    return line;
+  };
+  const left = mk('div', 'bl-col'); const lh = mk('span', 'bl-h'); lh.textContent = 'Gauche'; left.append(lh, eqLine(S.a, A));
+  const right = mk('div', 'bl-col'); const rh = mk('span', 'bl-h'); rh.textContent = 'Droite'; right.append(rh, eqLine(S.b, B));
+  const stmt = mk('div', 'bl-stmt');
+  const sa = mk('b'); sa.textContent = hwFmt.format(A);
+  const ss = mk('span', 'op'); ss.textContent = truth;
+  const sb = mk('b'); sb.textContent = hwFmt.format(B);
+  stmt.append(sa, ss, sb);
+  const verdict = mk('p', 'bl-verdict');
+  if (S.guess === truth) { verdict.textContent = 'Bravo! Ta prédiction était juste!'; verdict.classList.add('win'); }
+  else verdict.textContent = 'Oups! Tu avais choisi « ' + S.guess + ' », mais c’est « ' + truth + ' ».';
+  const again = mk('button', 'bl-again'); again.type = 'button'; again.textContent = 'Rejouer';
+  again.addEventListener('click', reset);
+  res.append(left, right, stmt, verdict, again);
+
+  if (mode === 'weigh' && hwMotion) {
+    res.style.opacity = '0';
+    place(0);
+    const i = d3.interpolateNumber(0, target);
+    svg.transition().delay(150).duration(1700).ease(d3.easeElasticOut.amplitude(1).period(0.45))
+      .tween('tilt', () => (u) => { S.tilt = i(u); place(S.tilt); });
+    pans.forEach((p) => {
+      d3.select(p.num.node()).transition().delay(150).duration(1100).ease(d3.easeCubicOut)
+        .tween('text', () => { const k = d3.interpolateNumber(0, p.n); return (u) => { p.num.text(hwFmt.format(Math.round(k(u)))); }; });
+    });
+    setTimeout(() => { res.style.transition = 'opacity .4s'; res.style.opacity = '1'; verdict.classList.add('gs-pop'); }, 1300);
   } else {
-    const big = A > B ? S.a : S.b, small = A > B ? S.b : S.a, d = Math.abs(A - B);
-    msg.append('La balance penche du côté ', strong(big, hwColor(big)), '. Il y a ', strong(hwFmt.format(d)), d > 1 ? ' bonbons de plus que dans ' : ' bonbon de plus que dans ', strong(small, hwColor(small)), '.');
+    place(target);
+    pans.forEach((p) => p.num.text(hwFmt.format(p.n)));
   }
-  el.append(msg);
+  S.tilt = target;
 };
 
 /* ---------- Devine combien! ---------- */
@@ -2192,7 +2320,7 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(cbGo); els
 <script>
 /* Bouton « Mettre à jour » : compare la version de cette page à version.json sur GitHub. */
 (function () {
-  const APP_VERSION = '2026.11.01-3';
+  const APP_VERSION = '2026.11.01-4';
   const bar = document.querySelector('.hw-update');
   const msg = bar.querySelector('.msg');
   const btn = bar.querySelector('button');
