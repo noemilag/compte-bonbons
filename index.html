@@ -421,6 +421,8 @@ button.tn-rod:focus-visible,button.tn-units:focus-visible{outline:2px solid var(
 .tg-build.over{box-shadow:inset 0 0 0 2px var(--pink),0 0 14px rgba(255,79,163,.5)}
 .tg-rods{min-height:0}
 .tg-rods:empty{display:none}
+.hw-mouse{display:none}
+@media (hover: hover) and (pointer: fine){ .hw-touch{display:none} .hw-mouse{display:inline} }
 .hw-chart text.mnum{font-weight:800;font-size:15px;fill:#1a1020}
 .hw-chart text.tname{fill:#efeaff;font-weight:700;font-size:var(--cds-font-size-caption)}
 .hw-chart text.tnum{font-family:var(--chunky);font-weight:900;font-size:1.9rem;font-variant-numeric:tabular-nums}
@@ -864,7 +866,7 @@ body.cb-has-installbar .hw-update{bottom:calc(92px + env(safe-area-inset-bottom)
   <section class="hw-grid hw-tens-wrap">
     <div class="hw-card hw-reveal" id="jeu-dizaines">
       <h2>Le jeu des dizaines</h2>
-      <p class="note">Choisis un tas, estime-le à l’œil, glisse ton doigt pour faire des paquets de 10, puis écris ton nombre!</p>
+      <p class="note">Choisis un tas, estime-le à l’œil, glisse <span class="hw-touch">ton doigt</span><span class="hw-mouse">ta souris</span> pour faire des paquets de 10, puis écris ton nombre!</p>
       <div class="hw-tgame dash-skeleton" data-draw="tensgame" data-source="categories bonbons"></div>
     </div>
   </section>
@@ -2020,6 +2022,7 @@ dash.draw('guess', (el) => {
 
 /* ---------- Le jeu des dizaines : estimer, grouper par 10, écrire le nombre ---------- */
 window.hwTensGame = (el, piles) => {
+  const MOUSE = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
   el.replaceChildren();
   const mk = (tag, cls, txt) => { const n = document.createElement(tag); if (cls) n.className = cls; if (txt != null) n.textContent = txt; return n; };
   if (!piles.length) {
@@ -2093,7 +2096,9 @@ window.hwTensGame = (el, piles) => {
     /* Étape 2 : faire des paquets de 10, en glissant le doigt sur les bonbons */
     const s2 = mk('div', 'tg-step'); s2.hidden = true;
     s2.append(mk('h4', 'tg-h', 'Étape 2 · Fais des paquets de 10'));
-    s2.append(mk('p', 'tg-p', 'Glisse ton doigt sur 10 bonbons : à 10, ça fait un paquet! Si tu en prends trop, touche ou glisse sur les bonbons allumés pour les enlever.'));
+    s2.append(mk('p', 'tg-p', MOUSE
+      ? 'Glisse ta souris sur 10 bonbons en tenant le bouton enfoncé : à 10, ça fait un paquet! Si tu en prends trop, clique ou glisse sur les bonbons allumés pour les enlever.'
+      : 'Glisse ton doigt sur 10 bonbons : à 10, ça fait un paquet! Si tu en prends trop, touche ou glisse sur les bonbons allumés pour les enlever.'));
     const selRow = mk('div', 'tg-selrow');
     selRow.style.setProperty('--c', pile.color);
     const build = mk('span', 'tn-rod tg-build');
@@ -2163,7 +2168,7 @@ window.hwTensGame = (el, piles) => {
     const settle = () => {
       const k = selected.size;
       if (k === 10) makeRod([...selected]);
-      else if (k > 10) msg2.textContent = 'Tu en as ' + k + ' : enlèves-en ' + (k - 10) + ' en les touchant.';
+      else if (k > 10) msg2.textContent = 'Tu en as ' + k + ' : enlèves-en ' + (k - 10) + (MOUSE ? ' en cliquant dessus.' : ' en les touchant.');
       else if (k > 0) msg2.textContent = 'Encore ' + (10 - k) + ' pour faire 10!';
     };
     /* Swipe: every candy under the finger joins (or leaves) the selection. */
@@ -2922,7 +2927,7 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(cbGo); els
 <script>
 /* Bouton « Mettre à jour » : compare la version de cette page à version.json sur GitHub. */
 (function () {
-  const APP_VERSION = '2026.11.01-15';
+  const APP_VERSION = '2026.11.01-16';
   const bar = document.querySelector('.hw-update');
   const msg = bar.querySelector('.msg');
   const btn = bar.querySelector('button');
