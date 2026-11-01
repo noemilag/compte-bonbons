@@ -220,6 +220,67 @@ html body #dash-root .hw{padding-top:calc(var(--cds-pad-xl) + env(safe-area-inse
   .tn-pop{animation:tn-pop .45s var(--cds-ease-out) both;animation-delay:var(--d,0ms)}
 }
 @keyframes tn-pop{from{opacity:0;transform:translateY(14px) scale(.6)}to{opacity:1;transform:none}}
+/* Dizaines à manipuler */
+.tn-hint{margin:0;text-align:center;font-weight:600;font-size:var(--cds-font-size-body);color:var(--candle)}
+button.tn-rod,button.tn-units{appearance:none;-webkit-appearance:none;border:0;margin:0;font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+button.tn-rod{transition:transform .15s}
+button.tn-rod:hover{transform:translateY(-3px)}
+button.tn-rod:active{transform:scale(.92)}
+button.tn-units{background:transparent;padding:4px;border-radius:8px;min-width:22px;min-height:22px;box-shadow:inset 0 0 0 1.5px transparent}
+button.tn-units:hover{box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--c) 45%,transparent)}
+button.tn-units:empty{box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.15);background:repeating-linear-gradient(45deg,transparent 0 4px,rgba(255,255,255,.05) 4px 8px)}
+button.tn-rod:focus-visible,button.tn-units:focus-visible{outline:2px solid var(--candle);outline-offset:2px}
+.tn-msg{margin:0;min-height:1.3em;font-weight:700;font-size:var(--cds-font-size-body);color:var(--c)}
+.tn-msg.bad{color:var(--ink-dim)}
+@media (prefers-reduced-motion: no-preference){
+  .tn-say{animation:tn-say .35s var(--cds-ease-out)}
+  .tn-no{animation:tn-no .4s ease-in-out}
+}
+@keyframes tn-say{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes tn-no{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+/* La balance */
+.hw-balance{display:flex;flex-direction:column;gap:.6rem;min-height:14rem}
+.bl-pick{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:.4rem}
+.bl-side{width:100%;text-align:center;font-size:var(--cds-font-size-caption);font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:var(--purple)}
+.bl-pick button{appearance:none;border:0;cursor:pointer;font:inherit;font-weight:700;font-size:.9rem;padding:.4em .85em;border-radius:999px;background:rgba(10,4,20,.6);color:var(--ink);box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--c) 60%,transparent)}
+.bl-pick button[aria-pressed=true]{background:var(--c);color:#14081f;box-shadow:0 0 14px color-mix(in srgb,var(--c) 55%,transparent)}
+.bl-pick button[disabled]{opacity:.3;cursor:default}
+.hw-balance svg{display:block;overflow:visible;margin-top:.4rem}
+.hw-balance text.bl-num{font-family:var(--chunky);font-weight:900;font-size:1.6rem}
+.hw-balance text.bl-lab{fill:var(--ink);font-family:var(--round);font-weight:700;font-size:.9rem}
+.bl-msg{margin:0;text-align:center;font-size:var(--cds-font-size-heading);font-weight:600;line-height:1.5;color:var(--ink)}
+.hw .bl-msg b{font-family:var(--chunky);font-weight:900;color:var(--candle)}
+
+/* Devine combien! */
+.hw-guess{display:flex;flex-direction:column;align-items:center;gap:.5rem;min-height:12rem;text-align:center}
+.gs-q{margin:0;font-size:calc(var(--cds-font-size-heading) * 1.1);font-weight:700;color:var(--ink);max-width:26rem}
+.gs-big{font-family:var(--chunky);font-weight:900;font-size:3.4rem;line-height:1;color:var(--pink);text-shadow:0 4px 0 #7a1046,0 0 22px rgba(255,79,163,.5);font-variant-numeric:tabular-nums}
+.gs-lab{font-size:var(--cds-font-size-caption);font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-dim)}
+.gs-track{position:relative;width:100%;max-width:26rem;margin-top:2.2rem}
+.gs-range{width:100%;-webkit-appearance:none;appearance:none;height:14px;border-radius:999px;background:linear-gradient(90deg,#3d1c66,#ff4fa3);outline:none;margin:0}
+.gs-range::-webkit-slider-thumb{-webkit-appearance:none;width:34px;height:34px;border-radius:50%;background:#fff;border:5px solid var(--pink);box-shadow:0 0 14px rgba(255,79,163,.7);cursor:pointer}
+.gs-range::-moz-range-thumb{width:26px;height:26px;border-radius:50%;background:#fff;border:5px solid var(--pink);box-shadow:0 0 14px rgba(255,79,163,.7);cursor:pointer}
+.gs-range:disabled{opacity:.6}
+.gs-mark{position:absolute;top:-30px;transform:translateX(-50%);padding:.15em .5em;border-radius:6px;background:var(--slime);color:#0b2b04;font-family:var(--chunky);font-size:.85rem;font-weight:900}
+.gs-mark::before{content:'Réponse'}
+.gs-mark::after{content:'';position:absolute;left:50%;bottom:-6px;transform:translateX(-50%);border:6px solid transparent;border-bottom:0;border-top-color:var(--slime)}
+.gs-mark[hidden]{display:none}
+.gs-scale{display:flex;justify-content:space-between;width:100%;max-width:26rem;font-size:var(--cds-font-size-caption);color:var(--ink-dim);font-variant-numeric:tabular-nums}
+.gs-row{display:flex;align-items:center;gap:.8rem;margin-top:.4rem}
+.gs-step{appearance:none;border:0;cursor:pointer;width:2.8rem;height:2.8rem;border-radius:50%;font-family:var(--chunky);font-size:1.5rem;background:rgba(255,255,255,.08);color:var(--ink);touch-action:manipulation}
+.gs-step[hidden]{display:none}
+.gs-go,.gs-next{appearance:none;border:0;cursor:pointer;font-family:var(--chunky);font-weight:900;font-size:1.15rem;letter-spacing:.03em;padding:.65em 1.5em;border-radius:999px;background:var(--pink);color:#2a0516;box-shadow:0 4px 0 #8a1450,0 0 20px rgba(255,79,163,.45)}
+.gs-go:active,.gs-next:active{transform:translateY(2px);box-shadow:0 2px 0 #8a1450}
+.gs-go[hidden],.gs-next[hidden]{display:none}
+.gs-next{background:var(--purple);color:#1a0730;box-shadow:0 4px 0 #4a1d80,0 0 20px rgba(180,108,255,.45);margin-top:.3rem}
+.gs-res{display:flex;flex-direction:column;align-items:center;gap:.3rem}
+.gs-res[hidden]{display:none}
+.gs-ans{font-weight:700;font-size:var(--cds-font-size-heading);color:var(--ink)}
+.hw .gs-ans b{font-family:var(--chunky);font-weight:900;font-size:2rem;color:var(--slime);text-shadow:0 0 14px rgba(124,255,79,.5);margin-left:.2em}
+.gs-verdict{margin:0;font-weight:700;font-size:var(--cds-font-size-heading);color:var(--ink-dim);transition:opacity .3s}
+.gs-verdict.win{color:var(--candle)}
+@media (prefers-reduced-motion: no-preference){ .gs-pop{animation:hw-boo .6s var(--cds-ease-out)} }
 .hw-chart text.mnum{font-weight:800;font-size:15px;fill:#1a1020}
 .hw-chart text.tname{fill:#efeaff;font-weight:700;font-size:var(--cds-font-size-caption)}
 .hw-chart text.tnum{font-family:var(--chunky);font-weight:900;font-size:1.9rem;font-variant-numeric:tabular-nums}
@@ -570,6 +631,13 @@ html body #dash-root .hw{padding-top:calc(var(--cds-pad-xl) + env(safe-area-inse
       <span class="note">Les « gros » du sac</span>
     </div>
   </section>
+  <section class="hw-grid hw-tens-wrap">
+    <div class="hw-card hw-reveal" id="devine">
+      <h2>Devine combien!</h2>
+      <p class="note">Fais ta prédiction avec le curseur, puis vérifie si tu étais proche.</p>
+      <div class="hw-guess dash-skeleton" data-draw="guess" data-source="categories bonbons"></div>
+    </div>
+  </section>
 
   <div class="hw-chapter hw-reveal"><svg class="ico" viewBox="0 0 48 48" aria-hidden="true"><path d="M14 11 H8 Q8 23 17 24" stroke="#e0a800" stroke-width="3.5" fill="none" stroke-linecap="round"/><path d="M34 11 H40 Q40 23 31 24" stroke="#e0a800" stroke-width="3.5" fill="none" stroke-linecap="round"/><path d="M13 6 H35 V17 Q35 31 24 31 Q13 31 13 17 Z" fill="#ffd60a"/><path d="M18 10 V18 Q18 24 22 26" stroke="#fff3b0" stroke-width="2.5" fill="none" stroke-linecap="round" opacity=".7"/><rect x="21" y="31" width="6" height="5" fill="#e0a800"/><rect x="14" y="36" width="20" height="6" rx="2" fill="#a86f00"/></svg><div><span class="k">Chapitre 2</span><h3>Qui a gagné la nuit?</h3></div></div>
   <section class="hw-grid">
@@ -604,6 +672,13 @@ html body #dash-root .hw{padding-top:calc(var(--cds-pad-xl) + env(safe-area-inse
       <h2>Les bonbons en dizaines</h2>
       <p class="note">Chaque bâton contient 10 bonbons : c’est une dizaine. Les bonbons tout seuls, ce sont les unités.</p>
       <div class="hw-tens dash-skeleton" data-draw="tens" data-source="categories"></div>
+    </div>
+  </section>
+  <section class="hw-grid hw-tens-wrap">
+    <div class="hw-card hw-reveal" id="balance">
+      <h2>La balance</h2>
+      <p class="note">Choisis une famille pour chaque côté : la balance penche du côté qui a le plus de bonbons.</p>
+      <div class="hw-balance dash-skeleton" data-draw="balance" data-source="categories"></div>
     </div>
   </section>
 
@@ -963,7 +1038,7 @@ deltaDraw('d-gros', 'gros', (v) => hwFmt.format(v));
 
 /* Year picker: one button per year in the data. */
 window.HW_DRAWS = ['years', 'annee-inline', 'total', 'total-inline', 'heures-inline', 'minute', 'champion', 'champion-qte', 'heure', 'sortes', 'ratio', 'sacs', 'gros',
-  'd-total', 'd-heure', 'd-sortes', 'd-ratio', 'd-gros', 'podium', 'bocal', 'chart-cat', 'tens', 'chart-top', 'chart-choco', 'chart-chips', 'chart-special', 'table-body', 'cmp-total', 'cmp-cat'];
+  'd-total', 'd-heure', 'd-sortes', 'd-ratio', 'd-gros', 'podium', 'bocal', 'chart-cat', 'tens', 'balance', 'guess', 'chart-top', 'chart-choco', 'chart-chips', 'chart-special', 'table-body', 'cmp-total', 'cmp-cat'];
 window.hwSetYear = (y) => {
   if (y === hwYear) return;
   hwYear = y;
@@ -1277,46 +1352,87 @@ window.hwTens = (el, cats, mode) => {
   const mk = (tag, cls) => { const n = document.createElement(tag); if (cls) n.className = cls; return n; };
   const legend = mk('div', 'tn-legend');
   const lr = mk('span'); const rodL = mk('span', 'tn-rod'); for (let i = 0; i < 10; i++) rodL.append(mk('span', 'tn-dot'));
-  lr.append(rodL, ' = 1 dizaine (10 bonbons)');
-  const lu = mk('span'); lu.append(mk('span', 'tn-dot'), ' = 1 unité');
-  lu.firstChild.style.background = 'var(--ink-dim)';
-  rodL.querySelectorAll('.tn-dot').forEach((d) => { d.style.background = 'var(--ink-dim)'; });
   rodL.style.setProperty('--c', '#b3a9d6');
+  lr.append(rodL, ' = 1 dizaine (10 bonbons)');
+  const lu = mk('span'); const ld = mk('span', 'tn-dot'); ld.style.background = '#b3a9d6'; lu.append(ld, ' = 1 unité');
   legend.append(lr, lu);
-  el.append(legend);
+  const hint = mk('p', 'tn-hint');
+  hint.textContent = 'À toi de jouer : touche un bâton pour le casser en 10 bonbons. Touche les bonbons seuls pour en regrouper 10 dans un bâton.';
+  el.append(legend, hint);
   let k = 0;
   cats.forEach((c) => {
-    const tens = Math.floor(c.quantite / 10), units = c.quantite % 10;
+    const st = {tens: Math.floor(c.quantite / 10), units: c.quantite % 10};
     const fam = mk('div', 'tn-fam');
     fam.style.setProperty('--c', hwColor(c.categorie));
     const head = mk('div', 'tn-head');
     const nm = mk('span', 'tn-name'); nm.textContent = c.categorie;
     const eq = mk('span', 'tn-eq');
-    const b = (v) => { const x = mk('b'); x.textContent = hwFmt.format(v); return x; };
-    eq.append(b(c.quantite), ' = ');
-    if (tens) eq.append(b(tens), tens > 1 ? ' dizaines' : ' dizaine');
-    if (tens && units) eq.append(' + ');
-    if (units || !tens) eq.append(b(units), units > 1 ? ' unités' : ' unité');
     head.append(nm, eq);
     const blocks = mk('div', 'tn-blocks');
-    blocks.setAttribute('role', 'img');
-    blocks.setAttribute('aria-label', c.categorie + ' : ' + tens + ' dizaines et ' + units + ' unités');
-    for (let t = 0; t < tens; t++) {
-      const rod = mk('span', 'tn-rod');
-      for (let i = 0; i < 10; i++) rod.append(mk('span', 'tn-dot'));
-      if (mode === 'animate') { rod.classList.add('tn-pop'); rod.style.setProperty('--d', (k++ * 45) + 'ms'); }
-      blocks.append(rod);
-    }
-    if (units) {
-      const u = mk('span', 'tn-units');
-      for (let i = 0; i < units; i++) {
-        const d = mk('span', 'tn-dot');
-        if (mode === 'animate') { d.classList.add('tn-pop'); d.style.setProperty('--d', (k++ * 45) + 'ms'); }
-        u.append(d);
+    const msg = mk('p', 'tn-msg');
+    msg.setAttribute('aria-live', 'polite');
+    const b = (v) => { const x = mk('b'); x.textContent = hwFmt.format(v); return x; };
+    const drawEq = () => {
+      eq.replaceChildren(b(c.quantite), ' = ');
+      if (st.tens) eq.append(b(st.tens), st.tens > 1 ? ' dizaines' : ' dizaine');
+      if (st.tens && st.units) eq.append(' + ');
+      if (st.units || !st.tens) eq.append(b(st.units), st.units > 1 ? ' unités' : ' unité');
+      blocks.setAttribute('aria-label', c.categorie + ' : ' + st.tens + ' dizaines et ' + st.units + ' unités');
+    };
+    let msgT = null;
+    const say = (text, bad) => {
+      msg.textContent = text;
+      msg.classList.toggle('bad', !!bad);
+      msg.classList.remove('tn-say'); void msg.offsetWidth; msg.classList.add('tn-say');
+      clearTimeout(msgT);
+      msgT = setTimeout(() => { msg.textContent = ''; }, 3200);
+    };
+    const units = mk('button', 'tn-units');
+    units.type = 'button';
+    units.setAttribute('aria-label', 'Regrouper 10 unités de ' + c.categorie + ' en une dizaine');
+    const addUnit = (delay) => {
+      const d = mk('span', 'tn-dot');
+      if (delay != null) { d.classList.add('tn-pop'); d.style.setProperty('--d', delay + 'ms'); }
+      units.append(d);
+    };
+    const makeRod = (delay) => {
+      const r = mk('button', 'tn-rod');
+      r.type = 'button';
+      r.setAttribute('aria-label', 'Casser une dizaine de ' + c.categorie + ' en 10 unités');
+      for (let i = 0; i < 10; i++) r.append(mk('span', 'tn-dot'));
+      if (delay != null) { r.classList.add('tn-pop'); r.style.setProperty('--d', delay + 'ms'); }
+      r.addEventListener('click', () => {
+        r.remove();
+        st.tens -= 1;
+        st.units += 10;
+        for (let i = 0; i < 10; i++) addUnit(i * 35);
+        drawEq();
+        say('Crac! 1 dizaine = 10 unités. Il y a toujours ' + hwFmt.format(c.quantite) + ' bonbons.');
+      });
+      return r;
+    };
+    units.addEventListener('click', () => {
+      if (st.units >= 10) {
+        const dots = [...units.querySelectorAll('.tn-dot')].slice(-10);
+        dots.forEach((d) => d.remove());
+        st.units -= 10;
+        st.tens += 1;
+        blocks.insertBefore(makeRod(0), units);
+        drawEq();
+        say('Hop! 10 unités = 1 dizaine.');
+      } else {
+        units.classList.remove('tn-no'); void units.offsetWidth; units.classList.add('tn-no');
+        const missing = 10 - st.units;
+        say('Il faut 10 unités pour faire une dizaine. Il en manque ' + missing + '.', true);
       }
-      blocks.append(u);
-    }
-    fam.append(head, blocks);
+    });
+    const anim = mode === 'animate';
+    for (let t = 0; t < st.tens; t++) blocks.append(makeRod(anim ? (k++ * 45) : null));
+    for (let u = 0; u < st.units; u++) addUnit(anim ? (k++ * 45) : null);
+    blocks.append(units);
+    blocks.setAttribute('role', 'group');
+    drawEq();
+    fam.append(head, blocks, msg);
     el.append(fam);
   });
 };
@@ -1328,6 +1444,194 @@ dash.draw('tens', (el) => {
   hwSelYear(t.data);
   const cats = hwOfYear(d.data);
   hwReveal('tens', el, (mode) => hwTens(el, cats, mode));
+});
+
+/* ---------- La balance : deux familles, la plus lourde fait pencher ---------- */
+window.hwBalState = {a: null, b: null, tilt: 0};
+window.hwBalance = (el, cats, mode) => {
+  el.replaceChildren();
+  const mk = (tag, cls) => { const n = document.createElement(tag); if (cls) n.className = cls; return n; };
+  if (cats.length < 2) {
+    const p = mk('p', 'bl-msg'); p.textContent = 'Il faut au moins deux familles de bonbons pour jouer avec la balance.';
+    el.append(p);
+    return;
+  }
+  const names = cats.map((c) => c.categorie);
+  const S = hwBalState;
+  if (!names.includes(S.a)) S.a = names[0];
+  if (!names.includes(S.b) || S.b === S.a) S.b = names.find((n) => n !== S.a);
+  const val = (n) => (cats.find((c) => c.categorie === n) || {quantite: 0}).quantite;
+  const pick = (side) => {
+    const row = mk('div', 'bl-pick');
+    const lab = mk('span', 'bl-side'); lab.textContent = side === 'a' ? 'Gauche' : 'Droite';
+    row.append(lab);
+    const other = side === 'a' ? 'b' : 'a';
+    names.forEach((n) => {
+      const bt = mk('button');
+      bt.type = 'button';
+      bt.textContent = n;
+      bt.style.setProperty('--c', hwColor(n));
+      bt.setAttribute('aria-pressed', S[side] === n ? 'true' : 'false');
+      bt.disabled = S[other] === n;
+      bt.addEventListener('click', () => { S[side] = n; hwBalance(el, cats, 'change'); });
+      row.append(bt);
+    });
+    return row;
+  };
+  el.append(pick('a'), pick('b'));
+
+  const A = val(S.a), B = val(S.b);
+  const target = A === B ? 0 : Math.max(-16, Math.min(16, (B - A) / Math.max(A, B) * 20));
+  const W = Math.max(260, Math.floor(el.clientWidth || 320));
+  const H = 270, cx = W / 2, py = 58;
+  const L = Math.min(W * 0.8, 340) / 2;
+  const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img')
+    .attr('aria-label', S.a + ' : ' + A + ' bonbons, ' + S.b + ' : ' + B + ' bonbons');
+  svg.append('path').attr('d', `M${cx},${py} L${cx - 34},${H - 26} L${cx + 34},${H - 26} Z`).style('fill', '#3a2a55');
+  svg.append('rect').attr('x', cx - 70).attr('y', H - 28).attr('width', 140).attr('height', 12).attr('rx', 6).style('fill', '#2a1d40');
+  const beam = svg.append('line').style('stroke', '#b46cff').style('stroke-width', 8).style('stroke-linecap', 'round').style('filter', hwGlow('#b46cff'));
+  svg.append('circle').attr('cx', cx).attr('cy', py).attr('r', 9).style('fill', '#ffd60a').style('filter', hwGlow('#ffd60a'));
+
+  const pile = (n) => {
+    const pts = [], rows = [7, 6, 5, 4, 3, 2, 1];
+    let left = Math.min(n, 28), y = 0;
+    for (const r of rows) {
+      if (left <= 0) break;
+      const m = Math.min(r, left);
+      for (let i = 0; i < m; i++) pts.push([(i - (m - 1) / 2) * 9.5, y]);
+      left -= m; y -= 8.5;
+    }
+    return pts;
+  };
+  const pans = [{side: -1, name: S.a, n: A}, {side: 1, name: S.b, n: B}].map((p) => {
+    const g = svg.append('g');
+    const s1 = g.append('line').style('stroke', 'rgba(241,236,255,.45)').style('stroke-width', 1.5);
+    const s2 = g.append('line').style('stroke', 'rgba(241,236,255,.45)').style('stroke-width', 1.5);
+    const dish = g.append('path').attr('d', 'M-46,0 Q0,30 46,0 Z').style('fill', '#4a3a66');
+    const dots = g.append('g');
+    pile(p.n).forEach(([x, y]) => dots.append('circle').attr('cx', x).attr('cy', y - 5).attr('r', 4.2).style('fill', hwColor(p.name)));
+    const num = g.append('text').attr('class', 'bl-num').attr('text-anchor', 'middle').attr('y', 52).style('fill', hwColor(p.name)).style('filter', hwGlow(hwColor(p.name))).text(hwFmt.format(p.n));
+    const lab = g.append('text').attr('class', 'bl-lab').attr('text-anchor', 'middle').attr('y', 72).text(p.name);
+    return {...p, g, s1, s2, num, lab, dish};
+  });
+  const place = (deg) => {
+    const t = deg * Math.PI / 180;
+    const ex = (s) => cx + s * L * Math.cos(t), ey = (s) => py + s * L * Math.sin(t);
+    beam.attr('x1', ex(-1)).attr('y1', ey(-1)).attr('x2', ex(1)).attr('y2', ey(1));
+    pans.forEach((p) => {
+      const x = ex(p.side), y = ey(p.side) + 74;
+      p.g.attr('transform', `translate(${x},${y})`);
+      p.s1.attr('x1', 0).attr('y1', -74).attr('x2', -42).attr('y2', 0);
+      p.s2.attr('x1', 0).attr('y1', -74).attr('x2', 42).attr('y2', 0);
+    });
+  };
+  const from = mode === 'change' ? S.tilt : 0;
+  if (mode === 'static') { place(target); S.tilt = target; }
+  else if (mode === 'zero') { place(0); S.tilt = 0; }
+  else {
+    place(from);
+    const i = d3.interpolateNumber(from, target);
+    svg.transition().delay(mode === 'change' ? 0 : 250).duration(1700).ease(d3.easeElasticOut.amplitude(1).period(0.45))
+      .tween('tilt', () => (u) => { S.tilt = i(u); place(S.tilt); })
+      .on('end', () => { S.tilt = target; });
+  }
+
+  const msg = mk('p', 'bl-msg');
+  const strong = (txt, col) => { const x = mk('b'); x.textContent = txt; if (col) x.style.color = col; return x; };
+  if (A === B) {
+    msg.append('Égalité! Il y a ', strong(hwFmt.format(A)), ' bonbons des deux côtés.');
+  } else {
+    const big = A > B ? S.a : S.b, small = A > B ? S.b : S.a, d = Math.abs(A - B);
+    msg.append('La balance penche du côté ', strong(big, hwColor(big)), '. Il y a ', strong(hwFmt.format(d)), d > 1 ? ' bonbons de plus que dans ' : ' bonbon de plus que dans ', strong(small, hwColor(small)), '.');
+  }
+  el.append(msg);
+};
+
+/* ---------- Devine combien! ---------- */
+window.hwGuessState = {i: 0};
+window.hwGuess = (el, qs) => {
+  el.replaceChildren();
+  const mk = (tag, cls) => { const n = document.createElement(tag); if (cls) n.className = cls; return n; };
+  if (!qs.length) return;
+  const q = qs[hwGuessState.i % qs.length];
+  const max = Math.max(20, Math.ceil(q.answer * 2.5 / 10) * 10);
+  let guess = Math.round(max / 2);
+  const qEl = mk('p', 'gs-q'); qEl.textContent = q.text;
+  const big = mk('div', 'gs-big'); big.textContent = hwFmt.format(guess);
+  const lab = mk('div', 'gs-lab'); lab.textContent = 'ta prédiction';
+  const track = mk('div', 'gs-track');
+  const range = mk('input', 'gs-range');
+  range.type = 'range'; range.min = '0'; range.max = String(max); range.step = '1'; range.value = String(guess);
+  range.setAttribute('aria-label', 'Ta prédiction');
+  const mark = mk('div', 'gs-mark'); mark.hidden = true;
+  track.append(range, mark);
+  const scale = mk('div', 'gs-scale');
+  const s0 = mk('span'); s0.textContent = '0';
+  const s1 = mk('span'); s1.textContent = hwFmt.format(max);
+  scale.append(s0, s1);
+  const row = mk('div', 'gs-row');
+  const minus = mk('button', 'gs-step'); minus.type = 'button'; minus.textContent = '−'; minus.setAttribute('aria-label', 'Un de moins');
+  const plus = mk('button', 'gs-step'); plus.type = 'button'; plus.textContent = '+'; plus.setAttribute('aria-label', 'Un de plus');
+  const go = mk('button', 'gs-go'); go.type = 'button'; go.textContent = 'Vérifier!';
+  row.append(minus, go, plus);
+  const res = mk('div', 'gs-res'); res.hidden = true; res.setAttribute('aria-live', 'polite');
+  const next = mk('button', 'gs-next'); next.type = 'button'; next.textContent = 'Une autre question'; next.hidden = true;
+  const set = (v) => { guess = Math.max(0, Math.min(max, v)); range.value = String(guess); big.textContent = hwFmt.format(guess); };
+  range.addEventListener('input', () => set(Number(range.value)));
+  minus.addEventListener('click', () => set(guess - 1));
+  plus.addEventListener('click', () => set(guess + 1));
+  go.addEventListener('click', () => {
+    range.disabled = true; minus.hidden = true; plus.hidden = true; go.hidden = true;
+    mark.style.left = (q.answer / max * 100) + '%';
+    mark.hidden = false;
+    const ans = mk('div', 'gs-ans');
+    const n = mk('b'); n.textContent = '0';
+    ans.append('La vraie réponse : ', n);
+    const verdict = mk('p', 'gs-verdict');
+    const d = guess - q.answer, ad = Math.abs(d), near = Math.max(1, Math.round(q.answer * 0.15));
+    if (d === 0) { verdict.textContent = 'Pile dans le mille! Bravo!'; verdict.classList.add('win'); }
+    else if (ad <= near) { verdict.textContent = 'Tellement proche! Seulement ' + ad + ' de différence.'; verdict.classList.add('win'); }
+    else if (d > 0) verdict.textContent = 'Un peu trop haut : tu as deviné ' + ad + ' de plus.';
+    else verdict.textContent = 'Un peu trop bas : il en manquait ' + ad + '.';
+    res.replaceChildren(ans, verdict);
+    res.hidden = false;
+    next.hidden = false;
+    if (hwMotion) {
+      verdict.style.opacity = '0';
+      d3.select(n).transition().duration(1100).ease(d3.easeCubicOut)
+        .tween('text', () => { const i = d3.interpolateNumber(0, q.answer); return (t) => { n.textContent = hwFmt.format(Math.round(i(t))); }; })
+        .on('end', () => { n.textContent = hwFmt.format(q.answer); verdict.style.opacity = '1'; verdict.classList.add('gs-pop'); });
+    } else {
+      n.textContent = hwFmt.format(q.answer);
+    }
+  });
+  next.addEventListener('click', () => { hwGuessState.i += 1; hwGuess(el, qs); });
+  el.append(qEl, big, lab, track, scale, row, res, next);
+};
+
+dash.draw('balance', (el) => {
+  const d = dash.data('categories');
+  const t = dash.data('totaux');
+  if (!hwState(el, d.status === 'ok' ? t : d)) return;
+  hwSelYear(t.data);
+  const cats = hwOfYear(d.data).filter((c) => c.quantite > 0);
+  hwReveal('balance', el, (mode) => hwBalance(el, cats, mode));
+});
+
+dash.draw('guess', (el) => {
+  const d = dash.data('categories');
+  const b = dash.data('bonbons');
+  const t = dash.data('totaux');
+  if (!hwState(el, d.status !== 'ok' ? d : b.status !== 'ok' ? b : t)) return;
+  hwSelYear(t.data);
+  const fams = hwOfYear(d.data).filter((c) => c.quantite > 0);
+  const top = hwOfYear(b.data).sort((x, y) => Number(y.quantite) - Number(x.quantite)).slice(1, 9);
+  const qs = [];
+  for (let i = 0; i < Math.max(fams.length, top.length); i++) {
+    if (top[i]) qs.push({text: 'Combien de ' + top[i].bonbon + ' as-tu ramassés?', answer: Number(top[i].quantite)});
+    if (fams[i]) qs.push({text: 'Combien de bonbons dans la famille ' + fams[i].categorie + '?', answer: fams[i].quantite});
+  }
+  hwGuess(el, qs);
 });
 
 /* ---------- Year-over-year comparison ---------- */
@@ -1888,7 +2192,7 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(cbGo); els
 <script>
 /* Bouton « Mettre à jour » : compare la version de cette page à version.json sur GitHub. */
 (function () {
-  const APP_VERSION = '2026.11.01-2';
+  const APP_VERSION = '2026.11.01-3';
   const bar = document.querySelector('.hw-update');
   const msg = bar.querySelector('.msg');
   const btn = bar.querySelector('button');
