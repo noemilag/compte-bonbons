@@ -318,6 +318,7 @@ button.tn-rod:focus-visible,button.tn-units:focus-visible{outline:2px solid var(
 .bl-stmt .op{color:var(--slime);text-shadow:0 0 14px rgba(124,255,79,.55)}
 .bl-verdict{margin:0;font-weight:700;font-size:var(--cds-font-size-heading);color:var(--ink-dim)}
 .bl-verdict.win{color:var(--slime)}
+.bl-pick button.elsewhere{opacity:.55}
 .hw-chart text.mnum{font-weight:800;font-size:15px;fill:#1a1020}
 .hw-chart text.tname{fill:#efeaff;font-weight:700;font-size:var(--cds-font-size-caption)}
 .hw-chart text.tnum{font-family:var(--chunky);font-weight:900;font-size:1.9rem;font-variant-numeric:tabular-nums}
@@ -1554,9 +1555,10 @@ window.hwBalance = (el, cats, mode) => {
       const box = mk('span', 'bl-check'); box.textContent = on ? '✓' : '';
       bt.append(box, n);
       bt.setAttribute('aria-pressed', on ? 'true' : 'false');
-      bt.disabled = S[other].includes(n);
+      if (S[other].includes(n)) bt.classList.add('elsewhere');
       bt.addEventListener('click', () => {
-        S[side] = on ? S[side].filter((x) => x !== n) : [...S[side], n];
+        if (on) S[side] = S[side].filter((x) => x !== n);
+        else { S[side] = [...S[side], n]; S[other] = S[other].filter((x) => x !== n); }
         reset();
       });
       row.append(bt);
@@ -2436,7 +2438,7 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(cbGo); els
 <script>
 /* Bouton « Mettre à jour » : compare la version de cette page à version.json sur GitHub. */
 (function () {
-  const APP_VERSION = '2026.11.01-5';
+  const APP_VERSION = '2026.11.01-6';
   const bar = document.querySelector('.hw-update');
   const msg = bar.querySelector('.msg');
   const btn = bar.querySelector('button');
