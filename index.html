@@ -409,6 +409,18 @@ button.tn-rod:focus-visible,button.tn-units:focus-visible{outline:2px solid var(
 .bl-unit{margin:-.5rem 0 0}
 .bl-need{margin:0;text-align:center;font-size:var(--cds-font-size-caption);font-weight:700;color:var(--ink-dim)}
 .bl-syms.tn-no{animation:tn-no .4s ease-in-out}
+/* Jeu des dizaines : glisser le doigt */
+.tg-area.drag{touch-action:none;cursor:crosshair;-webkit-user-select:none;user-select:none}
+.tg-dot{pointer-events:none}
+.tg-dot.sel{transform:scale(1.3);box-shadow:0 0 0 3px var(--candle),0 0 16px var(--c);z-index:1}
+.tg-selrow{display:flex;align-items:center;justify-content:center;gap:.9rem}
+.tg-selrow[hidden]{display:none}
+.tg-seltxt{font-family:var(--chunky);font-weight:900;font-size:1.1rem;color:var(--ink-dim)}
+.hw .tg-seltxt b{font-size:2.2rem;color:var(--candle);text-shadow:0 0 12px rgba(255,214,10,.5)}
+.hw .tg-seltxt.over b{color:var(--pink);text-shadow:0 0 12px rgba(255,79,163,.6)}
+.tg-build.over{box-shadow:inset 0 0 0 2px var(--pink),0 0 14px rgba(255,79,163,.5)}
+.tg-rods{min-height:0}
+.tg-rods:empty{display:none}
 .hw-chart text.mnum{font-weight:800;font-size:15px;fill:#1a1020}
 .hw-chart text.tname{fill:#efeaff;font-weight:700;font-size:var(--cds-font-size-caption)}
 .hw-chart text.tnum{font-family:var(--chunky);font-weight:900;font-size:1.9rem;font-variant-numeric:tabular-nums}
@@ -852,7 +864,7 @@ body.cb-has-installbar .hw-update{bottom:calc(92px + env(safe-area-inset-bottom)
   <section class="hw-grid hw-tens-wrap">
     <div class="hw-card hw-reveal" id="jeu-dizaines">
       <h2>Le jeu des dizaines</h2>
-      <p class="note">Choisis un tas, estime-le à l’œil, fais des paquets de 10, puis écris ton nombre!</p>
+      <p class="note">Choisis un tas, estime-le à l’œil, glisse ton doigt pour faire des paquets de 10, puis écris ton nombre!</p>
       <div class="hw-tgame dash-skeleton" data-draw="tensgame" data-source="categories bonbons"></div>
     </div>
   </section>
@@ -2060,12 +2072,9 @@ window.hwTensGame = (el, piles) => {
     };
     let slotK = 0;
     const addDot = (pop) => {
-      const d = mk('button', 'tg-dot');
-      d.type = 'button';
-      d.setAttribute('aria-label', 'Un bonbon');
+      const d = mk('span', 'tg-dot');
       place(d, slotK++);
       if (pop) d.classList.add('tn-pop');
-      d.addEventListener('click', () => take(d));
       area.append(d);
     };
     for (let i = 0; i < n; i++) addDot(false);
@@ -2081,20 +2090,26 @@ window.hwTensGame = (el, piles) => {
     s1.append(area, tens, okEst, estMsg);
     stage.append(s1);
 
-    /* Étape 2 : faire des paquets de 10 */
+    /* Étape 2 : faire des paquets de 10, en glissant le doigt sur les bonbons */
     const s2 = mk('div', 'tg-step'); s2.hidden = true;
     s2.append(mk('h4', 'tg-h', 'Étape 2 · Fais des paquets de 10'));
-    s2.append(mk('p', 'tg-p', 'Touche les bonbons un par un pour remplir un bâton de 10. Quand tu as compris, tu peux regrouper 10 d’un coup.'));
-    const rodsRow = mk('div', 'tg-rods');
-    rodsRow.style.setProperty('--c', pile.color);
+    s2.append(mk('p', 'tg-p', 'Glisse ton doigt sur 10 bonbons : à 10, ça fait un paquet! Si tu en prends trop, touche ou glisse sur les bonbons allumés pour les enlever.'));
+    const selRow = mk('div', 'tg-selrow');
+    selRow.style.setProperty('--c', pile.color);
     const build = mk('span', 'tn-rod tg-build');
     const bslots = [];
     for (let i = 0; i < 10; i++) { const sdot = mk('span', 'tn-dot tg-slot'); bslots.push(sdot); build.append(sdot); }
-    rodsRow.append(build);
+    const selTxt = mk('span', 'tg-seltxt');
+    const selN = mk('b', null, '0');
+    selTxt.append(selN, mk('span', 'of', ' / 10'));
+    selRow.append(build, selTxt);
+    const rodsRow = mk('div', 'tg-rods');
+    rodsRow.style.setProperty('--c', pile.color);
     const counter = mk('p', 'tg-count');
     const fast = mk('button', 'tg-chip tg-fast', 'Regrouper 10 d’un coup'); fast.type = 'button';
     const msg2 = mk('p', 'tg-msg');
-    s2.append(rodsRow, counter, fast, msg2);
+    msg2.setAttribute('aria-live', 'polite');
+    s2.append(selRow, rodsRow, counter, fast, msg2);
     stage.append(s2);
 
     /* Étape 3 : compter et écrire */
@@ -2111,53 +2126,79 @@ window.hwTensGame = (el, piles) => {
     s3.append(check, res, again);
     stage.append(s3);
 
+    const selected = new Set();
+    const live = () => [...area.querySelectorAll('.tg-dot:not(.gone)')];
     const refresh = () => {
-      bslots.forEach((sd, i) => sd.classList.toggle('on', i < st.building));
-      counter.textContent = st.rods ? (st.rods + (st.rods > 1 ? ' bâtons de 10' : ' bâton de 10') + (st.step === 2 ? ' pour l’instant' : '')) : '';
-      fast.disabled = st.loose + st.building < 10;
-    };
-    const finishRod = () => {
-      st.building = 0;
-      st.rods += 1;
-      const rod = mk('span', 'tn-rod tn-pop');
-      for (let i = 0; i < 10; i++) rod.append(mk('span', 'tn-dot'));
-      rodsRow.insertBefore(rod, build);
-      msg2.textContent = 'Une dizaine de plus!';
+      const k = selected.size;
+      selN.textContent = String(k);
+      bslots.forEach((sd, i) => sd.classList.toggle('on', i < k));
+      build.classList.toggle('over', k > 10);
+      selTxt.classList.toggle('over', k > 10);
+      counter.textContent = st.rods ? (st.rods + (st.rods > 1 ? ' paquets de 10' : ' paquet de 10') + (st.step === 2 ? ' pour l’instant' : '')) : '';
+      fast.disabled = st.loose < 10;
     };
     const checkDone = () => {
-      if (st.loose + st.building >= 10) return;
-      if (st.building > 0) {
-        for (let i = 0; i < st.building; i++) addDot(true);
-        st.loose += st.building;
-        st.building = 0;
-      }
+      if (st.loose >= 10) return;
+      selected.forEach((d) => d.classList.remove('sel'));
+      selected.clear();
       area.classList.add('locked');
+      area.classList.remove('drag');
       fast.hidden = true;
-      build.hidden = true;
+      selRow.hidden = true;
       msg2.textContent = st.loose ? 'Il reste moins de 10 bonbons seuls : ce sont les unités!' : 'Il ne reste aucun bonbon seul : zéro unité!';
       if (st.step < 3) { st.step = 3; s3.hidden = false; if (hwMotion) s3.classList.add('tn-say'); }
       refresh();
     };
-    const take = (d) => {
-      if (st.step !== 2 || st.loose <= 0) return;
-      d.disabled = true;
-      d.classList.add('gone');
-      setTimeout(() => d.remove(), 250);
-      st.loose -= 1;
-      st.building += 1;
-      msg2.textContent = '';
-      if (st.building === 10) finishRod();
+    const makeRod = (list) => {
+      list.forEach((d) => { selected.delete(d); d.classList.remove('sel'); d.classList.add('gone'); setTimeout(() => d.remove(), 250); });
+      st.loose -= 10;
+      st.rods += 1;
+      const rod = mk('span', 'tn-rod tn-pop');
+      for (let i = 0; i < 10; i++) rod.append(mk('span', 'tn-dot'));
+      rodsRow.append(rod);
+      msg2.textContent = 'Pop! Un paquet de 10!';
       refresh();
       checkDone();
     };
+    const settle = () => {
+      const k = selected.size;
+      if (k === 10) makeRod([...selected]);
+      else if (k > 10) msg2.textContent = 'Tu en as ' + k + ' : enlèves-en ' + (k - 10) + ' en les touchant.';
+      else if (k > 0) msg2.textContent = 'Encore ' + (10 - k) + ' pour faire 10!';
+    };
+    /* Swipe: every candy under the finger joins (or leaves) the selection. */
+    let drag = null;
+    const hit = (x, y) => {
+      let best = null, bd = 15 * 15;
+      live().forEach((d) => {
+        const r = d.getBoundingClientRect();
+        const dd = (r.left + r.width / 2 - x) ** 2 + (r.top + r.height / 2 - y) ** 2;
+        if (dd < bd) { bd = dd; best = d; }
+      });
+      return best;
+    };
+    const apply = (d) => {
+      if (!d || !drag) return;
+      if (drag === 'add' && !selected.has(d)) { selected.add(d); d.classList.add('sel'); refresh(); }
+      else if (drag === 'remove' && selected.has(d)) { selected.delete(d); d.classList.remove('sel'); refresh(); }
+    };
+    area.addEventListener('pointerdown', (e) => {
+      if (st.step !== 2) return;
+      e.preventDefault();
+      const d = hit(e.clientX, e.clientY);
+      drag = d && selected.has(d) ? 'remove' : 'add';
+      try { area.setPointerCapture(e.pointerId); } catch (x) { /* rien */ }
+      msg2.textContent = '';
+      apply(d);
+    });
+    area.addEventListener('pointermove', (e) => { if (drag) apply(hit(e.clientX, e.clientY)); });
+    const end = () => { if (!drag) return; drag = null; settle(); };
+    area.addEventListener('pointerup', end);
+    area.addEventListener('pointercancel', end);
     fast.addEventListener('click', () => {
-      const need = 10 - st.building;
-      if (st.loose < need) return;
-      [...area.querySelectorAll('.tg-dot:not(.gone)')].slice(0, need).forEach((d) => { d.classList.add('gone'); setTimeout(() => d.remove(), 250); });
-      st.loose -= need;
-      finishRod();
-      refresh();
-      checkDone();
+      const pool = [...selected, ...live().filter((d) => !selected.has(d))].slice(0, 10);
+      if (pool.length < 10) return;
+      makeRod(pool);
     });
 
     okEst.addEventListener('click', () => {
@@ -2169,6 +2210,8 @@ window.hwTensGame = (el, piles) => {
       estMsg.textContent = 'Ton estimation : ' + v + '. Voyons voir!';
       st.step = 2;
       area.classList.remove('locked');
+      area.classList.add('drag');
+      s2.insertBefore(area, selRow);
       s2.hidden = false;
       if (hwMotion) s2.classList.add('tn-say');
       refresh();
@@ -2879,7 +2922,7 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(cbGo); els
 <script>
 /* Bouton « Mettre à jour » : compare la version de cette page à version.json sur GitHub. */
 (function () {
-  const APP_VERSION = '2026.11.01-13';
+  const APP_VERSION = '2026.11.01-14';
   const bar = document.querySelector('.hw-update');
   const msg = bar.querySelector('.msg');
   const btn = bar.querySelector('button');
