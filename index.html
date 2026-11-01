@@ -654,6 +654,21 @@ button.tn-rod:focus-visible,button.tn-units:focus-visible{outline:2px solid var(
 .cb-sheet button.cb-big{justify-content:center;font-family:var(--chunky);font-weight:900;font-size:1.15rem;letter-spacing:.03em;padding:.75em 1.5em;border-radius:999px;background:var(--orange);color:#2a0d00;box-shadow:0 4px 0 #9a3b00,0 0 22px rgba(255,122,26,.5)}
 .cb-sheet button.cb-big:hover{background:var(--orange)}
 .cb-install .cb-big{font-size:1.02rem;padding:.75em 1em}
+
+/* Bandeau « Installer » en bas de l'écran */
+.cb-installbar{position:fixed;left:50%;bottom:calc(12px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:55;width:min(calc(100% - 20px),30rem);box-sizing:border-box;
+  display:flex;align-items:center;gap:.6rem;padding:.55rem .55rem .55rem .65rem;border-radius:1.2rem;background:#1d0f33;color:#f1ecff;
+  font-family:'Fredoka','Fredoka Variable',ui-rounded,'SF Pro Rounded',system-ui,sans-serif;
+  box-shadow:0 0 0 1px rgba(124,255,79,.55),0 14px 34px rgba(0,0,0,.65),0 0 26px rgba(124,255,79,.25)}
+.cb-installbar[hidden]{display:none}
+.cb-installbar img{width:2.4rem;height:2.4rem;border-radius:.65rem;flex:none}
+.cb-installbar .msg{flex:1;min-width:0;font-weight:600;font-size:.85rem;line-height:1.3}
+.cb-installbar .cb-install-btn{appearance:none;border:0;cursor:pointer;flex:none;font-family:'Luckiest Guy',ui-rounded,system-ui,sans-serif;font-size:1rem;letter-spacing:.03em;padding:.55rem .95rem;border-radius:999px;background:#7cff4f;color:#0b2b04;box-shadow:0 3px 0 #2f8f1a}
+.cb-installbar .cb-install-btn:active{transform:translateY(2px);box-shadow:0 1px 0 #2f8f1a}
+.cb-installbar .cb-install-x{appearance:none;border:0;cursor:pointer;flex:none;width:1.9rem;height:1.9rem;border-radius:50%;background:rgba(255,255,255,.08);color:#b3a9d6;font-size:1.2rem;line-height:1}
+@media (prefers-reduced-motion: no-preference){.cb-installbar:not([hidden]){animation:hw-upd .55s cubic-bezier(.2,.8,.2,1) .6s both}}
+body.cb-has-installbar #dash-root .hw{padding-bottom:calc(var(--cds-pad-xl) * 2 + 80px)}
+body.cb-has-installbar .hw-update{bottom:calc(92px + env(safe-area-inset-bottom))}
 </style>
 
 <div class="hw">
@@ -670,10 +685,6 @@ button.tn-rod:focus-visible,button.tn-units:focus-visible{outline:2px solid var(
     <h1>Compte-Bonbons</h1>
     <p class="pitch cb-pitch-first">Compte ton butin d’Halloween, découvre tes statistiques et amuse-toi avec les chiffres!</p>
     <p class="pitch cb-pitch-more" hidden>Un autre chasseur de bonbons dans la famille?</p>
-    <div class="cb-install" hidden>
-      <button class="cb-big green cb-install-btn" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><rect x="4" y="18" width="16" height="3" rx="1.5" fill="currentColor"/></svg>Installer sur mon téléphone</button>
-      <p class="cb-install-tip">Installe l’app avant de commencer : ton butin sera bien gardé pour l’an prochain.</p>
-    </div>
     <form class="cb-start" autocomplete="off">
       <label for="cb-prenom">Comment s’appelle le chasseur de bonbons?</label>
       <input id="cb-prenom" class="cb-input" name="prenom" maxlength="24" placeholder="Son prénom" required>
@@ -929,6 +940,12 @@ button.tn-rod:focus-visible,button.tn-units:focus-visible{outline:2px solid var(
       <ol></ol>
       <button type="button" class="cb-big cb-howto-close">J’ai compris</button>
     </div>
+  </div>
+  <div class="cb-installbar" hidden role="region" aria-label="Installer l’app">
+    <img src="icon-192.png" alt="">
+    <span class="msg">Installe Compte-Bonbons sur ton téléphone pour garder ton butin.</span>
+    <button class="cb-install-btn" type="button">Installer</button>
+    <button class="cb-install-x" type="button" aria-label="Plus tard">×</button>
   </div>
   <div class="cb-toast" hidden role="status" aria-live="polite"></div>
   <input class="cb-file" type="file" accept="application/json,.json" hidden>
@@ -2737,7 +2754,11 @@ document.querySelectorAll('.hw-search').forEach((inp) => {
   let deferredPrompt = null;
   const syncInstall = () => {
     const show = !installed() && !demo;
-    $$('.cb-install').forEach((e) => { e.hidden = !show; });
+    let later = false;
+    try { later = sessionStorage.getItem('cb-install-later') === '1'; } catch (e) { /* rien */ }
+    const bar = $('.cb-installbar');
+    bar.hidden = !show || later;
+    document.body.classList.toggle('cb-has-installbar', !bar.hidden);
     $$('[data-act="install"]').forEach((e) => { e.hidden = installed(); });
   };
   window.addEventListener('beforeinstallprompt', (ev) => { ev.preventDefault(); deferredPrompt = ev; syncInstall(); });
@@ -2795,6 +2816,10 @@ document.querySelectorAll('.hw-search').forEach((inp) => {
     openHowto();
   };
   $$('.cb-install-btn').forEach((b) => b.addEventListener('click', installNow));
+  $('.cb-install-x').addEventListener('click', () => {
+    try { sessionStorage.setItem('cb-install-later', '1'); } catch (e) { /* rien */ }
+    syncInstall();
+  });
   $('.cb-howto-close').addEventListener('click', () => { howto.hidden = true; });
   howto.addEventListener('click', (ev) => { if (ev.target === howto) howto.hidden = true; });
   window.matchMedia('(display-mode: standalone)').addEventListener('change', syncInstall);
@@ -2854,7 +2879,7 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(cbGo); els
 <script>
 /* Bouton « Mettre à jour » : compare la version de cette page à version.json sur GitHub. */
 (function () {
-  const APP_VERSION = '2026.11.01-12';
+  const APP_VERSION = '2026.11.01-13';
   const bar = document.querySelector('.hw-update');
   const msg = bar.querySelector('.msg');
   const btn = bar.querySelector('button');
