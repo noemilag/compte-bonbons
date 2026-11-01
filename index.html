@@ -197,6 +197,29 @@ html body #dash-root .hw{padding-top:calc(var(--cds-pad-xl) + env(safe-area-inse
 .hw-refill svg{width:1.1em;height:1.1em}
 .hw-refill:active{transform:translateY(2px);box-shadow:0 1px 0 #2f8f1a,0 0 18px rgba(124,255,79,.45)}
 .hw-refill:focus-visible{outline:2px solid var(--candle);outline-offset:3px}
+/* Dizaines et unités */
+.hw-tens-wrap{grid-template-columns:1fr}
+.hw-tens{display:flex;flex-direction:column;gap:var(--cds-gap-lg);min-height:8rem}
+.tn-fam{--c:#ff7a1a;display:flex;flex-direction:column;gap:.55rem;padding-bottom:var(--cds-gap-md);border-bottom:1px solid rgba(180,108,255,.15)}
+.tn-fam:last-child{border-bottom:0;padding-bottom:0}
+.tn-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:.3rem .8rem}
+.tn-name{font-weight:700;font-size:1.05rem;color:var(--ink)}
+.tn-eq{font-weight:600;color:var(--ink-dim);font-variant-numeric:tabular-nums}
+.hw .tn-eq b{font-family:var(--chunky);font-weight:900;font-size:1.2em;color:var(--c);text-shadow:0 0 10px color-mix(in srgb,var(--c) 45%,transparent)}
+.tn-blocks{display:flex;flex-wrap:wrap;align-items:flex-end;gap:6px 5px}
+.tn-rod{display:flex;flex-direction:column;gap:2px;padding:3px;border-radius:7px;background:color-mix(in srgb,var(--c) 18%,transparent);box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--c) 70%,transparent),0 0 8px color-mix(in srgb,var(--c) 30%,transparent)}
+.tn-dot{width:9px;height:9px;border-radius:50%;background:var(--c);box-shadow:inset -1px -1px 0 rgba(0,0,0,.25)}
+.tn-units{display:grid;grid-template-columns:repeat(5,9px);gap:3px;margin-left:6px;align-self:flex-end}
+.tn-units .tn-dot{box-shadow:0 0 6px color-mix(in srgb,var(--c) 60%,transparent)}
+.tn-legend{display:flex;flex-wrap:wrap;justify-content:center;gap:.4rem 1.2rem;font-size:var(--cds-font-size-caption);color:var(--ink-dim)}
+.tn-legend span{display:inline-flex;align-items:center;gap:.4rem}
+.tn-legend .tn-rod{flex-direction:row;padding:2px}
+.tn-legend .tn-dot{width:6px;height:6px}
+.tn-wait .tn-rod,.tn-wait .tn-units .tn-dot{opacity:0}
+@media (prefers-reduced-motion: no-preference){
+  .tn-pop{animation:tn-pop .45s var(--cds-ease-out) both;animation-delay:var(--d,0ms)}
+}
+@keyframes tn-pop{from{opacity:0;transform:translateY(14px) scale(.6)}to{opacity:1;transform:none}}
 .hw-chart text.mnum{font-weight:800;font-size:15px;fill:#1a1020}
 .hw-chart text.tname{fill:#efeaff;font-weight:700;font-size:var(--cds-font-size-caption)}
 .hw-chart text.tnum{font-family:var(--chunky);font-weight:900;font-size:1.9rem;font-variant-numeric:tabular-nums}
@@ -576,6 +599,13 @@ html body #dash-root .hw{padding-top:calc(var(--cds-pad-xl) + env(safe-area-inse
       <div class="hw-chart dash-skeleton" data-draw="chart-top" data-source="bonbons"></div>
     </div>
   </section>
+  <section class="hw-grid hw-tens-wrap">
+    <div class="hw-card hw-reveal" id="dizaines">
+      <h2>Les bonbons en dizaines</h2>
+      <p class="note">Chaque bâton contient 10 bonbons : c’est une dizaine. Les bonbons tout seuls, ce sont les unités.</p>
+      <div class="hw-tens dash-skeleton" data-draw="tens" data-source="categories"></div>
+    </div>
+  </section>
 
   <div class="hw-chapter hw-reveal"><svg class="ico" viewBox="0 0 48 48" aria-hidden="true"><rect x="9" y="5" width="30" height="38" rx="3" fill="#6a2fa0"/><rect x="9" y="5" width="6" height="38" rx="2" fill="#44186b"/><rect x="36" y="20" width="6" height="9" rx="2" fill="#ffd60a"/><path d="M29 14 A8 8 0 1 0 29 32 A6.2 6.2 0 1 1 29 14 Z" fill="#ffd60a"/><circle cx="31" cy="12" r="1.3" fill="#7cff4f"/><circle cx="34" cy="34" r="1.3" fill="#7cff4f"/></svg><div><span class="k">Chapitre 4</span><h3>Les secrets du grimoire</h3></div></div>
   <section class="hw-grid">
@@ -933,7 +963,7 @@ deltaDraw('d-gros', 'gros', (v) => hwFmt.format(v));
 
 /* Year picker: one button per year in the data. */
 window.HW_DRAWS = ['years', 'annee-inline', 'total', 'total-inline', 'heures-inline', 'minute', 'champion', 'champion-qte', 'heure', 'sortes', 'ratio', 'sacs', 'gros',
-  'd-total', 'd-heure', 'd-sortes', 'd-ratio', 'd-gros', 'podium', 'bocal', 'chart-cat', 'chart-top', 'chart-choco', 'chart-chips', 'chart-special', 'table-body', 'cmp-total', 'cmp-cat'];
+  'd-total', 'd-heure', 'd-sortes', 'd-ratio', 'd-gros', 'podium', 'bocal', 'chart-cat', 'tens', 'chart-top', 'chart-choco', 'chart-chips', 'chart-special', 'table-body', 'cmp-total', 'cmp-cat'];
 window.hwSetYear = (y) => {
   if (y === hwYear) return;
   hwYear = y;
@@ -1238,6 +1268,66 @@ dash.draw('chart-special', (el) => {
     sub: hwPct.format(Number(r.quantite) / tot) + ' des spéciaux'
   }));
   hwReveal('chart-special', el, (mode) => hwBars(el, items, 'Bonbons spéciaux', mode, null));
+});
+
+/* Dizaines et unités : chaque famille en bâtons de 10 et en bonbons seuls. */
+window.hwTens = (el, cats, mode) => {
+  el.replaceChildren();
+  el.classList.toggle('tn-wait', mode === 'zero');
+  const mk = (tag, cls) => { const n = document.createElement(tag); if (cls) n.className = cls; return n; };
+  const legend = mk('div', 'tn-legend');
+  const lr = mk('span'); const rodL = mk('span', 'tn-rod'); for (let i = 0; i < 10; i++) rodL.append(mk('span', 'tn-dot'));
+  lr.append(rodL, ' = 1 dizaine (10 bonbons)');
+  const lu = mk('span'); lu.append(mk('span', 'tn-dot'), ' = 1 unité');
+  lu.firstChild.style.background = 'var(--ink-dim)';
+  rodL.querySelectorAll('.tn-dot').forEach((d) => { d.style.background = 'var(--ink-dim)'; });
+  rodL.style.setProperty('--c', '#b3a9d6');
+  legend.append(lr, lu);
+  el.append(legend);
+  let k = 0;
+  cats.forEach((c) => {
+    const tens = Math.floor(c.quantite / 10), units = c.quantite % 10;
+    const fam = mk('div', 'tn-fam');
+    fam.style.setProperty('--c', hwColor(c.categorie));
+    const head = mk('div', 'tn-head');
+    const nm = mk('span', 'tn-name'); nm.textContent = c.categorie;
+    const eq = mk('span', 'tn-eq');
+    const b = (v) => { const x = mk('b'); x.textContent = hwFmt.format(v); return x; };
+    eq.append(b(c.quantite), ' = ');
+    if (tens) eq.append(b(tens), tens > 1 ? ' dizaines' : ' dizaine');
+    if (tens && units) eq.append(' + ');
+    if (units || !tens) eq.append(b(units), units > 1 ? ' unités' : ' unité');
+    head.append(nm, eq);
+    const blocks = mk('div', 'tn-blocks');
+    blocks.setAttribute('role', 'img');
+    blocks.setAttribute('aria-label', c.categorie + ' : ' + tens + ' dizaines et ' + units + ' unités');
+    for (let t = 0; t < tens; t++) {
+      const rod = mk('span', 'tn-rod');
+      for (let i = 0; i < 10; i++) rod.append(mk('span', 'tn-dot'));
+      if (mode === 'animate') { rod.classList.add('tn-pop'); rod.style.setProperty('--d', (k++ * 45) + 'ms'); }
+      blocks.append(rod);
+    }
+    if (units) {
+      const u = mk('span', 'tn-units');
+      for (let i = 0; i < units; i++) {
+        const d = mk('span', 'tn-dot');
+        if (mode === 'animate') { d.classList.add('tn-pop'); d.style.setProperty('--d', (k++ * 45) + 'ms'); }
+        u.append(d);
+      }
+      blocks.append(u);
+    }
+    fam.append(head, blocks);
+    el.append(fam);
+  });
+};
+
+dash.draw('tens', (el) => {
+  const d = dash.data('categories');
+  const t = dash.data('totaux');
+  if (!hwState(el, d.status === 'ok' ? t : d)) return;
+  hwSelYear(t.data);
+  const cats = hwOfYear(d.data);
+  hwReveal('tens', el, (mode) => hwTens(el, cats, mode));
 });
 
 /* ---------- Year-over-year comparison ---------- */
@@ -1798,7 +1888,7 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(cbGo); els
 <script>
 /* Bouton « Mettre à jour » : compare la version de cette page à version.json sur GitHub. */
 (function () {
-  const APP_VERSION = '2026.11.01-1';
+  const APP_VERSION = '2026.11.01-2';
   const bar = document.querySelector('.hw-update');
   const msg = bar.querySelector('.msg');
   const btn = bar.querySelector('button');
