@@ -1,0 +1,1860 @@
+<!doctype html>
+<html lang="fr-CA">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Compte-Bonbons · Le butin hanté</title>
+<meta name="description" content="Compte ton butin d’Halloween avec ton enfant et découvre vos statistiques : podium hanté, chaudron de sorcière et plus encore.">
+<meta name="theme-color" content="#120724">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="48x48" href="favicon-48.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-title" content="Compte-Bonbons">
+<meta name="application-name" content="Compte-Bonbons">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta property="og:title" content="Compte-Bonbons · Le butin hanté">
+<meta property="og:image" content="icon-512.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Creepster&family=Fredoka:wght@400..700&family=Luckiest+Guy&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cds-gap-xs:.25rem;--cds-gap-sm:.5rem;--cds-gap-md:1rem;--cds-gap-lg:1.5rem;--cds-gap-xl:2rem;
+  --cds-pad-xs:.3rem;--cds-pad-sm:.5rem;--cds-pad-md:1rem;--cds-pad-lg:1.25rem;--cds-pad-xl:2rem;
+  --cds-radius:8px;
+  --cds-font-size-caption:.8125rem;--cds-font-size-body:.9375rem;--cds-font-size-heading:1.125rem;--cds-font-size-title:1.5rem;
+  --cds-font-weight-medium:500;
+  --cds-ease-out:cubic-bezier(.2,.8,.2,1);--cds-dur-slow:.4s;
+  --font-anthropic-sans:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --font-anthropic-serif:Georgia,'Times New Roman',serif;
+  --color-bad:#ff5c5c;
+}
+html,body{margin:0;padding:0;background:#05040a}
+.dash-skeleton{color:transparent !important;background:rgba(255,255,255,.06);border-radius:6px}
+.hw-chart.dash-skeleton{min-height:12rem}
+html body #dash-root .hw{padding-top:calc(var(--cds-pad-xl) + env(safe-area-inset-top, 0px))}
+@media (display-mode: standalone){html body #dash-root .hw{padding-top:calc(var(--cds-pad-xl) + env(safe-area-inset-top, 0px) + 1.5rem)}}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+</head>
+<body>
+<div id="dash-root">
+<script>
+/* Petit moteur autonome : reçoit les données de l'app, puis dessine la page. */
+(function () {
+  const store = {bonbons: {status: 'loading', data: [], meta: []}, soiree: {status: 'loading', data: [], meta: []}};
+  const calcs = new Map(), draws = new Map(), watchers = [];
+  const data = (id) => {
+    const c = calcs.get(id);
+    if (c) {
+      const ins = c.inputs.map(data);
+      const bad = ins.find((x) => x.status !== 'ok');
+      if (bad) return {status: bad.status, data: [], meta: []};
+      if (!c.cache) c.cache = {status: 'ok', data: c.fn(...ins.map((x) => x.data)), meta: []};
+      return c.cache;
+    }
+    return store[id] || {status: 'missing', data: [], meta: []};
+  };
+  const run = (name) => {
+    const fn = draws.get(name);
+    if (!fn) return;
+    document.querySelectorAll('[data-draw="' + name + '"]').forEach((el) => {
+      if (el.closest('[hidden]')) return;
+      try { fn(el); } catch (e) { console.error(name, e); }
+    });
+  };
+  const runAll = () => { watchers.forEach((fn) => fn()); draws.forEach((fn, name) => run(name)); };
+  window.dash = {
+    colors: ['#ff7a1a', '#7cff4f', '#b46cff', '#ff4fa3', '#ffd60a', '#00e5ff', '#d4915b', '#ff4f6d'],
+    data,
+    calc: (id, {inputs, fn}) => { calcs.set(id, {inputs, fn}); },
+    draw: (name, fn) => { if (fn) draws.set(name, fn); else run(name); },
+    onData: (fn) => { watchers.push(fn); },
+    loader: () => {}, refresh: () => {}, params: () => ({}), setParams: () => {}, resetParams: () => {}, setLink: () => {}
+  };
+  window.__dashRunAll = runAll;
+  window.__dashSetData = (b, so) => {
+    store.bonbons = {status: 'ok', data: b, columns: ['annee', 'categorie', 'bonbon', 'quantite', 'gros'], meta: []};
+    store.soiree = {status: 'ok', data: so, columns: ['annee', 'mesure', 'valeur'], meta: []};
+    calcs.forEach((c) => { c.cache = null; });
+  };
+  window.__dashStart = () => {
+    let lastW = window.innerWidth, t;
+    window.addEventListener('resize', () => {
+      clearTimeout(t);
+      t = setTimeout(() => { if (window.innerWidth !== lastW) { lastW = window.innerWidth; runAll(); } }, 200);
+    });
+  };
+})();
+</script>
+<style>
+#dash-root{--dash-gutter:0}
+#dash-root .hw > *{width:100%;max-width:72rem;box-sizing:border-box}
+#dash-root .hw{
+  --orange:#ff7a1a; --slime:#7cff4f; --purple:#b46cff; --pink:#ff4fa3; --candle:#ffd60a;
+  --ink:#f1ecff; --ink-dim:#b3a9d6;
+  --round:'Fredoka','Fredoka Variable',ui-rounded,'SF Pro Rounded','Arial Rounded MT Bold','Varela Round','Nunito',var(--font-anthropic-sans);
+  --chunky:'Luckiest Guy',ui-rounded,'SF Pro Rounded','Arial Rounded MT Bold',var(--font-anthropic-sans);
+  --spooky:'Creepster',ui-rounded,'SF Pro Rounded','Arial Rounded MT Bold',var(--font-anthropic-sans);
+  position:relative;isolation:isolate;overflow:hidden;
+  display:flex;flex-direction:column;align-items:center;gap:var(--cds-gap-xl);
+  font-family:var(--round);font-weight:500;color:var(--ink);
+  min-height:100vh;
+  padding:var(--cds-pad-xl) clamp(12px,3vw,32px) calc(var(--cds-pad-xl) * 2);
+  background:
+    radial-gradient(ellipse 90% 40% at 50% 0%,rgba(255,122,26,.18),transparent 70%),
+    linear-gradient(180deg,#1c0b33 0%,#120724 35%,#0a0614 70%,#05040a 100%);
+}
+#dash-root .hw::before{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.55;
+  background-image:
+    radial-gradient(1px 1px at 12px 24px,#fff 60%,transparent),
+    radial-gradient(1px 1px at 90px 140px,#fff 60%,transparent),
+    radial-gradient(1.5px 1.5px at 160px 60px,#ffe7b0 60%,transparent),
+    radial-gradient(1px 1px at 200px 190px,#fff 60%,transparent),
+    radial-gradient(1px 1px at 60px 210px,#e8d9ff 60%,transparent);
+  background-size:240px 240px}
+
+/* ---------- Hero ---------- */
+.hw-hero{position:relative;overflow:hidden;border-radius:calc(var(--cds-radius) * 2);min-height:22rem;
+  padding:var(--cds-pad-xl) var(--cds-pad-xl) 9rem;
+  background:linear-gradient(180deg,#2b0f4d 0%,#3d1259 45%,#5a1d4a 75%,#7a2c22 100%);
+  border:1px solid rgba(255,122,26,.35);box-shadow:0 0 50px rgba(255,122,26,.25),inset 0 0 80px rgba(0,0,0,.5)}
+.hw-kicker{position:relative;z-index:2;margin:0;font-weight:800;font-size:var(--cds-font-size-caption);letter-spacing:.22em;text-transform:uppercase;color:var(--candle);text-shadow:0 0 10px rgba(255,214,10,.7)}
+.hw-hero h1{position:relative;z-index:2;font-family:var(--spooky);font-weight:900;font-size:clamp(2.6rem,7vw,4.4rem);line-height:.98;letter-spacing:.01em;margin:var(--cds-gap-sm) 0 0;max-width:30rem;color:var(--orange);
+  text-shadow:0 5px 0 #7a2600,0 9px 0 #3a0d00,0 0 34px rgba(255,122,26,.75);filter:url(#hw-wobble)}
+.hw-hero h1 .l2{display:block;color:var(--slime);text-shadow:0 5px 0 #1f6b0c,0 9px 0 #0b2b04,0 0 34px rgba(124,255,79,.6)}
+.hw-hero p.say{position:relative;z-index:2;margin:var(--cds-gap-lg) 0 0;font-weight:600;font-size:calc(var(--cds-font-size-heading) * 1.08);line-height:1.6;max-width:36rem;color:var(--ink);text-shadow:0 1px 6px rgba(0,0,0,.6)}
+.hw .hw-hero b{font-family:var(--chunky);font-weight:900;font-size:1.25em;line-height:1;color:var(--candle);text-shadow:0 3px 0 #7a5a00,0 0 14px rgba(255,214,10,.6);font-variant-numeric:tabular-nums;display:inline-block}
+.hw-moon{position:absolute;right:7%;top:10%;width:8rem;height:8rem;border-radius:50%;pointer-events:none;z-index:1;
+  background:radial-gradient(circle at 38% 35%,#fffbe8 0%,#ffeeb0 45%,#f4c860 78%,#d89b2c 100%);
+  box-shadow:0 0 50px 16px rgba(255,214,10,.45),0 0 140px 50px rgba(255,122,26,.3)}
+.hw-moon::before,.hw-moon::after{content:'';position:absolute;border-radius:50%;background:rgba(190,130,40,.35)}
+.hw-moon::before{width:1.7rem;height:1.7rem;left:22%;top:52%}
+.hw-moon::after{width:1rem;height:1rem;left:60%;top:28%}
+.hw-bats{position:absolute;inset:0;pointer-events:none;z-index:1}
+.hw-bats span{position:absolute;font-size:1.7rem;left:100%}
+.hw-bats span:nth-child(1){top:12%}
+.hw-bats span:nth-child(2){top:26%;font-size:1.2rem}
+.hw-bats span:nth-child(3){top:6%;font-size:1.4rem}
+.hw-spider{position:absolute;left:58%;top:0;z-index:2;pointer-events:none;display:flex;flex-direction:column;align-items:center}
+.hw-spider::before{content:'';width:1px;height:4.5rem;background:rgba(255,255,255,.55)}
+.hw-spider span{font-size:1.9rem;margin-top:-.3rem}
+.hw-ghost{position:absolute;right:30%;bottom:7.5rem;font-size:3rem;z-index:1;pointer-events:none;opacity:.85;filter:drop-shadow(0 0 14px rgba(255,255,255,.6))}
+.hw-scene{position:absolute;left:0;right:0;bottom:0;width:100%;height:9.5rem;z-index:1;pointer-events:none;display:block}
+.hw-scene .win{fill:var(--candle);filter:drop-shadow(0 0 6px var(--candle))}
+.hw-scene .pk{font-size:30px;filter:drop-shadow(0 0 10px #ff7a1a)}
+.hw-fog{position:absolute;left:-20%;right:-20%;bottom:-1rem;height:5rem;z-index:1;pointer-events:none;
+  background:radial-gradient(ellipse 40% 60% at 25% 60%,rgba(220,210,255,.22),transparent 70%),radial-gradient(ellipse 35% 55% at 70% 70%,rgba(220,210,255,.18),transparent 70%)}
+
+/* ---------- Chapters ---------- */
+.hw-chapter{display:flex;align-items:center;gap:var(--cds-gap-md);margin:var(--cds-gap-md) 0 calc(var(--cds-gap-md) * -0.5)}
+.hw-chapter .ico{width:3rem;height:3rem;flex:none;display:block;filter:drop-shadow(0 0 10px rgba(255,122,26,.55))}
+.hw-chapter .k{display:block;font-weight:800;font-size:var(--cds-font-size-caption);letter-spacing:.22em;text-transform:uppercase;color:var(--purple)}
+.hw-chapter h3{margin:0;font-family:var(--spooky);font-weight:900;font-size:clamp(1.7rem,4.5vw,2.4rem);line-height:1.05;color:var(--ink);text-shadow:0 4px 0 #3d1c66,0 0 20px rgba(180,108,255,.5);filter:url(#hw-wobble)}
+
+/* ---------- Tiles ---------- */
+.hw-tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,10.5rem),1fr));gap:var(--cds-gap-md)}
+.hw-tile{position:relative;border-radius:calc(var(--cds-radius) * 2);padding:var(--cds-pad-lg) var(--cds-pad-md);display:flex;flex-direction:column;align-items:center;text-align:center;gap:var(--cds-gap-xs);
+  background:radial-gradient(ellipse at 50% 0%,color-mix(in srgb,var(--tile-c) 22%,transparent),transparent 70%),rgba(20,10,36,.85);
+  border:1px solid color-mix(in srgb,var(--tile-c) 70%,transparent);box-shadow:0 0 20px color-mix(in srgb,var(--tile-c) 35%,transparent)}
+.hw-tile .ico{width:3.4rem;height:3.4rem;display:block;filter:drop-shadow(0 0 10px color-mix(in srgb,var(--tile-c) 70%,transparent))}
+.hw-tile .lbl{font-size:var(--cds-font-size-body);font-weight:700;color:var(--ink)}
+.hw .hw-tile .num{font-family:var(--chunky);font-weight:900;font-size:clamp(2.6rem,6vw,3.4rem);line-height:1;min-height:1em;letter-spacing:.01em;font-variant-numeric:tabular-nums;color:var(--tile-c);text-shadow:0 4px 0 color-mix(in srgb,var(--tile-c) 45%,#000),0 0 22px color-mix(in srgb,var(--tile-c) 60%,transparent)}
+.hw-tile .note{font-weight:500;font-size:var(--cds-font-size-caption);color:var(--ink-dim)}
+.hw .hw-tile .note b{font-weight:800;color:var(--ink)}
+.hw-tile:nth-child(1){--tile-c:var(--orange)}
+.hw-tile:nth-child(2){--tile-c:var(--slime)}
+.hw-tile:nth-child(3){--tile-c:var(--purple)}
+.hw-tile:nth-child(4){--tile-c:var(--pink)}
+.hw-tile:nth-child(5){--tile-c:var(--candle)}
+
+/* ---------- Cards ---------- */
+.hw-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,20rem),1fr));gap:var(--cds-gap-md)}
+.hw-card{position:relative;border-radius:calc(var(--cds-radius) * 2);padding:var(--cds-pad-lg);display:flex;flex-direction:column;gap:var(--cds-gap-sm);min-width:0;
+  background:rgba(22,11,40,.88);border:1px solid rgba(180,108,255,.35);box-shadow:0 0 30px rgba(180,108,255,.18)}
+.hw-card h2{margin:0;font-family:var(--spooky);font-weight:900;font-size:clamp(1.5rem,3.6vw,1.9rem);line-height:1.1;letter-spacing:.01em;color:var(--orange);text-shadow:0 3px 0 #6b2200,0 0 16px rgba(255,122,26,.45);filter:url(#hw-wobble)}
+.hw-card .note{margin:0;font-size:var(--cds-font-size-body);color:var(--ink-dim)}
+
+.hw-chart{position:relative;min-height:12rem}
+.hw-chart.tall{min-height:18rem}
+.hw-chart svg{display:block;overflow:visible}
+.hw-chart text{font-size:var(--cds-font-size-body);font-family:var(--round);font-weight:600}
+.hw-chart text.lbl{fill:var(--ink)}
+.hw-chart text.val{font-family:var(--chunky);font-weight:900;font-size:1.15rem;font-variant-numeric:tabular-nums}
+.hw-chart text.rider{font-size:20px}
+.hw-chart text.pct{font-family:var(--chunky);font-weight:900;font-size:.95rem;fill:#1a1020}
+.hw-chart text.pct-out{font-family:var(--chunky);font-weight:900;font-size:.95rem}
+.hw-chart text.dnum{font-family:var(--chunky);font-weight:900;font-size:2.6rem;fill:var(--orange);filter:drop-shadow(0 0 10px rgba(255,122,26,.6))}
+.hw-chart text.dlbl{fill:var(--ink-dim);font-weight:700}
+.hw-chart path{transition:opacity .15s}
+.hw-refill{all:unset;cursor:pointer;align-self:center;display:inline-flex;align-items:center;gap:.5rem;margin-top:var(--cds-gap-sm);
+  font-family:var(--chunky);font-weight:900;font-size:1.05rem;letter-spacing:.03em;color:#0b2b04;background:var(--slime);
+  padding:.55em 1.2em;border-radius:999px;box-shadow:0 3px 0 #2f8f1a,0 0 18px rgba(124,255,79,.45)}
+.hw-refill svg{width:1.1em;height:1.1em}
+.hw-refill:active{transform:translateY(2px);box-shadow:0 1px 0 #2f8f1a,0 0 18px rgba(124,255,79,.45)}
+.hw-refill:focus-visible{outline:2px solid var(--candle);outline-offset:3px}
+.hw-chart text.mnum{font-weight:800;font-size:15px;fill:#1a1020}
+.hw-chart text.tname{fill:#efeaff;font-weight:700;font-size:var(--cds-font-size-caption)}
+.hw-chart text.tnum{font-family:var(--chunky);font-weight:900;font-size:1.9rem;font-variant-numeric:tabular-nums}
+.hw-chart text.fire{font-size:26px}
+.hw-chart circle.bubble{fill:rgba(124,255,79,.55)}
+.hw-chart g.row,.hw-chart circle.dot{transition:opacity .15s}
+
+.hw-legend{display:flex;flex-wrap:wrap;justify-content:center;gap:var(--cds-gap-xs) var(--cds-gap-md);margin-top:var(--cds-gap-sm);font-size:var(--cds-font-size-body)}
+.hw-legend .it{display:flex;align-items:center;gap:var(--cds-gap-xs)}
+.hw-legend .sw{width:.8rem;height:.8rem;border-radius:50%}
+.hw-legend .ct{color:var(--ink-dim);font-variant-numeric:tabular-nums}
+
+.hw-tip{position:absolute;display:none;z-index:3;background:#1a0d2e;color:#fff;border:1px solid var(--orange);border-radius:var(--cds-radius);box-shadow:0 0 16px rgba(255,122,26,.45);padding:var(--cds-pad-xs) var(--cds-pad-sm);font-size:var(--cds-font-size-caption);pointer-events:none;white-space:nowrap}
+.hw-tip .t1{color:var(--ink-dim)}
+.hw-tip .t2{font-weight:700;font-variant-numeric:tabular-nums}
+.hw-tip .t3{color:var(--ink-dim)}
+.hw-fail{display:flex;align-items:center;justify-content:center;gap:var(--cds-gap-xs);min-height:12rem;color:var(--ink-dim);font-size:var(--cds-font-size-caption)}
+.hw-fail .dot{width:.375rem;height:.375rem;border-radius:50%;background:var(--color-bad)}
+
+.hw-search{width:100%;box-sizing:border-box;padding:var(--cds-pad-sm) var(--cds-pad-md);border:1px solid rgba(255,122,26,.55);border-radius:999px;background:rgba(0,0,0,.35);color:#fff;font:inherit;font-size:var(--cds-font-size-body)}
+.hw-search::placeholder{color:var(--ink-dim)}
+.hw-tablebox{max-height:28rem;overflow:auto}
+.hw-table{width:100%;border-collapse:collapse;font-size:var(--cds-font-size-body);color:var(--ink)}
+.hw-table th{position:sticky;top:0;z-index:1;background:#1d0f33;text-align:left;border-bottom:1px solid rgba(180,108,255,.35);padding:0}
+.hw-table th button{all:unset;cursor:pointer;display:block;width:100%;box-sizing:border-box;padding:var(--cds-pad-xs) var(--cds-pad-sm);font-size:var(--cds-font-size-caption);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-dim)}
+.hw-table th[aria-sort] button{color:var(--orange)}
+.hw-table td{padding:var(--cds-pad-xs) var(--cds-pad-sm);border-bottom:1px solid rgba(180,108,255,.15)}
+.hw-table td.n{font-variant-numeric:tabular-nums;width:45%}
+.hw-cellbar{display:flex;align-items:center;gap:var(--cds-gap-sm)}
+.hw-cellbar span.b{display:block;height:.7rem;border-radius:999px;min-width:4px}
+
+.hw-end{text-align:center;font-family:var(--spooky);font-weight:900;font-size:clamp(1.4rem,4vw,2rem);color:var(--orange);text-shadow:0 3px 0 #6b2200;margin:var(--cds-gap-lg) 0 0}
+.hw-end .ico{display:block;width:4rem;height:4rem;margin:0 auto var(--cds-gap-xs);filter:drop-shadow(0 0 14px rgba(255,122,26,.7))}
+
+[data-dash-source-state=refreshing]{opacity:.5;transition:opacity var(--cds-dur-slow)}
+[data-dash-source-state=empty]{color:transparent}
+
+/* ---------- Scroll reveal (added by script only when motion is OK) ---------- */
+.hw-hide{opacity:0;transform:translateY(42px) scale(.96);transition:opacity .9s var(--cds-ease-out),transform .9s var(--cds-ease-out)}
+.hw-hide.is-in{opacity:1;transform:none}
+.hw-tiles .hw-hide:nth-child(2){transition-delay:.12s}
+.hw-tiles .hw-hide:nth-child(3){transition-delay:.24s}
+.hw-tiles .hw-hide:nth-child(4){transition-delay:.36s}
+.hw-tiles .hw-hide:nth-child(5){transition-delay:.48s}
+.hw-grid .hw-hide:nth-child(2){transition-delay:.15s}
+.hw-chapter.hw-hide{transform:translateX(-40px)}
+.hw-chapter.hw-hide.is-in{transform:none}
+
+@media (prefers-reduced-motion: no-preference){
+  .hw-moon{animation:hw-glow 4s ease-in-out infinite alternate}
+  .hw-bats span{animation:hw-batfly 9s linear infinite}
+  .hw-bats span:nth-child(2){animation-duration:12s;animation-delay:-4s}
+  .hw-bats span:nth-child(3){animation-duration:7s;animation-delay:-6s}
+  .hw-spider{animation:hw-dangle 5s ease-in-out infinite}
+  .hw-ghost{animation:hw-ghost 6s ease-in-out infinite}
+  .hw-fog{animation:hw-fog 14s ease-in-out infinite alternate}
+  .hw-scene .win{animation:hw-flicker 2.2s ease-in-out infinite}
+  .hw-scene .win:nth-of-type(2n){animation-delay:-1.1s}
+  .hw-scene .pk{animation:hw-pumpkin 1.6s ease-in-out infinite}
+  .hw-tile .ico{animation:hw-bob 2.4s ease-in-out infinite}
+  .hw-tile:hover .ico{animation:hw-shake .3s linear infinite}
+  .hw-chapter .ico{animation:hw-bob 3s ease-in-out infinite}
+  .hw-chart text.fire{animation:hw-fireflick .5s ease-in-out infinite alternate}
+  .hw-chart circle.bubble{animation:hw-bubble 2.4s ease-in infinite}
+  .hw-chart circle.bubble:nth-of-type(2){animation-delay:-.8s}
+  .hw-chart circle.bubble:nth-of-type(3){animation-delay:-1.6s}
+  .hw .hw-boo{animation:hw-boo .7s var(--cds-ease-out)}
+  .hw-end .ico{animation:hw-bob 3s ease-in-out infinite}
+}
+@keyframes hw-glow{from{box-shadow:0 0 36px 10px rgba(255,214,10,.35),0 0 100px 34px rgba(255,122,26,.2)}to{box-shadow:0 0 60px 20px rgba(255,214,10,.6),0 0 160px 60px rgba(255,122,26,.35)}}
+@keyframes hw-batfly{0%{transform:translate(0,0)}25%{transform:translate(-30vw,-14px)}50%{transform:translate(-60vw,12px)}75%{transform:translate(-90vw,-10px)}100%{transform:translate(-130vw,6px)}}
+@keyframes hw-dangle{0%,100%{transform:translateY(-1.5rem)}50%{transform:translateY(1.2rem)}}
+@keyframes hw-ghost{0%,100%{transform:translate(0,0);opacity:.9}50%{transform:translate(-22px,-18px);opacity:.45}}
+@keyframes hw-fog{from{transform:translateX(-6%)}to{transform:translateX(6%)}}
+@keyframes hw-flicker{0%,100%{opacity:1}45%{opacity:.6}50%{opacity:.25}55%{opacity:.85}}
+@keyframes hw-pumpkin{0%,100%{filter:drop-shadow(0 0 6px #ff7a1a)}50%{filter:drop-shadow(0 0 18px #ffd60a)}}
+@keyframes hw-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes hw-shake{0%{transform:rotate(0)}25%{transform:rotate(-10deg)}75%{transform:rotate(10deg)}}
+@keyframes hw-fireflick{from{opacity:.75}to{opacity:1}}
+@keyframes hw-bubble{0%{transform:translateY(0);opacity:0}20%{opacity:.9}100%{transform:translateY(-40px);opacity:0}}
+@keyframes hw-boo{0%{transform:scale(.3) rotate(-10deg);opacity:0}70%{transform:scale(1.25) rotate(4deg);opacity:1}100%{transform:scale(1)}}
+@media (max-width:560px){.hw-moon{width:4.5rem;height:4.5rem;top:5%;opacity:.8}.hw-ghost{right:24%;bottom:2.5rem;font-size:2.2rem}.hw-spider{left:78%}}
+#dash-root .hw [hidden]{display:none !important}
+
+/* Centered titles */
+.hw-hero{text-align:center}
+.hw-hero h1,.hw-hero p.say{margin-inline:auto}
+.hw-chapter{justify-content:center;text-align:center;flex-direction:column;gap:var(--cds-gap-xs)}
+.hw-chapter.hw-hide{transform:translateY(30px)}
+.hw-card h2,.hw-card .note{text-align:center}
+.hw-card .note{max-width:28rem;margin-inline:auto}
+
+/* Title in two parts */
+.hw-hero h1 .l0{display:block;font-size:.42em;letter-spacing:.14em;text-transform:uppercase;color:var(--purple);text-shadow:0 3px 0 #2a0f4a,0 0 18px rgba(180,108,255,.6);margin-bottom:.25em}
+/* Year picker */
+.hw-years{position:relative;z-index:2;display:flex;flex-wrap:wrap;justify-content:center;gap:var(--cds-gap-sm);margin-top:var(--cds-gap-lg)}
+.hw-years button{all:unset;cursor:pointer;font-family:var(--chunky);font-weight:900;font-size:1.15rem;letter-spacing:.04em;padding:.35em 1.1em;border-radius:999px;background:rgba(10,4,20,.55);color:var(--ink-dim);box-shadow:inset 0 0 0 1px rgba(255,122,26,.45)}
+.hw-years button[aria-pressed=true]{background:var(--orange);color:#2a0d00;box-shadow:0 0 20px rgba(255,122,26,.7)}
+.hw-years button:focus-visible{outline:2px solid var(--candle);outline-offset:2px}
+/* Change vs the year before */
+.hw-delta{font-weight:800;font-size:var(--cds-font-size-caption);padding:.15em .7em;border-radius:999px;background:rgba(0,0,0,.35);font-variant-numeric:tabular-nums}
+.hw-delta:empty{display:none}
+.hw-delta.up{color:var(--slime)}
+.hw-delta.down{color:var(--pink)}
+.hw-delta.same{color:var(--ink-dim)}
+/* Waiting for next year */
+.hw-wait{align-items:center;text-align:center;padding:var(--cds-pad-xl)}
+.hw-wait .ball{width:5.5rem;height:5.5rem;filter:drop-shadow(0 0 18px rgba(180,108,255,.7))}
+.hw-wait p{font-size:var(--cds-font-size-heading);max-width:32rem;margin:0 auto;color:var(--ink)}
+
+/* ================= Compte-Bonbons : écrans de l'app ================= */
+#dash-root .hw{overflow:clip}
+#cb-dash{display:flex;flex-direction:column;align-items:center;gap:var(--cds-gap-xl)}
+#cb-dash > *{width:100%;box-sizing:border-box}
+.cb-screen{display:flex;flex-direction:column;gap:var(--cds-gap-lg)}
+.cb-screen[hidden],#cb-dash[hidden]{display:none !important}
+
+/* App bar */
+.cb-bar{display:flex;align-items:center;gap:var(--cds-gap-sm);flex-wrap:wrap}
+.cb-bar[hidden]{display:none}
+.cb-brand{all:unset;cursor:pointer;display:flex;align-items:center;gap:.5rem;font-family:var(--chunky);font-weight:900;font-size:1.15rem;letter-spacing:.03em;color:var(--orange);text-shadow:0 2px 0 #6b2200}
+.cb-brand img{width:2rem;height:2rem;border-radius:.55rem}
+.cb-kids{display:flex;gap:.4rem;flex-wrap:wrap;margin-left:auto}
+.cb-kids button{all:unset;cursor:pointer;font-weight:700;font-size:.9rem;padding:.3em .85em;border-radius:999px;background:rgba(10,4,20,.55);color:var(--ink-dim);box-shadow:inset 0 0 0 1px rgba(180,108,255,.45)}
+.cb-kids button[aria-pressed=true]{background:var(--purple);color:#1a0730;box-shadow:0 0 14px rgba(180,108,255,.6)}
+.cb-iconbtn{all:unset;cursor:pointer;display:grid;place-items:center;width:2.4rem;height:2.4rem;border-radius:50%;background:rgba(10,4,20,.55);color:var(--ink);box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)}
+.cb-iconbtn svg{width:1.3rem;height:1.3rem}
+.cb-bar .cb-iconbtn{margin-left:.2rem}
+.cb-kids:empty + .cb-iconbtn{margin-left:auto}
+.cb-demo-note{width:100%;display:flex;align-items:center;justify-content:center;gap:.6rem;flex-wrap:wrap;text-align:center;padding:.55rem .9rem;border-radius:999px;background:rgba(124,255,79,.1);color:var(--slime);font-weight:700;font-size:.9rem;box-shadow:inset 0 0 0 1px rgba(124,255,79,.4)}
+.cb-demo-note[hidden]{display:none}
+
+/* Menu */
+.cb-menu{position:fixed;inset:0;z-index:60;display:flex;align-items:flex-end;justify-content:center;background:rgba(3,2,8,.6);backdrop-filter:blur(4px)}
+.cb-menu[hidden]{display:none}
+.cb-sheet{width:min(100%,30rem);box-sizing:border-box;margin:0 .75rem calc(.75rem + env(safe-area-inset-bottom));padding:.6rem;border-radius:1.4rem;background:#1d0f33;box-shadow:0 0 0 1px rgba(180,108,255,.35),0 20px 50px rgba(0,0,0,.7)}
+.cb-sheet button{all:unset;cursor:pointer;display:flex;align-items:center;gap:.8rem;width:100%;box-sizing:border-box;padding:.85rem 1rem;border-radius:.9rem;font-weight:600;font-size:1rem;color:var(--ink)}
+.cb-sheet button:hover,.cb-sheet button:focus-visible{background:rgba(255,255,255,.06)}
+.cb-sheet button[hidden]{display:none}
+.cb-sheet button.danger{color:var(--pink)}
+.cb-sheet button.close{justify-content:center;color:var(--ink-dim)}
+.cb-sheet hr{border:0;height:1px;background:rgba(180,108,255,.2);margin:.3rem .6rem}
+.cb-sheet svg{width:1.3rem;height:1.3rem;flex:none}
+
+/* Toast */
+.cb-toast{position:fixed;left:50%;top:calc(14px + env(safe-area-inset-top));transform:translateX(-50%);z-index:70;padding:.6rem 1.1rem;border-radius:999px;background:#1d0f33;color:var(--ink);font-weight:600;box-shadow:0 0 0 1px rgba(124,255,79,.55),0 10px 30px rgba(0,0,0,.6);max-width:calc(100% - 2rem);text-align:center}
+.cb-toast[hidden]{display:none}
+
+/* Welcome */
+.cb-welcome{align-items:center;text-align:center;padding:var(--cds-pad-xl) var(--cds-pad-lg) calc(var(--cds-pad-xl) * 1.5);border-radius:calc(var(--cds-radius) * 2);
+  background:linear-gradient(180deg,#2b0f4d 0%,#3d1259 50%,#5a1d4a 100%);box-shadow:0 0 50px rgba(255,122,26,.2),inset 0 0 80px rgba(0,0,0,.45)}
+.cb-welcome .logo{width:6.5rem;height:6.5rem;border-radius:1.6rem;box-shadow:0 10px 30px rgba(0,0,0,.5),0 0 30px rgba(124,255,79,.25)}
+.cb-welcome h1{margin:0;font-family:var(--spooky);font-weight:900;font-size:clamp(2.6rem,9vw,4rem);line-height:1;color:var(--orange);text-shadow:0 5px 0 #7a2600,0 9px 0 #3a0d00,0 0 30px rgba(255,122,26,.7);filter:url(#hw-wobble)}
+.cb-welcome .pitch{margin:0;max-width:30rem;font-size:var(--cds-font-size-heading);font-weight:600;line-height:1.5;color:var(--ink)}
+.cb-start{display:flex;flex-direction:column;align-items:center;gap:.7rem;width:100%;max-width:22rem;margin-top:var(--cds-gap-sm)}
+.cb-start label{font-weight:700;color:var(--candle)}
+.cb-input{all:unset;box-sizing:border-box;width:100%;padding:.8rem 1.1rem;border-radius:999px;background:rgba(5,2,12,.6);color:#fff;font-family:var(--round);font-weight:600;font-size:1.15rem;text-align:center;box-shadow:inset 0 0 0 2px rgba(255,122,26,.55)}
+.cb-input::placeholder{color:var(--ink-dim)}
+.cb-input:focus{box-shadow:inset 0 0 0 2px var(--candle),0 0 18px rgba(255,214,10,.35)}
+.cb-big{all:unset;cursor:pointer;box-sizing:border-box;text-align:center;font-family:var(--chunky);font-weight:900;font-size:1.2rem;letter-spacing:.03em;padding:.75em 1.5em;border-radius:999px;background:var(--orange);color:#2a0d00;box-shadow:0 4px 0 #9a3b00,0 0 22px rgba(255,122,26,.5)}
+.cb-big:active{transform:translateY(2px);box-shadow:0 2px 0 #9a3b00}
+.cb-big.green{background:var(--slime);color:#0b2b04;box-shadow:0 4px 0 #2f8f1a,0 0 22px rgba(124,255,79,.45)}
+.cb-big[disabled]{opacity:.45;cursor:default}
+.cb-link{all:unset;cursor:pointer;font-weight:700;color:var(--slime);text-decoration:underline;text-underline-offset:3px}
+.cb-privacy{margin:var(--cds-gap-sm) 0 0;max-width:24rem;font-size:var(--cds-font-size-caption);color:var(--ink-dim)}
+.cb-cancel[hidden]{display:none}
+
+/* Count */
+.cb-card{border-radius:calc(var(--cds-radius) * 2);padding:var(--cds-pad-lg);background:rgba(22,11,40,.88);box-shadow:0 0 0 1px rgba(180,108,255,.3),0 0 30px rgba(180,108,255,.14)}
+.cb-head{text-align:center;display:flex;flex-direction:column;align-items:center;gap:.6rem}
+.cb-head h2{margin:0;font-family:var(--spooky);font-weight:900;font-size:clamp(1.7rem,6vw,2.4rem);line-height:1.05;color:var(--orange);text-shadow:0 4px 0 #6b2200,0 0 18px rgba(255,122,26,.5);filter:url(#hw-wobble)}
+.cb-year{display:flex;align-items:center;gap:.6rem}
+.cb-year .val{font-family:var(--chunky);font-weight:900;font-size:1.4rem;color:var(--candle);min-width:4.2ch;text-align:center}
+.cb-total{font-weight:700;color:var(--ink-dim)}
+.cb-total .n{font-family:var(--chunky);font-weight:900;font-size:3.2rem;line-height:1;color:var(--slime);text-shadow:0 4px 0 #1f6b0c,0 0 22px rgba(124,255,79,.5);display:block;font-variant-numeric:tabular-nums}
+.cb-fams{display:flex;gap:.5rem;overflow-x:auto;padding:.2rem .1rem .5rem;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.cb-fams::-webkit-scrollbar{display:none}
+.cb-fams button{all:unset;cursor:pointer;flex:none;display:flex;align-items:center;gap:.45rem;font-weight:700;padding:.55em 1em;border-radius:999px;background:rgba(10,4,20,.6);color:var(--ink);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c) 55%,transparent)}
+.cb-fams button .dot{width:.7rem;height:.7rem;border-radius:50%;background:var(--c);box-shadow:0 0 8px var(--c)}
+.cb-fams button .k{font-family:var(--chunky);font-weight:900;color:var(--c)}
+.cb-fams button[aria-selected=true]{background:var(--c);color:#14081f;box-shadow:0 0 16px color-mix(in srgb,var(--c) 60%,transparent)}
+.cb-fams button[aria-selected=true] .k{color:#14081f}
+.cb-fams button[aria-selected=true] .dot{background:#14081f;box-shadow:none}
+.cb-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.cb-row{display:grid;grid-template-columns:1fr auto auto auto auto;align-items:center;gap:.45rem;padding:.45rem 0;border-bottom:1px solid rgba(180,108,255,.14)}
+.cb-row:last-child{border-bottom:0}
+.cb-row .nm{font-weight:600;font-size:1.02rem;min-width:0;overflow-wrap:anywhere}
+.cb-row.on .nm{color:#fff}
+.cb-row:not(.on) .nm{color:var(--ink-dim)}
+.cb-step{all:unset;cursor:pointer;display:grid;place-items:center;width:2.6rem;height:2.6rem;border-radius:50%;font-family:var(--chunky);font-size:1.5rem;line-height:1;user-select:none;-webkit-user-select:none;touch-action:manipulation}
+.cb-step.m{background:rgba(255,255,255,.07);color:var(--ink-dim)}
+.cb-step.p{background:var(--c,var(--orange));color:#14081f;box-shadow:0 3px 0 rgba(0,0,0,.45),0 0 12px color-mix(in srgb,var(--c,var(--orange)) 45%,transparent)}
+.cb-step.p:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(0,0,0,.45)}
+.cb-step[disabled]{opacity:.3;cursor:default}
+.cb-q{font-family:var(--chunky);font-weight:900;font-size:1.45rem;min-width:2.2ch;text-align:center;font-variant-numeric:tabular-nums;color:var(--c,var(--orange))}
+.cb-row:not(.on) .cb-q{color:rgba(255,255,255,.25)}
+.cb-xl{all:unset;cursor:pointer;font-family:var(--chunky);font-weight:900;font-size:.8rem;padding:.35em .55em;border-radius:.5rem;color:var(--ink-dim);box-shadow:inset 0 0 0 1px rgba(255,255,255,.18)}
+.cb-xl.has{background:var(--candle);color:#2a1b00;box-shadow:none}
+.cb-xlrow{grid-column:1 / -1;display:flex;align-items:center;justify-content:flex-end;gap:.5rem;font-size:.9rem;color:var(--ink-dim)}
+.cb-xlrow[hidden]{display:none}
+.cb-xlrow .cb-step{width:2.1rem;height:2.1rem;font-size:1.2rem}
+.cb-xlrow .cb-q{font-size:1.15rem;color:var(--candle)}
+.cb-add{display:flex;gap:.5rem;margin-top:.8rem}
+.cb-add .cb-input{text-align:left;font-size:1rem;padding:.6rem 1rem}
+.cb-add .cb-big{font-size:1rem;padding:.6em 1.1em;flex:none}
+.cb-soiree h3{margin:0 0 .4rem;font-family:var(--spooky);font-weight:900;font-size:1.6rem;color:var(--purple);text-shadow:0 3px 0 #2a0f4a;text-align:center}
+.cb-soiree .cb-row{grid-template-columns:1fr auto auto auto}
+.cb-soiree .cb-q{color:var(--candle);min-width:3.4ch}
+.cb-soiree .cb-step.p{--c:var(--candle)}
+.cb-go{align-self:center}
+@media (prefers-reduced-motion: no-preference){
+  .cb-bump{animation:cb-bump .28s var(--cds-ease-out)}
+  .cb-welcome .logo{animation:hw-bob 3s ease-in-out infinite}
+}
+@keyframes cb-bump{0%{transform:scale(1)}40%{transform:scale(1.35)}100%{transform:scale(1)}}
+/* Menu and toast live outside the themed area: give them the theme */
+.cb-menu,.cb-toast{--orange:#ff7a1a;--slime:#7cff4f;--purple:#b46cff;--pink:#ff4fa3;--candle:#ffd60a;--ink:#f1ecff;--ink-dim:#b3a9d6;
+  font-family:'Fredoka','Fredoka Variable',ui-rounded,'SF Pro Rounded',system-ui,sans-serif;color:var(--ink)}
+.cb-hint{margin:0;font-size:var(--cds-font-size-caption);color:var(--ink-dim);text-align:center}
+.cb-hint b{font-family:var(--chunky);color:var(--candle);font-weight:900}
+</style>
+
+<div class="hw">
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="hw-wobble" x="-5%" y="-15%" width="110%" height="140%"><feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="2" seed="7"/><feDisplacementMap in="SourceGraphic" scale="3"/></filter></svg>
+  <nav class="cb-bar" hidden>
+    <button class="cb-brand" type="button" aria-label="Compte-Bonbons, accueil"><img src="icon-192.png" alt="">Compte-Bonbons</button>
+    <div class="cb-kids" role="group" aria-label="Choisir l’enfant"></div>
+    <button class="cb-iconbtn cb-menu-btn" type="button" aria-label="Menu"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="2.2" fill="currentColor"/><circle cx="12" cy="12" r="2.2" fill="currentColor"/><circle cx="12" cy="19" r="2.2" fill="currentColor"/></svg></button>
+    <div class="cb-demo-note" hidden>Exemple : le butin de Léo <button class="cb-link cb-leave-demo" type="button">Créer le mien</button></div>
+  </nav>
+
+  <section id="cb-welcome" class="cb-screen cb-welcome" hidden>
+    <img class="logo" src="icon-512.png" alt="">
+    <h1>Compte-Bonbons</h1>
+    <p class="pitch cb-pitch-first">Compte ton butin d’Halloween et découvre tes statistiques : podium hanté, chaudron de sorcière et plus encore!</p>
+    <p class="pitch cb-pitch-more" hidden>Un autre chasseur de bonbons dans la famille?</p>
+    <form class="cb-start" autocomplete="off">
+      <label for="cb-prenom">Comment s’appelle le chasseur de bonbons?</label>
+      <input id="cb-prenom" class="cb-input" name="prenom" maxlength="24" placeholder="Son prénom" required>
+      <button class="cb-big" type="submit">Commencer le décompte</button>
+      <button class="cb-link cb-cancel" type="button" hidden>Annuler</button>
+    </form>
+    <button class="cb-link cb-demo" type="button">Voir l’exemple de Léo</button>
+    <p class="cb-privacy">Tout reste dans ce téléphone : pas de compte, aucune donnée envoyée ailleurs.</p>
+  </section>
+
+  <section id="cb-count" class="cb-screen" hidden>
+    <div class="cb-card cb-head">
+      <h2>Le décompte de <span class="cb-kid">—</span></h2>
+      <div class="cb-year">
+        <button class="cb-iconbtn cb-year-prev" type="button" aria-label="Année précédente"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <span class="val cb-year-val">—</span>
+        <button class="cb-iconbtn cb-year-next" type="button" aria-label="Année suivante"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
+      <div class="cb-total"><span class="n cb-total-n">0</span>bonbons comptés</div>
+      <p class="cb-hint">Touche <b>+</b> pour chaque bonbon. <b>XL</b> sert à noter les formats géants.</p>
+    </div>
+    <div class="cb-fams" role="tablist" aria-label="Familles de bonbons"></div>
+    <div class="cb-card">
+      <ul class="cb-list"></ul>
+      <form class="cb-add" autocomplete="off">
+        <input class="cb-input" name="nom" maxlength="32" placeholder="Une autre sorte…" aria-label="Nom d’une autre sorte de bonbon">
+        <button class="cb-big" type="submit">Ajouter</button>
+      </form>
+    </div>
+    <div class="cb-card cb-soiree">
+      <h3>La soirée</h3>
+      <ul class="cb-list">
+        <li class="cb-row on"><span class="nm">Heures de marche</span><button class="cb-step m" type="button" data-soir="heures" data-d="-0.5" aria-label="Moins une demi-heure">−</button><span class="cb-q cb-heures">—</span><button class="cb-step p" type="button" data-soir="heures" data-d="0.5" aria-label="Plus une demi-heure">+</button></li>
+        <li class="cb-row on"><span class="nm">Sacs donnés à la porte</span><button class="cb-step m" type="button" data-soir="sacs" data-d="-1" aria-label="Un sac de moins">−</button><span class="cb-q cb-sacs">—</span><button class="cb-step p" type="button" data-soir="sacs" data-d="1" aria-label="Un sac de plus">+</button></li>
+      </ul>
+    </div>
+    <button class="cb-big green cb-go" type="button">Voir mon butin hanté</button>
+  </section>
+
+
+  <div id="cb-dash" hidden>
+  <header class="hw-hero" id="resume">
+    <div class="hw-moon" aria-hidden="true"></div>
+    <div class="hw-bats" aria-hidden="true"><span>🦇</span><span>🦇</span><span>🦇</span></div>
+    <div class="hw-spider" aria-hidden="true"><span>🕷️</span></div>
+    <div class="hw-ghost" aria-hidden="true">👻</div>
+    <svg class="hw-scene" viewBox="0 0 800 150" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+      <path d="M0,150 L0,110 Q120,80 240,104 T480,96 T800,92 L800,150 Z" fill="#0d0718"/>
+      <g fill="#0d0718">
+        <rect x="560" y="40" width="120" height="70"/>
+        <polygon points="550,42 620,4 690,42"/>
+        <rect x="660" y="10" width="26" height="60"/>
+        <polygon points="652,12 673,-14 694,12"/>
+        <rect x="604" y="80" width="18" height="30"/>
+      </g>
+      <rect class="win" x="574" y="54" width="14" height="14" rx="2"/>
+      <rect class="win" x="640" y="54" width="14" height="14" rx="2"/>
+      <rect class="win" x="667" y="24" width="12" height="12" rx="2"/>
+      <rect class="win" x="612" y="20" width="10" height="12" rx="5"/>
+      <g fill="#1b1230" stroke="#3a2a55" stroke-width="2">
+        <path d="M70,118 v-26 a14,14 0 0 1 28,0 v26 z"/>
+        <path d="M130,116 v-18 a11,11 0 0 1 22,0 v18 z"/>
+        <path d="M360,112 v-30 a16,16 0 0 1 32,0 v30 z"/>
+        <path d="M420,110 v-16 a10,10 0 0 1 20,0 v16 z"/>
+      </g>
+      <path d="M250,108 C252,80 246,60 256,40 M254,70 C268,60 276,58 286,48 M252,58 C240,50 234,44 226,34 M256,44 C262,34 262,26 270,20" stroke="#0d0718" stroke-width="6" fill="none" stroke-linecap="round"/>
+      <text class="pk" x="180" y="122">🎃</text>
+      <text class="pk" x="470" y="116">🎃</text>
+      <text class="pk" x="720" y="120">🎃</text>
+    </svg>
+    <div class="hw-fog" aria-hidden="true"></div>
+    <h1><span class="l0">Compte-Bonbons</span>Le butin hanté <span class="l2">de <span class="cb-kid">—</span></span></h1>
+    <p class="say">En <b data-draw="annee-inline" data-source="totaux" data-field="annee" class="dash-skeleton">—</b>, après <b data-draw="heures-inline" data-source="totaux" data-field="heures" class="dash-skeleton">—</b> heures à cogner aux portes, <span class="cb-kid">—</span> a ramassé <b data-draw="total-inline" data-source="totaux" data-field="total" class="dash-skeleton">—</b> bonbons! Ça fait <b data-draw="minute" data-source="totaux" data-field="parMinute" class="dash-skeleton">—</b> bonbons par minute. Le roi de la nuit : les <b data-draw="champion" data-source="totaux" data-field="champion" class="dash-skeleton">—</b>, avec <b data-draw="champion-qte" data-source="totaux" data-field="championQte" class="dash-skeleton">—</b> morceaux.</p>
+    <div class="hw-years" data-draw="years" data-source="totaux" role="group" aria-label="Choisir l’année"></div>
+  </header>
+
+  <div class="hw-chapter hw-reveal"><svg class="ico" viewBox="0 0 48 48" aria-hidden="true"><path d="M6 21 Q6 8 24 8 Q42 8 42 21 Z" fill="#c8682a"/><circle cx="16" cy="14" r="3.5" fill="#7cff4f"/><circle cx="24" cy="11" r="3.5" fill="#ff4fa3"/><circle cx="32" cy="14" r="3.5" fill="#b46cff"/><rect x="6" y="21" width="36" height="20" rx="3" fill="#8f4417"/><rect x="6" y="19" width="36" height="5" fill="#ffd60a"/><rect x="20.5" y="19" width="7" height="11" rx="2" fill="#ffd60a"/><circle cx="24" cy="25.5" r="1.6" fill="#5a2a0c"/></svg><div><span class="k">Chapitre 1</span><h3>Le trésor de la nuit</h3></div></div>
+  <section class="hw-tiles" id="chiffres">
+    <div class="hw-tile hw-reveal">
+      <svg class="ico" viewBox="0 0 48 48" aria-hidden="true"><path d="M15 24 L4 14 L4 34 Z" fill="#ffb066"/><path d="M33 24 L44 14 L44 34 Z" fill="#ffb066"/><circle cx="24" cy="24" r="12" fill="#ff7a1a"/><path d="M16 16 Q22 22 20 33" stroke="#ffd2a6" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M24 12.5 Q31 20 29 35" stroke="#ffd2a6" stroke-width="3" fill="none" stroke-linecap="round"/></svg>
+      <span class="lbl">Bonbons ramassés</span>
+      <b class="num dash-skeleton" data-draw="total" data-source="totaux" data-field="total">—</b>
+      <span class="hw-delta" data-draw="d-total" data-source="totaux" data-field="d_total"></span>
+      <span class="note">Le grand total!</span>
+    </div>
+    <div class="hw-tile hw-reveal">
+      <svg class="ico" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="25" r="18" fill="#163a10"/><circle cx="24" cy="25" r="18" fill="none" stroke="#7cff4f" stroke-width="3.5"/><rect x="20" y="2" width="8" height="5" rx="2" fill="#7cff4f"/><g fill="#7cff4f"><circle cx="24" cy="11" r="1.8"/><circle cx="38" cy="25" r="1.8"/><circle cx="24" cy="39" r="1.8"/><circle cx="10" cy="25" r="1.8"/></g><path d="M24 15 V25 L31 30" stroke="#d6ffc4" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="24" cy="25" r="2.8" fill="#7cff4f"/></svg>
+      <span class="lbl">Bonbons à l'heure</span>
+      <b class="num dash-skeleton" data-draw="heure" data-source="totaux" data-field="parHeure">—</b>
+      <span class="hw-delta" data-draw="d-heure" data-source="totaux" data-field="d_parHeure"></span>
+      <span class="note">Rapide comme un balai de sorcière</span>
+    </div>
+    <div class="hw-tile hw-reveal">
+      <svg class="ico" viewBox="0 0 48 48" aria-hidden="true"><line x1="14" y1="24" x2="14" y2="44" stroke="#8a6ab8" stroke-width="3" stroke-linecap="round"/><circle cx="14" cy="16" r="10" fill="#b46cff"/><path d="M14 16 m-5 0 a5 5 0 1 0 5 -5" stroke="#e2c8ff" stroke-width="2.5" fill="none" stroke-linecap="round"/><circle cx="35" cy="13" r="7" fill="#ff4fa3"/><circle cx="33" cy="11" r="2" fill="#ffc2e0"/><path d="M26 35 L20 30 L20 40 Z" fill="#ffe680"/><path d="M38 35 L44 30 L44 40 Z" fill="#ffe680"/><circle cx="32" cy="35" r="7" fill="#ffd60a"/></svg>
+      <span class="lbl">Sortes différentes</span>
+      <b class="num dash-skeleton" data-draw="sortes" data-source="totaux" data-field="sortes">—</b>
+      <span class="hw-delta" data-draw="d-sortes" data-source="totaux" data-field="d_sortes"></span>
+      <span class="note">Un vrai festin de sorcière</span>
+    </div>
+    <div class="hw-tile hw-reveal">
+      <svg class="ico" viewBox="0 0 48 48" aria-hidden="true"><circle cx="19" cy="13" r="5" fill="#ffd60a"/><circle cx="28" cy="11" r="5" fill="#7cff4f"/><path d="M10 16 H38 L41 40 Q41 44 37 44 H11 Q7 44 7 40 Z" fill="#ff4fa3"/><path d="M10 16 H38 L38.5 20 H9.5 Z" fill="#c2287a"/><path d="M24 24 l2.2 4.6 5 .7 -3.6 3.5 .9 5 -4.5 -2.4 -4.5 2.4 .9 -5 -3.6 -3.5 5 -.7 Z" fill="#ffd1e8"/></svg>
+      <span class="lbl">Ramassés par sac donné</span>
+      <b class="num dash-skeleton" data-draw="ratio" data-source="totaux" data-field="ratio">—</b>
+      <span class="hw-delta" data-draw="d-ratio" data-source="totaux" data-field="d_ratio"></span>
+      <span class="note">On a donné <b data-draw="sacs" data-source="totaux" data-field="sacs" class="dash-skeleton">—</b> sacs à la porte</span>
+    </div>
+    <div class="hw-tile hw-reveal">
+      <svg class="ico" viewBox="0 0 48 48" aria-hidden="true"><rect x="3" y="12" width="40" height="26" rx="4" fill="#6b3410"/><g fill="#9c5221"><rect x="6" y="15" width="8" height="9" rx="1.5"/><rect x="16" y="15" width="8" height="9" rx="1.5"/><rect x="6" y="26" width="8" height="9" rx="1.5"/><rect x="16" y="26" width="8" height="9" rx="1.5"/></g><path d="M27 10 H45 V40 H27 L29.5 35 L27 30 L29.5 25 L27 20 L29.5 15 Z" fill="#ffd60a"/><text x="37" y="29" text-anchor="middle" font-size="10" font-weight="900" fill="#6b3410" font-family="sans-serif">XL</text></svg>
+      <span class="lbl">Formats monstres</span>
+      <b class="num dash-skeleton" data-draw="gros" data-source="totaux" data-field="gros">—</b>
+      <span class="hw-delta" data-draw="d-gros" data-source="totaux" data-field="d_gros"></span>
+      <span class="note">Les « gros » du sac</span>
+    </div>
+  </section>
+
+  <div class="hw-chapter hw-reveal"><svg class="ico" viewBox="0 0 48 48" aria-hidden="true"><path d="M14 11 H8 Q8 23 17 24" stroke="#e0a800" stroke-width="3.5" fill="none" stroke-linecap="round"/><path d="M34 11 H40 Q40 23 31 24" stroke="#e0a800" stroke-width="3.5" fill="none" stroke-linecap="round"/><path d="M13 6 H35 V17 Q35 31 24 31 Q13 31 13 17 Z" fill="#ffd60a"/><path d="M18 10 V18 Q18 24 22 26" stroke="#fff3b0" stroke-width="2.5" fill="none" stroke-linecap="round" opacity=".7"/><rect x="21" y="31" width="6" height="5" fill="#e0a800"/><rect x="14" y="36" width="20" height="6" rx="2" fill="#a86f00"/></svg><div><span class="k">Chapitre 2</span><h3>Qui a gagné la nuit?</h3></div></div>
+  <section class="hw-grid">
+    <div class="hw-card hw-reveal" id="podium">
+      <h2>Le podium hanté</h2>
+      <p class="note">Les trois bonbons champions sortent de terre. Plus il y en a, plus la pierre est haute!</p>
+      <div class="hw-chart tall dash-skeleton" data-draw="podium" data-source="bonbons"></div>
+    </div>
+    <div class="hw-card hw-reveal" id="chaudron">
+      <h2>Le chaudron de la sorcière</h2>
+      <p class="note">Chaque bulle, c'est un bonbon. Regarde le chaudron se remplir, puis recommence autant de fois que tu veux!</p>
+      <div class="hw-chart tall dash-skeleton" data-draw="bocal" data-source="categories"></div>
+      <button class="hw-refill" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/><path d="M20.5 3.5v5h-5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Remplir à nouveau</button>
+    </div>
+  </section>
+
+  <div class="hw-chapter hw-reveal"><svg class="ico" viewBox="0 0 48 48" aria-hidden="true"><rect x="14" y="4" width="20" height="6" rx="2" fill="#b46cff"/><path d="M12 12 H36 Q40 12 40 17 V38 Q40 43 35 43 H13 Q8 43 8 38 V17 Q8 12 12 12 Z" fill="#2a1645"/><circle cx="15" cy="37" r="4" fill="#ff7a1a"/><circle cx="24" cy="37" r="4" fill="#ff7a1a"/><circle cx="33" cy="37" r="4" fill="#d4915b"/><circle cx="19.5" cy="29.5" r="4" fill="#7cff4f"/><circle cx="28.5" cy="29.5" r="4" fill="#b46cff"/><circle cx="15" cy="22" r="4" fill="#ffd60a"/><circle cx="24" cy="22" r="4" fill="#ff4f6d"/><path d="M34 17 V24" stroke="#5c3a8a" stroke-width="2.5" stroke-linecap="round"/></svg><div><span class="k">Chapitre 3</span><h3>Les familles de bonbons</h3></div></div>
+  <section class="hw-grid">
+    <div class="hw-card hw-reveal" id="categories">
+      <h2>Par famille</h2>
+      <p class="note">La part de chaque famille dans le butin. Touche une pointe pour voir le détail.</p>
+      <div class="hw-chart tall dash-skeleton" data-draw="chart-cat" data-source="categories"></div>
+    </div>
+    <div class="hw-card hw-reveal" id="palmares">
+      <h2>La course des fantômes</h2>
+      <p class="note">Les 12 bonbons les plus nombreux font la course. Quel fantôme ira le plus loin?</p>
+      <div class="hw-chart dash-skeleton" data-draw="chart-top" data-source="bonbons"></div>
+    </div>
+  </section>
+
+  <div class="hw-chapter hw-reveal"><svg class="ico" viewBox="0 0 48 48" aria-hidden="true"><rect x="9" y="5" width="30" height="38" rx="3" fill="#6a2fa0"/><rect x="9" y="5" width="6" height="38" rx="2" fill="#44186b"/><rect x="36" y="20" width="6" height="9" rx="2" fill="#ffd60a"/><path d="M29 14 A8 8 0 1 0 29 32 A6.2 6.2 0 1 1 29 14 Z" fill="#ffd60a"/><circle cx="31" cy="12" r="1.3" fill="#7cff4f"/><circle cx="34" cy="34" r="1.3" fill="#7cff4f"/></svg><div><span class="k">Chapitre 4</span><h3>Les secrets du grimoire</h3></div></div>
+  <section class="hw-grid">
+    <div class="hw-card hw-reveal" id="chocolat">
+      <h2>La crypte au chocolat</h2>
+      <p class="note">Toutes les sortes de chocolat, de la plus à la moins nombreuse.</p>
+      <div class="hw-chart dash-skeleton" data-draw="chart-choco" data-source="bonbons"></div>
+    </div>
+    <div class="hw-card hw-reveal" id="chips">
+      <h2>Le sac de chips</h2>
+      <p class="note">Toutes les sortes de chips, de la plus à la moins nombreuse.</p>
+      <div class="hw-chart dash-skeleton" data-draw="chart-chips" data-source="bonbons"></div>
+    </div>
+    <div class="hw-card hw-reveal" id="special">
+      <h2>Les trésors spéciaux</h2>
+      <p class="note">Les petits extras du sac : gommes, rouleaux aux fruits, mini Oreo et compagnie.</p>
+      <div class="hw-chart dash-skeleton" data-draw="chart-special" data-source="bonbons"></div>
+    </div>
+  </section>
+  <section class="hw-grid">
+    <div class="hw-card hw-reveal" id="decompte">
+      <h2>Le grimoire de <span class="cb-kid">—</span></h2>
+      <p class="note">Touche un titre de colonne pour trier.</p>
+      <input class="hw-search" type="search" placeholder="🔮 Chercher un bonbon…" aria-label="Chercher un bonbon">
+      <div class="hw-tablebox">
+        <table class="hw-table" data-source="bonbons" data-row-key="annee,bonbon">
+          <thead><tr>
+            <th data-field="bonbon"><button class="hw-sort" data-key="bonbon">Bonbon</button></th>
+            <th data-field="categorie"><button class="hw-sort" data-key="categorie">Famille</button></th>
+            <th data-field="quantite" aria-sort="descending"><button class="hw-sort" data-key="quantite">Combien</button></th>
+          </tr></thead>
+          <tbody data-draw="table-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <div class="hw-chapter hw-reveal"><svg class="ico" viewBox="0 0 48 48" aria-hidden="true"><rect x="6" y="10" width="36" height="32" rx="4" fill="#2a1645"/><rect x="6" y="10" width="36" height="10" rx="4" fill="#ff7a1a"/><rect x="6" y="16" width="36" height="4" fill="#ff7a1a"/><rect x="14" y="5" width="4" height="10" rx="2" fill="#ffd60a"/><rect x="30" y="5" width="4" height="10" rx="2" fill="#ffd60a"/><rect x="12" y="30" width="7" height="8" rx="1.5" fill="#b46cff"/><rect x="21" y="25" width="7" height="13" rx="1.5" fill="#ff7a1a"/><rect x="30" y="22" width="7" height="16" rx="1.5" fill="#7cff4f"/></svg><div><span class="k">Chapitre 5</span><h3>D’une année à l’autre</h3></div></div>
+  <section class="hw-grid hw-compare-wait">
+    <div class="hw-card hw-wait hw-reveal">
+      <svg class="ball" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="28" r="21" fill="#3d1c66"/><circle cx="32" cy="28" r="21" fill="none" stroke="#b46cff" stroke-width="2.5"/><ellipse cx="25" cy="20" rx="6" ry="3.5" fill="#d9c4ff" opacity=".45" transform="rotate(-30 25 20)"/><path d="M34 22 l1.6 3.4 3.7.5 -2.7 2.6 .7 3.7 -3.3 -1.8 -3.3 1.8 .7 -3.7 -2.7 -2.6 3.7 -.5 Z" fill="#ffd60a"/><circle cx="41" cy="33" r="1.6" fill="#7cff4f"/><circle cx="24" cy="35" r="1.3" fill="#ff7a1a"/><path d="M18 46 H46 L50 58 H14 Z" fill="#8f4417"/><rect x="12" y="56" width="40" height="5" rx="2" fill="#5a2a0c"/></svg>
+      <h2>La suite l’an prochain!</h2>
+      <p>À la prochaine Halloween, refais ton décompte : les années se comparent ici, côte à côte.</p>
+    </div>
+  </section>
+  <section class="hw-grid hw-compare" hidden>
+    <div class="hw-card hw-reveal" id="comparaison">
+      <h2>Le total de chaque année</h2>
+      <p class="note">Quelle Halloween a été la plus payante?</p>
+      <div class="hw-chart tall dash-skeleton" data-draw="cmp-total" data-source="totaux"></div>
+    </div>
+    <div class="hw-card hw-reveal" id="comparaison-familles">
+      <h2>Les familles, année par année</h2>
+      <p class="note">Chaque couleur, c’est une année.</p>
+      <div class="hw-chart dash-skeleton" data-draw="cmp-cat" data-source="categories"></div>
+    </div>
+  </section>
+
+  <p class="hw-end hw-reveal"><svg class="ico" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 7 Q22 2 27 1" stroke="#3fbf2a" stroke-width="3.5" fill="none" stroke-linecap="round"/><ellipse cx="15" cy="27" rx="10" ry="15" fill="#e2611a"/><ellipse cx="33" cy="27" rx="10" ry="15" fill="#e2611a"/><ellipse cx="24" cy="27" rx="11" ry="17" fill="#ff7a1a"/><path d="M15 22 l4 -4 4 4 Z M25 22 l4 -4 4 4 Z" fill="#ffd60a"/><path d="M13 30 Q24 40 35 30 L31 32 L28 29 L24 33 L20 29 L17 32 Z" fill="#ffd60a"/></svg>Joyeuse Halloween, <span class="cb-kid">—</span>! Garde-en pour demain…</p>
+  </div>
+</div>
+  <div class="cb-menu" hidden>
+    <div class="cb-sheet" role="menu">
+      <button type="button" data-act="count" role="menuitem"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4l11-11-4-4L4 16z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>Modifier le décompte</button>
+      <button type="button" data-act="dash" role="menuitem"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V11M12 20V5M19 20v-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>Voir le tableau de bord</button>
+      <button type="button" data-act="add" role="menuitem"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>Ajouter un enfant</button>
+      <button type="button" data-act="rename" role="menuitem"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h10M4 17h7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>Changer le prénom</button>
+      <hr>
+      <button type="button" data-act="export" role="menuitem"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Sauvegarder mes données</button>
+      <button type="button" data-act="import" role="menuitem"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20V9M7 14l5-5 5 5M5 4h14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Restaurer une sauvegarde</button>
+      <button type="button" data-act="demo" role="menuitem"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3" fill="currentColor"/><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z" fill="none" stroke="currentColor" stroke-width="2"/></svg>Voir l’exemple de Léo</button>
+      <hr>
+      <button type="button" data-act="delete" class="danger" role="menuitem"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M10 7V4h4v3M7 7l1 13h8l1-13" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg><span>Supprimer <span class="cb-kid">—</span></span></button>
+      <button type="button" data-act="close" class="close">Fermer</button>
+    </div>
+  </div>
+  <div class="cb-toast" hidden role="status" aria-live="polite"></div>
+  <input class="cb-file" type="file" accept="application/json,.json" hidden>
+
+<script>
+window.hwFmt = new Intl.NumberFormat('fr-CA');
+window.hwDec = new Intl.NumberFormat('fr-CA', {maximumFractionDigits: 1});
+window.hwPct = new Intl.NumberFormat('fr-CA', {style: 'percent', maximumFractionDigits: 1});
+const CAT_COLORS = {'Bonbons durs': '#ff7a1a', 'Chocolat': '#d4915b', 'Jujubes': '#7cff4f', 'Spécial': '#b46cff', 'Chips': '#ffd60a', 'Réglisse': '#ff4f6d'};
+window.hwColor = (c) => CAT_COLORS[c] || '#00e5ff';
+const YEAR_COLORS = ['#b46cff', '#ff7a1a', '#7cff4f', '#00e5ff', '#ffd60a', '#ff4fa3'];
+window.hwGlow = (c) => `drop-shadow(0 0 6px ${c})`;
+window.hwMotion = window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
+window.hwUid = 0;
+
+/* The year being shown. Defaults to the most recent year in the data. */
+window.hwYear = null;
+window.hwSelYear = (tot) => {
+  const ys = tot.map((r) => String(r.annee));
+  if (!ys.includes(hwYear)) hwYear = ys[ys.length - 1] || null;
+  return hwYear;
+};
+window.hwYearColor = (y, ys) => YEAR_COLORS[Math.max(0, ys.indexOf(String(y))) % YEAR_COLORS.length];
+window.hwOfYear = (rows) => rows.filter((r) => String(r.annee) === hwYear);
+
+/* Scroll reveal: a drawing waits at "zero" until it scrolls into view, animates once, then stays drawn. */
+window.hwRevealed = new Set();
+window.hwObs = new Map();
+window.hwReveal = (name, el, draw) => {
+  if (!hwMotion || hwRevealed.has(name) || typeof IntersectionObserver === 'undefined') { draw('static'); return; }
+  draw('zero');
+  const old = hwObs.get(name);
+  if (old) old.disconnect();
+  const io = new IntersectionObserver((ents) => {
+    if (!ents.some((e) => e.isIntersecting)) return;
+    io.disconnect();
+    hwObs.delete(name);
+    if (hwRevealed.has(name)) return;
+    hwRevealed.add(name);
+    draw('animate');
+  }, {root: document, threshold: 0.35});
+  io.observe(el);
+  hwObs.set(name, io);
+};
+
+/* Cards, tiles and chapter titles fade up as they scroll in. */
+if (hwMotion && typeof IntersectionObserver !== 'undefined') {
+  const cardIo = new IntersectionObserver((ents) => ents.forEach((e) => {
+    if (e.isIntersecting) { e.target.classList.add('is-in'); cardIo.unobserve(e.target); }
+  }), {root: document, threshold: 0.12});
+  document.querySelectorAll('.hw-reveal').forEach((n) => { n.classList.add('hw-hide'); cardIo.observe(n); });
+}
+
+dash.calc('totaux', {
+  title: 'Statistiques de chaque année',
+  description: 'Pour chaque année : total, bonbons à l’heure et à la minute, sortes, formats géants, bonbons récoltés par sac donné, bonbon champion et écart avec l’année d’avant.',
+  inputs: ['bonbons', 'soiree'],
+  fn: (bonbons, soiree) => {
+    const q = (r) => Number(r.quantite);
+    const years = [...new Set(bonbons.map((r) => String(r.annee)))].sort();
+    let prev = null;
+    return years.map((y) => {
+      const rows = bonbons.filter((r) => String(r.annee) === y);
+      const v = (k) => { const m = soiree.find((r) => String(r.annee) === y && r.mesure === k); return m ? Number(m.valeur) : null; };
+      const total = rows.reduce((s, r) => s + q(r), 0);
+      const heures = v('heures_marche');
+      const sacs = v('sacs_donnes');
+      const top = rows.slice().sort((a, b) => q(b) - q(a))[0] || {};
+      const o = {
+        annee: y, total, heures, sacs,
+        sortes: rows.length,
+        parHeure: heures ? Math.round(total / heures) : null,
+        parMinute: heures ? Math.round(total / (heures * 60) * 10) / 10 : null,
+        ratio: sacs ? Math.round(total / sacs * 10) / 10 : null,
+        gros: rows.reduce((s, r) => s + Number(r.gros || 0), 0),
+        champion: top.bonbon, championQte: q(top),
+        anneePrec: prev ? prev.annee : null
+      };
+      ['total', 'parHeure', 'sortes', 'ratio', 'gros'].forEach((k) => {
+        o['d_' + k] = prev && o[k] != null && prev[k] != null ? Math.round((o[k] - prev[k]) * 10) / 10 : null;
+      });
+      prev = o;
+      return o;
+    });
+  }
+});
+
+dash.calc('categories', {
+  title: 'Bonbons par catégorie et par année',
+  description: 'Pour chaque année, somme des quantités par catégorie, avec le nombre de sortes et la part de la récolte de l’année.',
+  inputs: ['bonbons'],
+  fn: (bonbons) => {
+    const out = [];
+    const years = [...new Set(bonbons.map((r) => String(r.annee)))].sort();
+    years.forEach((y) => {
+      const rows = bonbons.filter((r) => String(r.annee) === y);
+      const total = rows.reduce((s, r) => s + Number(r.quantite), 0);
+      const m = new Map();
+      rows.forEach((r) => {
+        const c = m.get(r.categorie) || {annee: y, categorie: r.categorie, quantite: 0, sortes: 0};
+        c.quantite += Number(r.quantite);
+        c.sortes += 1;
+        m.set(r.categorie, c);
+      });
+      [...m.values()].sort((a, b) => b.quantite - a.quantite).forEach((c) => out.push({...c, part: c.quantite / total}));
+    });
+    return out;
+  }
+});
+
+/* Show the comparison chapter once there are two years or more. */
+dash.onData(() => {
+  const d = dash.data('totaux');
+  const n = d.status === 'ok' ? d.data.length : 0;
+  document.querySelectorAll('.hw-compare').forEach((e) => { e.hidden = n < 2; });
+  document.querySelectorAll('.hw-compare-wait').forEach((e) => { e.hidden = n >= 2; });
+});
+
+window.hwState = (el, d) => {
+  if (d.status === 'ok') { el.classList.remove('dash-skeleton'); return true; }
+  el.replaceChildren();
+  if (d.status === 'loading') { el.classList.add('dash-skeleton'); return false; }
+  el.classList.remove('dash-skeleton');
+  if (d.status === 'error') {
+    const f = document.createElement('div');
+    f.className = 'hw-fail';
+    const dot = document.createElement('span');
+    dot.className = 'dot';
+    f.append(dot, 'Échec du chargement');
+    el.append(f);
+  }
+  return false;
+};
+
+window.hwTip = (el) => {
+  const tip = document.createElement('div');
+  tip.className = 'hw-tip';
+  el.append(tip);
+  const line = (cls, txt) => { const n = document.createElement('div'); n.className = cls; n.textContent = txt; return n; };
+  return {
+    show(ev, lines) {
+      tip.replaceChildren(...lines.filter(Boolean).map(([c, t]) => line(c, t)));
+      tip.style.display = 'block';
+      const r = el.getBoundingClientRect();
+      let left = ev.clientX - r.left + 12;
+      if (left + tip.offsetWidth > r.width) left = ev.clientX - r.left - tip.offsetWidth - 12;
+      tip.style.left = Math.max(0, left) + 'px';
+      tip.style.top = Math.max(0, Math.min(ev.clientY - r.top + 12, r.height - tip.offsetHeight)) + 'px';
+    },
+    hide() { tip.style.display = 'none'; }
+  };
+};
+window.hwUnits = (v) => hwFmt.format(v) + (v === 1 ? ' bonbon' : ' bonbons');
+
+/* Horizontal bars; mode is 'zero' (waiting), 'animate' (building) or 'static' (done). */
+window.hwBars = (el, items, aria, mode, rider) => {
+  el.replaceChildren();
+  if (!items.length) return;
+  const W = Math.max(240, Math.floor(el.clientWidth || 320));
+  const rowH = 34, barH = 16, rkW = rider ? 26 : 0;
+  const H = items.length * rowH;
+  const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', aria);
+  const defs = svg.append('defs');
+  const fills = new Map();
+  items.forEach((it) => {
+    if (fills.has(it.color)) return;
+    const id = 'hwb' + (++hwUid);
+    const lg = defs.append('linearGradient').attr('id', id).attr('x1', 0).attr('x2', 1).attr('y1', 0).attr('y2', 0);
+    lg.append('stop').attr('offset', '0%').style('stop-color', it.color).style('stop-opacity', 0.25);
+    lg.append('stop').attr('offset', '100%').style('stop-color', it.color).style('stop-opacity', 1);
+    fills.set(it.color, `url(#${id})`);
+  });
+  const measure = (cls, txt) => { const t = svg.append('text').attr('class', cls).text(txt); const w = t.node().getComputedTextLength(); t.remove(); return w; };
+  const labelW = Math.min(d3.max(items, (it) => measure('lbl', it.label)) || 0, W * 0.42);
+  const valW = d3.max(items, (it) => measure('val', hwFmt.format(it.value))) || 0;
+  const x0 = labelW + 10;
+  const x = d3.scaleLinear([0, d3.max(items, (it) => it.value) || 1], [0, Math.max(10, W - x0 - valW - rkW - 14)]);
+  const bw = (d) => Math.max(4, x(d.value));
+
+  const g = svg.selectAll('g.row').data(items).join('g').attr('class', 'row').attr('transform', (d, i) => `translate(0,${i * rowH})`);
+  g.append('rect').attr('width', W).attr('height', rowH).attr('fill', 'transparent');
+  g.append('text').attr('class', 'lbl').attr('x', labelW).attr('y', rowH / 2).attr('dy', '0.35em').attr('text-anchor', 'end').text((d) => d.label);
+  const bars = g.append('rect').attr('x', x0).attr('y', (rowH - barH) / 2).attr('height', barH).attr('rx', barH / 2)
+    .attr('fill', (d) => fills.get(d.color)).style('filter', (d) => hwGlow(d.color));
+  const rk = rider ? g.append('text').attr('class', 'rider').attr('text-anchor', 'middle').attr('y', rowH / 2).attr('dy', '0.35em').text(rider) : null;
+  const vals = g.append('text').attr('class', 'val').attr('y', rowH / 2).attr('dy', '0.35em').style('fill', (d) => d.color).style('filter', (d) => hwGlow(d.color));
+  const rkX = (w) => x0 + w + rkW / 2;
+  const valX = (w) => x0 + w + rkW + 6;
+
+  if (mode === 'static') {
+    bars.attr('width', bw);
+    if (rk) rk.attr('x', (d) => rkX(bw(d)));
+    vals.attr('x', (d) => valX(bw(d))).text((d) => hwFmt.format(d.value));
+  } else {
+    bars.attr('width', 4);
+    if (rk) rk.attr('x', rkX(4)).style('opacity', 0);
+    vals.attr('x', valX(4)).text('0').style('opacity', 0);
+    if (mode === 'animate') {
+      const dur = 1200, delay = (d, i) => 100 + i * 120;
+      bars.transition().delay(delay).duration(dur).ease(d3.easeBackOut.overshoot(1.3)).attr('width', bw);
+      if (rk) rk.transition().delay(delay).duration(dur).ease(d3.easeBackOut.overshoot(1.3)).attr('x', (d) => rkX(bw(d))).style('opacity', 1);
+      vals.transition().delay(delay).duration(dur).ease(d3.easeBackOut.overshoot(1.3))
+        .attr('x', (d) => valX(bw(d))).style('opacity', 1)
+        .tween('text', function (d) { const i = d3.interpolateNumber(0, d.value); const node = this; return (t) => { node.textContent = hwFmt.format(Math.max(0, Math.round(i(Math.min(t, 1))))); }; })
+        .on('end', function (d) { this.textContent = hwFmt.format(d.value); });
+    }
+  }
+
+  const tip = hwTip(el);
+  g.on('pointerenter pointermove', (ev, d) => {
+    tip.show(ev, [['t1', d.label], ['t2', hwUnits(d.value)], d.sub && ['t3', d.sub]]);
+    svg.selectAll('g.row').style('opacity', (b) => (b === d ? 1 : 0.4));
+  }).on('pointerleave', () => { tip.hide(); svg.selectAll('g.row').style('opacity', 1); });
+};
+
+/* Text figures count up when they scroll into view. */
+const textDraw = (name, field, fmt, decimals, still) => dash.draw(name, (el) => {
+  const d = dash.data('totaux');
+  if (d.status !== 'ok') {
+    if (d.status !== 'loading') el.classList.remove('dash-skeleton');
+    el.textContent = '—';
+    return;
+  }
+  el.classList.remove('dash-skeleton');
+  const y = hwSelYear(d.data);
+  el.dataset.where = 'annee=' + y;
+  const row = d.data.find((r) => r.annee === y);
+  const v = row ? row[field] : null;
+  if (v == null) { el.textContent = '—'; return; }
+  if (still) { el.textContent = fmt(v); return; }
+  if (typeof v !== 'number') {
+    hwReveal('t-' + name, el, (mode) => {
+      el.textContent = mode === 'zero' ? '???' : fmt(v);
+      if (mode === 'animate') { el.classList.remove('hw-boo'); void el.offsetWidth; el.classList.add('hw-boo'); }
+    });
+    return;
+  }
+  hwReveal('t-' + name, el, (mode) => {
+    if (mode === 'static') { el.textContent = fmt(v); return; }
+    el.textContent = fmt(0);
+    if (mode !== 'animate') return;
+    const i = d3.interpolateNumber(0, v);
+    const k = decimals ? 10 : 1;
+    d3.select(el).transition().delay(200).duration(1600).ease(d3.easeCubicOut)
+      .tween('text', () => (t) => { el.textContent = fmt(Math.round(i(t) * k) / k); })
+      .on('end', () => { el.textContent = fmt(v); el.classList.remove('hw-boo'); void el.offsetWidth; el.classList.add('hw-boo'); });
+  });
+});
+textDraw('annee-inline', 'annee', (v) => String(v), false, true);
+textDraw('total', 'total', (v) => hwFmt.format(v));
+textDraw('total-inline', 'total', (v) => hwFmt.format(v));
+textDraw('heures-inline', 'heures', (v) => hwDec.format(v));
+textDraw('minute', 'parMinute', (v) => hwDec.format(v), true);
+textDraw('champion', 'champion', (v) => String(v));
+textDraw('champion-qte', 'championQte', (v) => hwFmt.format(v));
+textDraw('heure', 'parHeure', (v) => hwFmt.format(v));
+textDraw('sortes', 'sortes', (v) => hwFmt.format(v));
+textDraw('ratio', 'ratio', (v) => hwDec.format(v), true);
+textDraw('sacs', 'sacs', (v) => hwFmt.format(v));
+textDraw('gros', 'gros', (v) => hwFmt.format(v));
+
+/* Change from the year before, under each tile (empty the first year). */
+const deltaDraw = (name, field, fmt) => dash.draw(name, (el) => {
+  const d = dash.data('totaux');
+  el.classList.remove('up', 'down', 'same');
+  if (d.status !== 'ok') { el.textContent = ''; return; }
+  const y = hwSelYear(d.data);
+  el.dataset.where = 'annee=' + y;
+  const row = d.data.find((r) => r.annee === y);
+  const v = row ? row['d_' + field] : null;
+  if (v == null) { el.textContent = ''; return; }
+  el.classList.add(v > 0 ? 'up' : v < 0 ? 'down' : 'same');
+  el.textContent = (v > 0 ? '▲ +' : v < 0 ? '▼ −' : '= ') + fmt(Math.abs(v)) + ' vs ' + row.anneePrec;
+});
+deltaDraw('d-total', 'total', (v) => hwFmt.format(v));
+deltaDraw('d-heure', 'parHeure', (v) => hwFmt.format(v));
+deltaDraw('d-sortes', 'sortes', (v) => hwFmt.format(v));
+deltaDraw('d-ratio', 'ratio', (v) => hwDec.format(v));
+deltaDraw('d-gros', 'gros', (v) => hwFmt.format(v));
+
+/* Year picker: one button per year in the data. */
+window.HW_DRAWS = ['years', 'annee-inline', 'total', 'total-inline', 'heures-inline', 'minute', 'champion', 'champion-qte', 'heure', 'sortes', 'ratio', 'sacs', 'gros',
+  'd-total', 'd-heure', 'd-sortes', 'd-ratio', 'd-gros', 'podium', 'bocal', 'chart-cat', 'chart-top', 'chart-choco', 'chart-chips', 'chart-special', 'table-body', 'cmp-total', 'cmp-cat'];
+window.hwSetYear = (y) => {
+  if (y === hwYear) return;
+  hwYear = y;
+  hwRevealed.clear();
+  hwObs.forEach((o) => o.disconnect());
+  hwObs.clear();
+  HW_DRAWS.forEach((n) => dash.draw(n));
+};
+dash.draw('years', (el) => {
+  const d = dash.data('totaux');
+  if (d.status !== 'ok') { el.replaceChildren(); return; }
+  const y = hwSelYear(d.data);
+  el.replaceChildren(...d.data.map((r) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.textContent = r.annee;
+    b.setAttribute('aria-pressed', r.annee === y ? 'true' : 'false');
+    b.addEventListener('click', () => hwSetYear(r.annee));
+    return b;
+  }));
+});
+
+/* Haunted podium: three tombstones rise from the ground. */
+window.hwPodium = (el, top, mode) => {
+  el.replaceChildren();
+  const places = [
+    {row: top[1], medal: '#c9cbe0', place: 2},
+    {row: top[0], medal: '#ffd60a', place: 1},
+    {row: top[2], medal: '#d08a4a', place: 3}
+  ].filter((p) => p.row);
+  const W = Math.max(240, Math.floor(el.clientWidth || 320));
+  const H = 290, base = H - 30;
+  const max = Number(top[0].quantite);
+  const colW = W / 3, tw = Math.min(colW * 0.8, 120), r = tw / 2;
+  const h = (v) => tw * 0.95 + (Number(v) / max) * (base - 16 - tw * 0.95);
+  const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', 'Podium hanté des trois bonbons les plus nombreux');
+  const defs = svg.append('defs');
+  const stone = 'hws' + (++hwUid), clip = 'hwc' + (++hwUid);
+  const sg = defs.append('linearGradient').attr('id', stone).attr('x1', 0).attr('x2', 1).attr('y1', 0).attr('y2', 1);
+  sg.append('stop').attr('offset', '0%').style('stop-color', '#4a4666');
+  sg.append('stop').attr('offset', '100%').style('stop-color', '#1f1c33');
+  defs.append('clipPath').attr('id', clip).append('rect').attr('x', -20).attr('y', -40).attr('width', W + 40).attr('height', base + 41);
+
+  const field = svg.append('g').attr('clip-path', `url(#${clip})`);
+  const g = field.selectAll('g.t').data(places).join('g').attr('class', 't');
+  const hh = (p) => h(p.row.quantite);
+  g.append('path').attr('d', (p) => `M${-r},0 V${-hh(p) + r} A${r},${r} 0 0 1 ${r},${-hh(p) + r} V0 Z`)
+    .attr('fill', `url(#${stone})`);
+  g.append('path').attr('d', (p) => `M${-r * 0.35},${-hh(p) * 0.55} l${r * 0.15},${r * 0.2} l-${r * 0.1},${r * 0.2}`)
+    .style('stroke', '#2a2840').style('stroke-width', 2).style('fill', 'none');
+  g.append('circle').attr('cy', (p) => -hh(p) + r * 0.78).attr('r', 13).style('fill', (p) => p.medal).style('filter', (p) => hwGlow(p.medal));
+  g.append('text').attr('class', 'mnum').attr('text-anchor', 'middle').attr('dy', '0.35em').attr('y', (p) => -hh(p) + r * 0.78).text((p) => p.place);
+  g.append('text').attr('class', 'tname').attr('text-anchor', 'middle').attr('y', (p) => -hh(p) + r * 0.78 + 32).text((p) => p.row.bonbon);
+  g.append('text').attr('class', 'tnum').attr('text-anchor', 'middle').attr('y', -16)
+    .style('fill', (p) => hwColor(p.row.categorie)).style('filter', (p) => hwGlow(hwColor(p.row.categorie)))
+    .text((p) => hwFmt.format(Number(p.row.quantite)));
+
+  svg.append('path').attr('d', `M0,${base} Q${W * 0.25},${base - 8} ${W * 0.5},${base} T${W},${base} V${H} H0 Z`).style('fill', '#123d1a');
+  svg.append('path').attr('d', `M0,${base} Q${W * 0.25},${base - 8} ${W * 0.5},${base} T${W},${base}`).style('stroke', '#7cff4f').style('stroke-width', 2).style('fill', 'none').style('filter', hwGlow('#7cff4f'));
+
+  const atX = (p, i) => i * colW + colW / 2;
+  const order = {3: 0, 2: 1, 1: 2};
+  if (mode === 'static') {
+    g.attr('transform', (p, i) => `translate(${atX(p, i)},${base})`);
+  } else {
+    g.attr('transform', (p, i) => `translate(${atX(p, i)},${base + hh(p) + 30})`);
+    if (mode === 'animate') {
+      g.transition().delay((p) => 150 + order[p.place] * 600).duration(1200).ease(d3.easeBackOut.overshoot(1.2))
+        .attr('transform', (p, i) => `translate(${atX(p, i)},${base})`);
+    }
+  }
+  const tip = hwTip(el);
+  g.on('pointerenter pointermove', (ev, p) => tip.show(ev, [['t1', p.place + (p.place === 1 ? 're' : 'e') + ' place'], ['t2', p.row.bonbon + ' : ' + hwUnits(Number(p.row.quantite))], ['t3', p.row.categorie]]))
+    .on('pointerleave', () => tip.hide());
+};
+
+dash.draw('podium', (el) => {
+  const d = dash.data('bonbons');
+  const t = dash.data('totaux');
+  if (!hwState(el, d.status === 'ok' ? t : d)) return;
+  hwSelYear(t.data);
+  const top = hwOfYear(d.data).sort((a, b) => Number(b.quantite) - Number(a.quantite)).slice(0, 3);
+  if (!top.length) { el.replaceChildren(); return; }
+  hwReveal('podium', el, (mode) => hwPodium(el, top, mode));
+});
+
+/* Witch's cauldron: one bubble per candy, filling from the bottom up. */
+window.hwCauldron = (el, cats, mode) => {
+  el.replaceChildren();
+  const cells = [];
+  cats.forEach((c) => { for (let i = 0; i < c.quantite; i++) cells.push(c); });
+  const n = cells.length || 1;
+  const W = Math.max(240, Math.floor(el.clientWidth || 320));
+  const R = Math.min(W * 0.4, 128);
+  const cx = W / 2, cy = 46 + R;
+  const H = cy + R + 44;
+  const rimY = cy - R * 0.62;
+  let s = Math.sqrt(Math.PI * R * R * 0.75 / n), pts = [];
+  for (let tries = 0; tries < 60; tries++) {
+    pts = [];
+    let row = 0;
+    for (let y = cy + R - s * 0.8; y > rimY + s * 0.6; y -= s * 0.88, row++) {
+      const off = row % 2 ? s / 2 : 0;
+      for (let x = cx - R + s / 2 + off; x < cx + R; x += s) {
+        const dx = x - cx, dy = y - cy;
+        if (dx * dx + dy * dy <= (R - s * 0.6) * (R - s * 0.6)) pts.push([x, y]);
+      }
+    }
+    if (pts.length >= n) break;
+    s *= 0.96;
+  }
+  pts = pts.slice(0, n);
+  const dotR = s * 0.44;
+  const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', 'Un chaudron rempli d’une bulle par bonbon, colorée selon sa famille');
+  svg.append('ellipse').attr('cx', cx).attr('cy', cy + R + 18).attr('rx', R * 0.9).attr('ry', 16).style('fill', 'rgba(255,122,26,.45)').style('filter', 'blur(10px)');
+  svg.append('rect').attr('x', cx - R * 0.6).attr('y', cy + R * 0.7).attr('width', 12).attr('height', R * 0.45).attr('rx', 4).style('fill', '#14121c');
+  svg.append('rect').attr('x', cx + R * 0.6 - 12).attr('y', cy + R * 0.7).attr('width', 12).attr('height', R * 0.45).attr('rx', 4).style('fill', '#14121c');
+  [cx - R * 0.35, cx + R * 0.05, cx + R * 0.4].forEach((fx) => svg.append('text').attr('class', 'fire').attr('x', fx).attr('y', cy + R + 30).attr('text-anchor', 'middle').text('🔥'));
+  svg.append('circle').attr('cx', cx).attr('cy', cy).attr('r', R).style('fill', '#17141f').style('stroke', '#3c3752').style('stroke-width', 4);
+  const dots = svg.append('g').selectAll('circle').data(cells).join('circle').attr('class', 'dot')
+    .attr('cx', (c, i) => pts[i][0]).attr('cy', (c, i) => pts[i][1])
+    .style('fill', (c) => hwColor(c.categorie));
+  svg.append('ellipse').attr('cx', cx).attr('cy', rimY).attr('rx', R * 0.86).attr('ry', 13).style('fill', 'rgba(124,255,79,.35)').style('filter', hwGlow('#7cff4f'));
+  svg.append('ellipse').attr('cx', cx).attr('cy', rimY).attr('rx', R * 0.92).attr('ry', 14).style('fill', 'none').style('stroke', '#4a4462').style('stroke-width', 7);
+  [-0.3, 0.05, 0.35].forEach((f) => svg.append('circle').attr('class', 'bubble').attr('cx', cx + R * f).attr('cy', rimY - 6).attr('r', 5));
+
+  if (mode === 'static') {
+    dots.attr('r', dotR);
+  } else {
+    dots.attr('r', 0);
+    if (mode === 'animate') dots.transition().delay((c, i) => 100 + i * 5).duration(380).ease(d3.easeBackOut.overshoot(3)).attr('r', dotR);
+  }
+
+  const leg = document.createElement('div');
+  leg.className = 'hw-legend';
+  cats.forEach((c) => {
+    const it = document.createElement('span'); it.className = 'it';
+    const sw = document.createElement('span'); sw.className = 'sw'; sw.style.background = hwColor(c.categorie); sw.style.boxShadow = `0 0 8px ${hwColor(c.categorie)}`;
+    const nm = document.createElement('span'); nm.textContent = c.categorie;
+    const ct = document.createElement('span'); ct.className = 'ct'; ct.textContent = hwFmt.format(c.quantite);
+    it.append(sw, nm, ct); leg.append(it);
+  });
+  el.append(leg);
+  const tip = hwTip(el);
+  dots.on('pointerenter pointermove', (ev, c) => {
+    tip.show(ev, [['t1', c.categorie], ['t2', hwUnits(c.quantite)], ['t3', hwPct.format(c.part) + ' du chaudron']]);
+    dots.style('opacity', (o) => (o === c ? 1 : 0.2));
+  }).on('pointerleave', () => { tip.hide(); dots.style('opacity', 1); });
+};
+
+dash.draw('bocal', (el) => {
+  const d = dash.data('categories');
+  const t = dash.data('totaux');
+  if (!hwState(el, d.status === 'ok' ? t : d)) return;
+  hwSelYear(t.data);
+  const cats = hwOfYear(d.data);
+  hwReveal('bocal', el, (mode) => hwCauldron(el, cats, mode));
+});
+
+/* Donut chart for the families: slices draw one after the other, total in the middle. */
+window.hwDonut = (el, items, mode) => {
+  el.replaceChildren();
+  if (!items.length) return;
+  const W = Math.max(240, Math.floor(el.clientWidth || 320));
+  const size = Math.min(W, 340);
+  const R = size / 2 - 34, r0 = R * 0.56;
+  const H = size + 16, cy = H / 2 + 8;
+  const total = items.reduce((s, d) => s + d.value, 0);
+  const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', 'Part de chaque famille de bonbons');
+  const g = svg.append('g').attr('transform', `translate(${W / 2},${cy})`);
+  const pie = d3.pie().value((d) => d.value).sort(null).padAngle(0.018);
+  const arcs = pie(items);
+  const arc = d3.arc().innerRadius(r0).outerRadius(R).cornerRadius(6);
+  const slices = g.selectAll('path').data(arcs).join('path').style('fill', (a) => a.data.color).style('filter', (a) => hwGlow(a.data.color));
+  const pctText = (a) => Math.round(a.data.value / total * 100) + ' %';
+  const ang = (a) => (a.startAngle + a.endAngle) / 2;
+  /* Big slices: percentage inside. Small slices: outside, on a ring, with a short line. */
+  const inside = arcs.filter((a) => a.data.value / total >= 0.08);
+  const outside = arcs.filter((a) => a.data.value / total < 0.08);
+  const insideLbl = g.selectAll('text.pct').data(inside).join('text')
+    .attr('class', 'pct').attr('text-anchor', 'middle').attr('dy', '0.35em')
+    .attr('transform', (a) => `translate(${arc.centroid(a)})`)
+    .text(pctText);
+  const ro = R + 22;
+  const pos = outside.map((a) => ({a, x: Math.sin(ang(a)) * ro, y: -Math.cos(ang(a)) * ro}));
+  pos.sort((p, q) => p.x - q.x);
+  for (let k = 1; k < pos.length; k++) {
+    if (pos[k].x - pos[k - 1].x < 36 && Math.abs(pos[k].y - pos[k - 1].y) < 20) pos[k].x = pos[k - 1].x + 36;
+  }
+  const outG = g.selectAll('g.out').data(pos).join('g').attr('class', 'out');
+  outG.append('line')
+    .attr('x1', (p) => Math.sin(ang(p.a)) * (R + 3)).attr('y1', (p) => -Math.cos(ang(p.a)) * (R + 3))
+    .attr('x2', (p) => p.x).attr('y2', (p) => p.y + 5)
+    .style('stroke', (p) => p.a.data.color).style('stroke-width', 1.5).style('stroke-linecap', 'round');
+  outG.append('text').attr('class', 'pct-out').attr('text-anchor', 'middle').attr('x', (p) => p.x).attr('y', (p) => p.y)
+    .style('fill', (p) => p.a.data.color).style('filter', (p) => hwGlow(p.a.data.color))
+    .text((p) => pctText(p.a));
+  const labels = d3.selectAll([...insideLbl.nodes(), ...outG.nodes()]);
+  const mid = g.append('text').attr('class', 'dnum').attr('text-anchor', 'middle').attr('dy', '0.1em');
+  g.append('text').attr('class', 'dlbl').attr('text-anchor', 'middle').attr('y', R * 0.26).text('bonbons');
+
+  const final = () => { slices.attr('d', arc); labels.style('opacity', 1); mid.text(hwFmt.format(total)); };
+  if (mode === 'static') final();
+  else {
+    slices.attr('d', (a) => arc({...a, endAngle: a.startAngle}));
+    labels.style('opacity', 0);
+    mid.text('0');
+    if (mode === 'animate') {
+      const per = 380;
+      slices.transition().delay((a, i) => 150 + i * per).duration(per + 120).ease(d3.easeCubicOut)
+        .attrTween('d', (a) => { const i = d3.interpolate(a.startAngle, a.endAngle); return (t) => arc({...a, endAngle: i(t)}); });
+      labels.transition().delay(150 + items.length * per).duration(500).style('opacity', 1);
+      mid.transition().delay(150).duration(items.length * per + 200).ease(d3.easeCubicOut)
+        .tween('text', function () { const i = d3.interpolateNumber(0, total); const n = this; return (t) => { n.textContent = hwFmt.format(Math.round(i(t))); }; })
+        .on('end', function () { this.textContent = hwFmt.format(total); });
+    }
+  }
+
+  const leg = document.createElement('div');
+  leg.className = 'hw-legend';
+  items.forEach((d) => {
+    const it = document.createElement('span'); it.className = 'it';
+    const sw = document.createElement('span'); sw.className = 'sw'; sw.style.background = d.color; sw.style.boxShadow = `0 0 8px ${d.color}`;
+    const nm = document.createElement('span'); nm.textContent = d.label;
+    const ct = document.createElement('span'); ct.className = 'ct'; ct.textContent = hwFmt.format(d.value);
+    it.append(sw, nm, ct); leg.append(it);
+  });
+  el.append(leg);
+
+  const tip = hwTip(el);
+  slices.on('pointerenter pointermove', function (ev, a) {
+    tip.show(ev, [['t1', a.data.label], ['t2', hwUnits(a.data.value)], ['t3', a.data.sub]]);
+    const [cx, cy] = arc.centroid(a), k = 8 / Math.hypot(cx, cy);
+    d3.select(this).attr('transform', `translate(${cx * k},${cy * k})`);
+    slices.style('opacity', (b) => (b === a ? 1 : 0.45));
+  }).on('pointerleave', function () {
+    tip.hide();
+    d3.select(this).attr('transform', null);
+    slices.style('opacity', 1);
+  });
+};
+
+dash.draw('chart-cat', (el) => {
+  const d = dash.data('categories');
+  const t = dash.data('totaux');
+  if (!hwState(el, d.status === 'ok' ? t : d)) return;
+  hwSelYear(t.data);
+  const items = hwOfYear(d.data).map((r) => ({
+    label: r.categorie, value: r.quantite, color: hwColor(r.categorie),
+    sub: hwPct.format(r.part) + ' de la récolte · ' + r.sortes + ' sortes'
+  }));
+  hwReveal('chart-cat', el, (mode) => hwDonut(el, items, mode));
+});
+
+dash.draw('chart-top', (el) => {
+  const d = dash.data('bonbons');
+  const t = dash.data('totaux');
+  if (!hwState(el, d.status === 'ok' ? t : d)) return;
+  hwSelYear(t.data);
+  const items = hwOfYear(d.data).sort((a, b) => Number(b.quantite) - Number(a.quantite)).slice(0, 12)
+    .map((r) => ({label: r.bonbon, value: Number(r.quantite), color: hwColor(r.categorie), sub: r.categorie}));
+  hwReveal('chart-top', el, (mode) => hwBars(el, items, 'Bonbons les plus nombreux', mode, '👻'));
+});
+
+dash.draw('chart-choco', (el) => {
+  const d = dash.data('bonbons');
+  const t = dash.data('totaux');
+  if (!hwState(el, d.status === 'ok' ? t : d)) return;
+  hwSelYear(t.data);
+  const rows = hwOfYear(d.data).filter((r) => r.categorie === 'Chocolat').sort((a, b) => Number(b.quantite) - Number(a.quantite));
+  const tot = rows.reduce((s, r) => s + Number(r.quantite), 0);
+  const items = rows.map((r) => ({
+    label: r.bonbon, value: Number(r.quantite), color: hwColor('Chocolat'),
+    sub: hwPct.format(Number(r.quantite) / tot) + ' du chocolat'
+  }));
+  hwReveal('chart-choco', el, (mode) => hwBars(el, items, 'Sortes de chocolat', mode, '🦇'));
+});
+
+dash.draw('chart-chips', (el) => {
+  const d = dash.data('bonbons');
+  const t = dash.data('totaux');
+  if (!hwState(el, d.status === 'ok' ? t : d)) return;
+  hwSelYear(t.data);
+  const rows = hwOfYear(d.data).filter((r) => r.categorie === 'Chips').sort((a, b) => Number(b.quantite) - Number(a.quantite));
+  const tot = rows.reduce((s, r) => s + Number(r.quantite), 0);
+  const items = rows.map((r) => ({
+    label: r.bonbon, value: Number(r.quantite), color: hwColor('Chips'),
+    sub: hwPct.format(Number(r.quantite) / tot) + ' des chips'
+  }));
+  hwReveal('chart-chips', el, (mode) => hwBars(el, items, 'Sortes de chips', mode, null));
+});
+
+dash.draw('chart-special', (el) => {
+  const d = dash.data('bonbons');
+  const t = dash.data('totaux');
+  if (!hwState(el, d.status === 'ok' ? t : d)) return;
+  hwSelYear(t.data);
+  const rows = hwOfYear(d.data).filter((r) => r.categorie === 'Spécial').sort((a, b) => Number(b.quantite) - Number(a.quantite));
+  const tot = rows.reduce((s, r) => s + Number(r.quantite), 0);
+  const items = rows.map((r) => ({
+    label: r.bonbon, value: Number(r.quantite), color: hwColor('Spécial'),
+    sub: hwPct.format(Number(r.quantite) / tot) + ' des spéciaux'
+  }));
+  hwReveal('chart-special', el, (mode) => hwBars(el, items, 'Bonbons spéciaux', mode, null));
+});
+
+/* ---------- Year-over-year comparison ---------- */
+window.hwColumns = (el, items, mode) => {
+  el.replaceChildren();
+  if (!items.length) return;
+  const W = Math.max(240, Math.floor(el.clientWidth || 320));
+  const H = 260, top = 40, bottom = 34;
+  const x = d3.scaleBand(items.map((d) => d.label), [8, W - 8]).padding(0.35);
+  const y = d3.scaleLinear([0, d3.max(items, (d) => d.value) || 1], [H - bottom, top]);
+  const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', 'Total de bonbons par année');
+  svg.append('line').attr('x1', 0).attr('x2', W).attr('y1', H - bottom).attr('y2', H - bottom).style('stroke', 'rgba(124,255,79,.5)').style('stroke-width', 2);
+  const g = svg.selectAll('g.c').data(items).join('g').attr('class', 'c');
+  const bar = g.append('rect').attr('x', (d) => x(d.label)).attr('width', x.bandwidth()).attr('rx', Math.min(12, x.bandwidth() / 4))
+    .style('fill', (d) => d.color).style('filter', (d) => hwGlow(d.color));
+  const val = g.append('text').attr('class', 'val').attr('text-anchor', 'middle').attr('x', (d) => x(d.label) + x.bandwidth() / 2).style('fill', (d) => d.color);
+  g.append('text').attr('class', 'lbl').attr('text-anchor', 'middle').attr('x', (d) => x(d.label) + x.bandwidth() / 2).attr('y', H - bottom + 24).text((d) => d.label);
+  const done = () => {
+    bar.attr('y', (d) => y(d.value)).attr('height', (d) => H - bottom - y(d.value));
+    val.attr('y', (d) => y(d.value) - 10).text((d) => hwFmt.format(d.value)).style('opacity', 1);
+  };
+  if (mode === 'static') done();
+  else {
+    bar.attr('y', H - bottom).attr('height', 0);
+    val.attr('y', H - bottom - 10).text('0').style('opacity', 0);
+    if (mode === 'animate') {
+      const delay = (d, i) => 150 + i * 300;
+      bar.transition().delay(delay).duration(1200).ease(d3.easeBackOut.overshoot(1.2)).attr('y', (d) => y(d.value)).attr('height', (d) => H - bottom - y(d.value));
+      val.transition().delay(delay).duration(1200).ease(d3.easeBackOut.overshoot(1.2)).attr('y', (d) => y(d.value) - 10).style('opacity', 1)
+        .tween('text', function (d) { const i = d3.interpolateNumber(0, d.value); const n = this; return (t) => { n.textContent = hwFmt.format(Math.max(0, Math.round(i(Math.min(t, 1))))); }; })
+        .on('end', function (d) { this.textContent = hwFmt.format(d.value); });
+    }
+  }
+  const tip = hwTip(el);
+  g.on('pointerenter pointermove', (ev, d) => tip.show(ev, [['t1', d.label], ['t2', hwUnits(d.value)], d.sub && ['t3', d.sub]]))
+    .on('pointerleave', () => tip.hide());
+};
+
+window.hwGrouped = (el, cats, years, val, mode) => {
+  el.replaceChildren();
+  if (!cats.length) return;
+  const W = Math.max(240, Math.floor(el.clientWidth || 320));
+  const barH = 14, gap = 4, groupGap = 16;
+  const groupH = years.length * (barH + gap) - gap;
+  const H = cats.length * (groupH + groupGap);
+  const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', 'Bonbons par famille, année par année');
+  const measure = (cls, txt) => { const t = svg.append('text').attr('class', cls).text(txt); const w = t.node().getComputedTextLength(); t.remove(); return w; };
+  const labelW = Math.min(d3.max(cats, (c) => measure('lbl', c)) || 0, W * 0.4);
+  const x0 = labelW + 12;
+  const max = d3.max(cats, (c) => d3.max(years, (y) => val(c, y))) || 1;
+  const x = d3.scaleLinear([0, max], [0, Math.max(10, W - x0 - 46)]);
+  const rows = [];
+  cats.forEach((c, ci) => years.forEach((y, yi) => rows.push({c, y, v: val(c, y), top: ci * (groupH + groupGap) + yi * (barH + gap), i: rows.length})));
+  svg.selectAll('text.lbl').data(cats).join('text').attr('class', 'lbl').attr('text-anchor', 'end').attr('x', labelW)
+    .attr('y', (c, ci) => ci * (groupH + groupGap) + groupH / 2).attr('dy', '0.35em').text((c) => c);
+  const g = svg.selectAll('g.r').data(rows).join('g').attr('class', 'r').attr('transform', (r) => `translate(0,${r.top})`);
+  const bars = g.append('rect').attr('x', x0).attr('height', barH).attr('rx', barH / 2).style('fill', (r) => hwYearColor(r.y, years)).style('filter', (r) => hwGlow(hwYearColor(r.y, years)));
+  const vals = g.append('text').attr('class', 'val').attr('y', barH / 2).attr('dy', '0.35em').style('font-size', '.9rem').style('fill', (r) => hwYearColor(r.y, years));
+  const w = (r) => Math.max(3, x(r.v));
+  if (mode === 'static') {
+    bars.attr('width', w);
+    vals.attr('x', (r) => x0 + w(r) + 6).text((r) => hwFmt.format(r.v));
+  } else {
+    bars.attr('width', 3);
+    vals.attr('x', x0 + 9).text('').style('opacity', 0);
+    if (mode === 'animate') {
+      const delay = (r) => 100 + r.i * 60;
+      bars.transition().delay(delay).duration(900).ease(d3.easeCubicOut).attr('width', w);
+      vals.transition().delay(delay).duration(900).ease(d3.easeCubicOut).attr('x', (r) => x0 + w(r) + 6).style('opacity', 1).text((r) => hwFmt.format(r.v));
+    }
+  }
+  const leg = document.createElement('div');
+  leg.className = 'hw-legend';
+  years.forEach((y) => {
+    const it = document.createElement('span'); it.className = 'it';
+    const sw = document.createElement('span'); sw.className = 'sw'; sw.style.background = hwYearColor(y, years); sw.style.boxShadow = `0 0 8px ${hwYearColor(y, years)}`;
+    const nm = document.createElement('span'); nm.textContent = y;
+    it.append(sw, nm); leg.append(it);
+  });
+  el.append(leg);
+  const tip = hwTip(el);
+  g.on('pointerenter pointermove', (ev, r) => tip.show(ev, [['t1', r.c + ' · ' + r.y], ['t2', hwUnits(r.v)]]))
+    .on('pointerleave', () => tip.hide());
+};
+
+dash.draw('cmp-total', (el) => {
+  const t = dash.data('totaux');
+  if (!hwState(el, t)) return;
+  const ys = t.data.map((r) => r.annee);
+  const items = t.data.map((r) => ({label: r.annee, value: r.total, color: hwYearColor(r.annee, ys), sub: 'Champion : ' + r.champion + ' (' + hwFmt.format(r.championQte) + ')'}));
+  hwReveal('cmp-total', el, (mode) => hwColumns(el, items, mode));
+});
+
+dash.draw('cmp-cat', (el) => {
+  const d = dash.data('categories');
+  const t = dash.data('totaux');
+  if (!hwState(el, d.status === 'ok' ? t : d)) return;
+  const years = t.data.map((r) => r.annee);
+  const last = years[years.length - 1];
+  const val = (c, y) => { const m = d.data.find((r) => r.annee === y && r.categorie === c); return m ? m.quantite : 0; };
+  const cats = [...new Set(d.data.map((r) => r.categorie))].sort((a, b) => val(b, last) - val(a, last));
+  hwReveal('cmp-cat', el, (mode) => hwGrouped(el, cats, years, val, mode));
+});
+
+let hwSortKey = 'quantite', hwSortDir = -1, hwQuery = '';
+dash.draw('table-body', (tb) => {
+  const d = dash.data('bonbons');
+  const t = dash.data('totaux');
+  if (d.status !== 'ok' || t.status !== 'ok') { tb.replaceChildren(); return; }
+  hwSelYear(t.data);
+  const q = hwQuery.trim().toLowerCase();
+  const yearRows = hwOfYear(d.data);
+  const max = d3.max(yearRows, (r) => Number(r.quantite)) || 1;
+  const rows = yearRows.filter((r) => !q || (r.bonbon + ' ' + r.categorie).toLowerCase().includes(q));
+  rows.sort((a, b) => hwSortKey === 'quantite'
+    ? hwSortDir * (Number(a.quantite) - Number(b.quantite))
+    : hwSortDir * String(a[hwSortKey]).localeCompare(String(b[hwSortKey]), 'fr'));
+  tb.replaceChildren(...rows.map((r) => {
+    const tr = document.createElement('tr');
+    tr.dataset.key = encodeURIComponent(String(r.annee)) + ',' + encodeURIComponent(r.bonbon);
+    const c1 = document.createElement('td'); c1.textContent = r.bonbon;
+    const c2 = document.createElement('td'); c2.textContent = r.categorie;
+    const c3 = document.createElement('td'); c3.className = 'n';
+    const wrap = document.createElement('div'); wrap.className = 'hw-cellbar';
+    const bar = document.createElement('span'); bar.className = 'b';
+    const c = hwColor(r.categorie);
+    bar.style.width = (Number(r.quantite) / max * 70) + '%';
+    bar.style.background = c;
+    bar.style.boxShadow = `0 0 8px ${c}`;
+    const num = document.createElement('span'); num.textContent = hwFmt.format(Number(r.quantite));
+    wrap.append(bar, num); c3.append(wrap);
+    tr.append(c1, c2, c3);
+    return tr;
+  }));
+});
+
+/* « Remplir à nouveau » : vide le chaudron et le remplit encore une fois. */
+document.querySelectorAll('.hw-refill').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    const card = btn.closest('.hw-card');
+    const el = card && card.querySelector('[data-draw="bocal"]');
+    const d = dash.data('categories');
+    const t = dash.data('totaux');
+    if (!el || d.status !== 'ok' || t.status !== 'ok') return;
+    hwSelYear(t.data);
+    const io = hwObs.get('bocal');
+    if (io) { io.disconnect(); hwObs.delete('bocal'); }
+    hwRevealed.add('bocal');
+    hwCauldron(el, hwOfYear(d.data), hwMotion ? 'animate' : 'static');
+  });
+});
+
+document.querySelectorAll('.hw-sort').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    const key = btn.dataset.key;
+    if (key === hwSortKey) hwSortDir = -hwSortDir;
+    else { hwSortKey = key; hwSortDir = key === 'quantite' ? -1 : 1; }
+    document.querySelectorAll('.hw-table th').forEach((th) => th.removeAttribute('aria-sort'));
+    const th = btn.closest('th');
+    if (th) th.setAttribute('aria-sort', hwSortDir === 1 ? 'ascending' : 'descending');
+    dash.draw('table-body');
+  });
+});
+document.querySelectorAll('.hw-search').forEach((inp) => {
+  inp.addEventListener('input', () => { hwQuery = inp.value; dash.draw('table-body'); });
+});
+
+</script>
+
+<script>
+/* ================= Compte-Bonbons : logique de l'app =================
+   Données dans ce téléphone seulement (localStorage), aucun serveur. */
+(function () {
+  const KEY = 'compte-bonbons-v1';
+  const CATS = ['Chocolat', 'Bonbons durs', 'Jujubes', 'Spécial', 'Chips', 'Réglisse'];
+  const PRESET = {"Chocolat": ["Kit Kat", "Whoppers", "M&M's", "Reese's", "Aero", "Oh Henry!", "Snickers", "Pokémon", "Coffee Crisp", "Mars", "Hershey", "Smarties", "Twirl", "Wunderbar", "Twix"], "Bonbons durs": ["Suçons", "Poudre", "Guimauves", "Tootsie Roll", "Caramels", "Skittles", "Jolly Rancher", "Starburst", "Bracelet", "Surettes", "Bonbons divers", "Fizz", "Rockets", "Popeye"], "Jujubes": ["Yeux", "Araignées", "Jolly Rancher (jujube)", "Pied", "Life Savers", "Pêches", "Sour Patch", "Framboises", "Poissons", "Fruits", "Dots", "Suce", "Mike and Ike", "Gros bonbon"], "Spécial": ["Mini Oreo", "Carré Rice Krispies", "Gomme", "Rouleaux aux fruits", "Barre tendre", "Airheads", "Collants"], "Chips": ["Doritos", "BBQ", "Ketchup", "Sel", "Crottes au fromage", "All Dressed"], "Réglisse": ["Réglisse bleue", "Réglisse rouge"]};
+  const LEO = {"id": "exemple-leo", "prenom": "Léo", "annees": {"2026": {"heures": 2, "sacs": 50, "bonbons": [{"categorie": "Chocolat", "bonbon": "Kit Kat", "quantite": 12, "gros": 0}, {"categorie": "Chocolat", "bonbon": "Whoppers", "quantite": 12, "gros": 0}, {"categorie": "Chocolat", "bonbon": "M&M's", "quantite": 4, "gros": 1}, {"categorie": "Chocolat", "bonbon": "Reese's", "quantite": 18, "gros": 0}, {"categorie": "Chocolat", "bonbon": "Aero", "quantite": 16, "gros": 0}, {"categorie": "Chocolat", "bonbon": "Oh Henry!", "quantite": 5, "gros": 0}, {"categorie": "Chocolat", "bonbon": "Snickers", "quantite": 3, "gros": 0}, {"categorie": "Chocolat", "bonbon": "Pokémon", "quantite": 2, "gros": 0}, {"categorie": "Chocolat", "bonbon": "Coffee Crisp", "quantite": 9, "gros": 1}, {"categorie": "Chocolat", "bonbon": "Mars", "quantite": 3, "gros": 0}, {"categorie": "Chocolat", "bonbon": "Hershey", "quantite": 5, "gros": 0}, {"categorie": "Chocolat", "bonbon": "Smarties", "quantite": 16, "gros": 0}, {"categorie": "Chocolat", "bonbon": "Twirl", "quantite": 1, "gros": 0}, {"categorie": "Chocolat", "bonbon": "Wunderbar", "quantite": 1, "gros": 0}, {"categorie": "Chocolat", "bonbon": "Twix", "quantite": 1, "gros": 0}, {"categorie": "Chips", "bonbon": "Doritos", "quantite": 3, "gros": 0}, {"categorie": "Chips", "bonbon": "BBQ", "quantite": 1, "gros": 0}, {"categorie": "Chips", "bonbon": "Ketchup", "quantite": 1, "gros": 0}, {"categorie": "Chips", "bonbon": "Sel", "quantite": 9, "gros": 0}, {"categorie": "Chips", "bonbon": "Crottes au fromage", "quantite": 2, "gros": 0}, {"categorie": "Chips", "bonbon": "All Dressed", "quantite": 1, "gros": 0}, {"categorie": "Bonbons durs", "bonbon": "Suçons", "quantite": 28, "gros": 0}, {"categorie": "Bonbons durs", "bonbon": "Poudre", "quantite": 4, "gros": 0}, {"categorie": "Bonbons durs", "bonbon": "Guimauves", "quantite": 2, "gros": 0}, {"categorie": "Bonbons durs", "bonbon": "Tootsie Roll", "quantite": 9, "gros": 0}, {"categorie": "Bonbons durs", "bonbon": "Caramels", "quantite": 6, "gros": 0}, {"categorie": "Bonbons durs", "bonbon": "Skittles", "quantite": 2, "gros": 0}, {"categorie": "Bonbons durs", "bonbon": "Jolly Rancher", "quantite": 3, "gros": 0}, {"categorie": "Bonbons durs", "bonbon": "Starburst", "quantite": 10, "gros": 0}, {"categorie": "Bonbons durs", "bonbon": "Bracelet", "quantite": 1, "gros": 0}, {"categorie": "Bonbons durs", "bonbon": "Surettes", "quantite": 3, "gros": 0}, {"categorie": "Bonbons durs", "bonbon": "Bonbons divers", "quantite": 10, "gros": 0}, {"categorie": "Bonbons durs", "bonbon": "Fizz", "quantite": 46, "gros": 0}, {"categorie": "Bonbons durs", "bonbon": "Rockets", "quantite": 92, "gros": 0}, {"categorie": "Bonbons durs", "bonbon": "Popeye", "quantite": 47, "gros": 0}, {"categorie": "Spécial", "bonbon": "Mini Oreo", "quantite": 1, "gros": 0}, {"categorie": "Spécial", "bonbon": "Carré Rice Krispies", "quantite": 1, "gros": 0}, {"categorie": "Spécial", "bonbon": "Gomme", "quantite": 8, "gros": 0}, {"categorie": "Spécial", "bonbon": "Rouleaux aux fruits", "quantite": 6, "gros": 0}, {"categorie": "Spécial", "bonbon": "Barre tendre", "quantite": 1, "gros": 0}, {"categorie": "Spécial", "bonbon": "Airheads", "quantite": 2, "gros": 0}, {"categorie": "Spécial", "bonbon": "Collants", "quantite": 2, "gros": 0}, {"categorie": "Jujubes", "bonbon": "Yeux", "quantite": 30, "gros": 0}, {"categorie": "Jujubes", "bonbon": "Araignées", "quantite": 3, "gros": 0}, {"categorie": "Jujubes", "bonbon": "Jolly Rancher (jujube)", "quantite": 2, "gros": 0}, {"categorie": "Jujubes", "bonbon": "Pied", "quantite": 1, "gros": 0}, {"categorie": "Jujubes", "bonbon": "Life Savers", "quantite": 1, "gros": 0}, {"categorie": "Jujubes", "bonbon": "Pêches", "quantite": 4, "gros": 0}, {"categorie": "Jujubes", "bonbon": "Sour Patch", "quantite": 3, "gros": 0}, {"categorie": "Jujubes", "bonbon": "Framboises", "quantite": 5, "gros": 0}, {"categorie": "Jujubes", "bonbon": "Poissons", "quantite": 4, "gros": 0}, {"categorie": "Jujubes", "bonbon": "Fruits", "quantite": 5, "gros": 0}, {"categorie": "Jujubes", "bonbon": "Dots", "quantite": 1, "gros": 0}, {"categorie": "Jujubes", "bonbon": "Suce", "quantite": 1, "gros": 0}, {"categorie": "Jujubes", "bonbon": "Mike and Ike", "quantite": 1, "gros": 1}, {"categorie": "Jujubes", "bonbon": "Gros bonbon", "quantite": 1, "gros": 1}, {"categorie": "Réglisse", "bonbon": "Réglisse bleue", "quantite": 1, "gros": 0}, {"categorie": "Réglisse", "bonbon": "Réglisse rouge", "quantite": 10, "gros": 0}]}}};
+  const THIS_YEAR = String(new Date().getFullYear());
+  const $ = (sel, root = document) => root.querySelector(sel);
+  const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
+
+  /* ---------- Stockage ---------- */
+  const load = () => {
+    try {
+      const j = JSON.parse(localStorage.getItem(KEY));
+      if (j && Array.isArray(j.kids)) return j;
+    } catch (e) { /* stockage indisponible */ }
+    return {kids: [], active: null};
+  };
+  let state = load();
+  let saveT = null;
+  const saveNow = () => { clearTimeout(saveT); saveT = null; try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { /* plein ou bloqué */ } };
+  const save = () => { clearTimeout(saveT); saveT = setTimeout(saveNow, 200); };
+  window.addEventListener('pagehide', () => { if (saveT) saveNow(); });
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden' && saveT) saveNow(); });
+
+  const uid = () => 'k' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+  let demo = null;            /* l'exemple de Léo, jamais enregistré */
+  let view = null;
+  let year = THIS_YEAR;
+  let fam = CATS[0];
+  let openXL = null;
+  let addingKid = false;
+
+  const kid = () => demo || state.kids.find((k) => k.id === state.active) || state.kids[0] || null;
+  const yearData = (k, y) => {
+    if (!k.annees[y]) k.annees[y] = {heures: null, sacs: null, bonbons: []};
+    return k.annees[y];
+  };
+  const yearsWithCandy = (k) => Object.keys(k.annees).filter((y) => k.annees[y].bonbons.some((b) => b.quantite > 0)).sort();
+  const totalOf = (k, y) => (k.annees[y] ? k.annees[y].bonbons.reduce((s, b) => s + b.quantite, 0) : 0);
+
+  /* ---------- Petits outils d'interface ---------- */
+  let toastT = null;
+  const toast = (msg) => {
+    const t = $('.cb-toast');
+    t.textContent = msg;
+    t.hidden = false;
+    clearTimeout(toastT);
+    toastT = setTimeout(() => { t.hidden = true; }, 2600);
+  };
+  const bump = (el) => { el.classList.remove('cb-bump'); void el.offsetWidth; el.classList.add('cb-bump'); };
+  const fmt = new Intl.NumberFormat('fr-CA', {maximumFractionDigits: 1});
+  const catColor = (c) => (window.hwColor ? hwColor(c) : '#ff7a1a');
+
+  /* ---------- Barre du haut ---------- */
+  const renderBar = () => {
+    const bar = $('.cb-bar');
+    bar.hidden = view === 'welcome';
+    const k = kid();
+    $$('.cb-kid').forEach((e) => { e.textContent = k ? k.prenom : '—'; });
+    const box = $('.cb-kids');
+    box.replaceChildren();
+    if (!demo && state.kids.length > 1) {
+      state.kids.forEach((kk) => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.textContent = kk.prenom;
+        b.setAttribute('aria-pressed', kk.id === (k && k.id) ? 'true' : 'false');
+        b.addEventListener('click', () => { state.active = kk.id; save(); year = THIS_YEAR; show(view === 'count' ? 'count' : homeView()); });
+        box.append(b);
+      });
+    }
+    $('.cb-demo-note').hidden = !demo;
+    $('.cb-menu-btn').hidden = !!demo;
+  };
+
+  /* ---------- Accueil ---------- */
+  const renderWelcome = () => {
+    const more = addingKid && state.kids.length > 0;
+    $('.cb-pitch-first').hidden = more;
+    $('.cb-pitch-more').hidden = !more;
+    $('.cb-cancel').hidden = !more;
+    $('.cb-demo').hidden = more;
+    $('#cb-prenom').value = '';
+  };
+  $('.cb-start').addEventListener('submit', (ev) => {
+    ev.preventDefault();
+    const prenom = $('#cb-prenom').value.trim().replace(/\s+/g, ' ');
+    if (!prenom) { $('#cb-prenom').focus(); return; }
+    const k = {id: uid(), prenom, annees: {}};
+    state.kids.push(k);
+    state.active = k.id;
+    saveNow();
+    demo = null;
+    addingKid = false;
+    year = THIS_YEAR;
+    fam = CATS[0];
+    show('count');
+  });
+  $('.cb-cancel').addEventListener('click', () => { addingKid = false; show(homeView()); });
+  $('.cb-demo').addEventListener('click', () => startDemo());
+  $('.cb-leave-demo').addEventListener('click', () => {
+    demo = null;
+    addingKid = state.kids.length > 0;
+    show(state.kids.length ? homeView() : 'welcome');
+  });
+  $('.cb-brand').addEventListener('click', () => { if (!demo) show(homeView()); });
+
+  const startDemo = () => {
+    demo = JSON.parse(JSON.stringify(LEO));
+    year = yearsWithCandy(demo).slice(-1)[0] || THIS_YEAR;
+    show('dash');
+  };
+
+  /* ---------- Décompte ---------- */
+  const listFor = (yd, cat) => {
+    const names = [...(PRESET[cat] || [])];
+    yd.bonbons.forEach((b) => { if (b.categorie === cat && !names.includes(b.bonbon)) names.push(b.bonbon); });
+    return names.map((n) => yd.bonbons.find((b) => b.categorie === cat && b.bonbon === n) || {categorie: cat, bonbon: n, quantite: 0, gros: 0});
+  };
+  const setItem = (yd, item) => {
+    const i = yd.bonbons.findIndex((b) => b.categorie === item.categorie && b.bonbon === item.bonbon);
+    if (i >= 0) yd.bonbons[i] = item; else yd.bonbons.push(item);
+    yd.bonbons = yd.bonbons.filter((b) => b.quantite > 0 || !(PRESET[b.categorie] || []).includes(b.bonbon));
+  };
+
+  const renderCount = () => {
+    const k = kid();
+    if (!k) return;
+    const yd = yearData(k, year);
+    $('.cb-year-val').textContent = year;
+    $('.cb-year-next').disabled = Number(year) >= Number(THIS_YEAR) + 1;
+    $('.cb-total-n').textContent = fmt.format(totalOf(k, year));
+    $('.cb-heures').textContent = yd.heures == null ? '—' : fmt.format(yd.heures) + ' h';
+    $('.cb-sacs').textContent = yd.sacs == null ? '—' : fmt.format(yd.sacs);
+    $$('.cb-soiree .cb-step.m').forEach((b) => { const v = yd[b.dataset.soir]; b.disabled = v == null || v <= 0; });
+    $('.cb-go').disabled = totalOf(k, year) === 0;
+
+    const tabs = $('.cb-fams');
+    tabs.replaceChildren(...CATS.map((c) => {
+      const n = yd.bonbons.filter((b) => b.categorie === c).reduce((s, b) => s + b.quantite, 0);
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.setAttribute('role', 'tab');
+      b.setAttribute('aria-selected', c === fam ? 'true' : 'false');
+      b.style.setProperty('--c', catColor(c));
+      const dot = document.createElement('span'); dot.className = 'dot';
+      const nm = document.createElement('span'); nm.textContent = c;
+      const kk = document.createElement('span'); kk.className = 'k'; kk.textContent = n;
+      b.append(dot, nm, kk);
+      b.addEventListener('click', () => { fam = c; openXL = null; renderCount(); });
+      return b;
+    }));
+
+    const list = $('#cb-count .cb-card:not(.cb-head):not(.cb-soiree) .cb-list');
+    list.style.setProperty('--c', catColor(fam));
+    list.replaceChildren(...listFor(yd, fam).map((it) => {
+      const li = document.createElement('li');
+      li.className = 'cb-row' + (it.quantite > 0 ? ' on' : '');
+      const nm = document.createElement('span'); nm.className = 'nm'; nm.textContent = it.bonbon;
+      const m = document.createElement('button'); m.type = 'button'; m.className = 'cb-step m'; m.textContent = '−'; m.setAttribute('aria-label', 'Un ' + it.bonbon + ' de moins'); m.disabled = it.quantite === 0;
+      const q = document.createElement('span'); q.className = 'cb-q'; q.textContent = it.quantite;
+      const p = document.createElement('button'); p.type = 'button'; p.className = 'cb-step p'; p.textContent = '+'; p.setAttribute('aria-label', 'Un ' + it.bonbon + ' de plus');
+      const xl = document.createElement('button'); xl.type = 'button'; xl.className = 'cb-xl' + (it.gros > 0 ? ' has' : ''); xl.textContent = it.gros > 0 ? 'XL ' + it.gros : 'XL';
+      xl.setAttribute('aria-label', 'Formats géants de ' + it.bonbon);
+      const key = it.categorie + '|' + it.bonbon;
+      const xr = document.createElement('div'); xr.className = 'cb-xlrow'; xr.hidden = openXL !== key;
+      const xlab = document.createElement('span'); xlab.textContent = 'dont formats géants';
+      const xm = document.createElement('button'); xm.type = 'button'; xm.className = 'cb-step m'; xm.textContent = '−'; xm.disabled = it.gros === 0; xm.setAttribute('aria-label', 'Un format géant de moins');
+      const xq = document.createElement('span'); xq.className = 'cb-q'; xq.textContent = it.gros;
+      const xp = document.createElement('button'); xp.type = 'button'; xp.className = 'cb-step p'; xp.textContent = '+'; xp.disabled = it.gros >= it.quantite; xp.setAttribute('aria-label', 'Un format géant de plus');
+      xr.append(xlab, xm, xq, xp);
+      const change = (dq, dg) => {
+        const next = {...it, quantite: Math.max(0, Math.min(9999, it.quantite + dq))};
+        next.gros = Math.max(0, Math.min(next.quantite, it.gros + dg));
+        setItem(yd, next);
+        save();
+        renderCount();
+        const again = $$('#cb-count .cb-list .cb-row').find((r) => r.querySelector('.nm').textContent === it.bonbon);
+        if (again) bump(again.querySelector(dg ? '.cb-xlrow .cb-q' : '.cb-q'));
+        bump($('.cb-total-n'));
+      };
+      p.addEventListener('click', () => change(1, 0));
+      m.addEventListener('click', () => change(-1, 0));
+      xp.addEventListener('click', () => change(0, 1));
+      xm.addEventListener('click', () => change(0, -1));
+      xl.addEventListener('click', () => { openXL = openXL === key ? null : key; renderCount(); });
+      li.append(nm, m, q, p, xl, xr);
+      return li;
+    }));
+  };
+
+  $('.cb-year-prev').addEventListener('click', () => { year = String(Number(year) - 1); openXL = null; renderCount(); });
+  $('.cb-year-next').addEventListener('click', () => { year = String(Number(year) + 1); openXL = null; renderCount(); });
+  $$('.cb-soiree .cb-step').forEach((b) => b.addEventListener('click', () => {
+    const yd = yearData(kid(), year);
+    const f = b.dataset.soir;
+    const d = Number(b.dataset.d);
+    const start = yd[f] == null ? (f === 'heures' ? 1.5 : 0) : yd[f];
+    yd[f] = Math.max(0, Math.round((start + d) * 10) / 10);
+    save();
+    renderCount();
+    bump($(f === 'heures' ? '.cb-heures' : '.cb-sacs'));
+  }));
+  $('.cb-add').addEventListener('submit', (ev) => {
+    ev.preventDefault();
+    const inp = $('.cb-add .cb-input');
+    const nom = inp.value.trim().replace(/\s+/g, ' ');
+    if (!nom) return;
+    const yd = yearData(kid(), year);
+    const exists = listFor(yd, fam).find((b) => b.bonbon.toLowerCase() === nom.toLowerCase());
+    if (exists) setItem(yd, {...exists, quantite: exists.quantite + 1});
+    else setItem(yd, {categorie: fam, bonbon: nom, quantite: 1, gros: 0});
+    inp.value = '';
+    save();
+    renderCount();
+    toast(nom + ' ajouté dans ' + fam);
+  });
+  $('.cb-go').addEventListener('click', () => { saveNow(); show('dash'); });
+
+  /* ---------- Tableau de bord ---------- */
+  const rowsOf = (k) => {
+    const b = [], s = [];
+    yearsWithCandy(k).forEach((y) => {
+      const d = k.annees[y];
+      d.bonbons.filter((x) => x.quantite > 0).forEach((x) => b.push({annee: y, categorie: x.categorie, bonbon: x.bonbon, quantite: String(x.quantite), gros: String(x.gros || 0)}));
+      if (d.heures != null && d.heures > 0) s.push({annee: y, mesure: 'heures_marche', valeur: String(d.heures)});
+      if (d.sacs != null && d.sacs > 0) s.push({annee: y, mesure: 'sacs_donnes', valeur: String(d.sacs)});
+    });
+    return {b, s};
+  };
+  const renderDash = () => {
+    const k = kid();
+    const {b, s} = rowsOf(k);
+    window.__dashSetData(b, s);
+    window.hwYear = yearsWithCandy(k).includes(year) ? year : null;
+    window.hwRevealed.clear();
+    window.hwObs.forEach((o) => o.disconnect());
+    window.hwObs.clear();
+    window.__dashRunAll();
+  };
+
+  /* ---------- Menu ---------- */
+  const menu = $('.cb-menu');
+  const openMenu = () => {
+    $('[data-act="count"]', menu).hidden = view === 'count';
+    $('[data-act="dash"]', menu).hidden = view === 'dash' || !yearsWithCandy(kid()).length;
+    menu.hidden = false;
+  };
+  const closeMenu = () => { menu.hidden = true; };
+  $('.cb-menu-btn').addEventListener('click', openMenu);
+  menu.addEventListener('click', (ev) => { if (ev.target === menu) closeMenu(); });
+  document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') closeMenu(); });
+  $$('[data-act]', menu).forEach((b) => b.addEventListener('click', () => {
+    closeMenu();
+    const k = kid();
+    switch (b.dataset.act) {
+      case 'count': show('count'); break;
+      case 'dash': show('dash'); break;
+      case 'add': addingKid = true; show('welcome'); break;
+      case 'demo': startDemo(); break;
+      case 'rename': {
+        const n = (prompt('Nouveau prénom', k.prenom) || '').trim().replace(/\s+/g, ' ');
+        if (n) { k.prenom = n.slice(0, 24); saveNow(); show(view); }
+        break;
+      }
+      case 'delete': {
+        if (!confirm('Supprimer ' + k.prenom + ' et tous ses décomptes? C’est définitif.')) break;
+        state.kids = state.kids.filter((x) => x.id !== k.id);
+        state.active = state.kids[0] ? state.kids[0].id : null;
+        saveNow();
+        toast(k.prenom + ' a été supprimé');
+        show(state.kids.length ? homeView() : 'welcome');
+        break;
+      }
+      case 'export': exportData(); break;
+      case 'import': $('.cb-file').click(); break;
+      default: break;
+    }
+  }));
+
+  /* ---------- Sauvegarde et restauration ---------- */
+  const exportData = async () => {
+    saveNow();
+    const data = {app: 'compte-bonbons', format: 1, exporte: new Date().toISOString(), kids: state.kids};
+    const name = 'compte-bonbons-' + new Date().toISOString().slice(0, 10) + '.json';
+    const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+    try {
+      const file = new File([blob], name, {type: 'application/json'});
+      if (navigator.canShare && navigator.canShare({files: [file]})) {
+        await navigator.share({files: [file], title: 'Sauvegarde Compte-Bonbons'});
+        return;
+      }
+    } catch (e) {
+      if (e && e.name === 'AbortError') return;
+    }
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = name;
+    document.body.append(a);
+    a.click();
+    setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+    toast('Sauvegarde téléchargée');
+  };
+  const validKid = (k) => k && typeof k.prenom === 'string' && k.annees && typeof k.annees === 'object' &&
+    Object.values(k.annees).every((d) => d && Array.isArray(d.bonbons) && d.bonbons.every((b) => typeof b.bonbon === 'string' && typeof b.categorie === 'string' && Number.isFinite(Number(b.quantite))));
+  $('.cb-file').addEventListener('change', async (ev) => {
+    const f = ev.target.files && ev.target.files[0];
+    ev.target.value = '';
+    if (!f) return;
+    try {
+      const j = JSON.parse(await f.text());
+      const kids = (j && Array.isArray(j.kids) ? j.kids : []).filter(validKid);
+      if (!kids.length) { toast('Ce fichier n’est pas une sauvegarde Compte-Bonbons'); return; }
+      let added = 0, replaced = 0;
+      kids.forEach((k) => {
+        const clean = {
+          id: typeof k.id === 'string' ? k.id : uid(),
+          prenom: k.prenom.slice(0, 24),
+          annees: Object.fromEntries(Object.entries(k.annees).map(([y, d]) => [String(y).slice(0, 4), {
+            heures: d.heures == null ? null : Number(d.heures),
+            sacs: d.sacs == null ? null : Number(d.sacs),
+            bonbons: d.bonbons.map((b) => ({categorie: b.categorie.slice(0, 40), bonbon: b.bonbon.slice(0, 40), quantite: Math.max(0, Math.round(Number(b.quantite))), gros: Math.max(0, Math.round(Number(b.gros) || 0))}))
+          }]))
+        };
+        const i = state.kids.findIndex((x) => x.id === clean.id);
+        if (i >= 0) { state.kids[i] = clean; replaced++; } else { state.kids.push(clean); added++; }
+      });
+      if (!state.active && state.kids[0]) state.active = state.kids[0].id;
+      saveNow();
+      demo = null;
+      toast('Sauvegarde restaurée : ' + (added + replaced) + ' enfant' + (added + replaced > 1 ? 's' : ''));
+      show(homeView());
+    } catch (e) {
+      toast('Impossible de lire ce fichier');
+    }
+  });
+
+  /* ---------- Navigation ---------- */
+  const homeView = () => {
+    const k = kid();
+    if (!k) return 'welcome';
+    return yearsWithCandy(k).length ? 'dash' : 'count';
+  };
+  const show = (v) => {
+    if (v !== 'welcome' && !kid()) v = 'welcome';
+    if (v === 'count' && view === 'dash' && window.hwYear) year = window.hwYear;
+    view = v;
+    $('#cb-welcome').hidden = v !== 'welcome';
+    $('#cb-count').hidden = v !== 'count';
+    $('#cb-dash').hidden = v !== 'dash';
+    renderBar();
+    if (v === 'welcome') renderWelcome();
+    if (v === 'count') renderCount();
+    if (v === 'dash') renderDash();
+    window.scrollTo(0, 0);
+  };
+
+  window.cbStart = () => {
+    if (!state.active && state.kids[0]) state.active = state.kids[0].id;
+    show(homeView());
+  };
+})();
+</script>
+<script>
+const cbGo = () => { window.__dashStart(); window.cbStart(); };
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(cbGo); else cbGo();
+</script>
+</div>
+
+<div class="hw-update" hidden role="status" aria-live="polite">
+  <span class="msg">Une nouvelle version est prête</span>
+  <button type="button">Mettre à jour</button>
+</div>
+<style>
+.hw-update{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:50;display:flex;align-items:center;gap:.75rem;
+  padding:.5rem .5rem .5rem 1.1rem;border-radius:999px;background:#1d0f33;color:#f1ecff;
+  font-family:'Fredoka',ui-rounded,system-ui,sans-serif;font-weight:600;font-size:.95rem;white-space:nowrap;
+  box-shadow:0 0 0 1px rgba(255,122,26,.6),0 12px 32px rgba(0,0,0,.65),0 0 26px rgba(255,122,26,.4)}
+.hw-update[hidden]{display:none}
+.hw-update button{all:unset;cursor:pointer;background:#ff7a1a;color:#2a0d00;font-family:'Luckiest Guy',ui-rounded,system-ui,sans-serif;letter-spacing:.03em;padding:.5rem 1.1rem;border-radius:999px;box-shadow:0 3px 0 #9a3b00}
+.hw-update button[disabled]{opacity:.7}
+.hw-update button:active{transform:translateY(2px);box-shadow:0 1px 0 #9a3b00}
+@media (prefers-reduced-motion: no-preference){.hw-update:not([hidden]){animation:hw-upd .55s cubic-bezier(.2,.8,.2,1)}}
+@keyframes hw-upd{from{transform:translate(-50%,140%);opacity:0}to{transform:translate(-50%,0);opacity:1}}
+</style>
+<script>
+/* Bouton « Mettre à jour » : compare la version de cette page à version.json sur GitHub. */
+(function () {
+  const APP_VERSION = '2026.11.01-1';
+  const bar = document.querySelector('.hw-update');
+  const msg = bar.querySelector('.msg');
+  const btn = bar.querySelector('button');
+  const KEY = 'hw-update-target';
+  const store = {
+    get() { try { return sessionStorage.getItem(KEY); } catch (e) { return null; } },
+    set(v) { try { if (v) sessionStorage.setItem(KEY, v); else sessionStorage.removeItem(KEY); } catch (e) {} }
+  };
+  let latest = null;
+  const show = (text, label) => { msg.textContent = text; btn.textContent = label; bar.hidden = false; };
+
+  /* Just came back from a tap on the button, but GitHub is still serving the old page. */
+  const target = store.get();
+  if (target && target !== APP_VERSION) {
+    latest = target;
+    show('La mise à jour arrive, réessaie dans une minute', 'Réessayer');
+  } else {
+    store.set(null);
+  }
+
+  const check = async () => {
+    try {
+      const r = await fetch('version.json?t=' + Date.now(), {cache: 'no-store'});
+      if (!r.ok) return;
+      const j = await r.json();
+      if (j.version && j.version !== APP_VERSION) {
+        latest = j.version;
+        if (bar.hidden) show('Une nouvelle version est prête', 'Mettre à jour');
+      } else {
+        store.set(null);
+        bar.hidden = true;
+      }
+    } catch (e) { /* hors ligne : on réessaiera plus tard */ }
+  };
+
+  btn.addEventListener('click', async () => {
+    btn.textContent = 'Un instant…';
+    btn.disabled = true;
+    store.set(latest);
+    /* Make the phone forget the cached copies of the page before reloading. */
+    const bust = String(Date.now());
+    await Promise.allSettled([
+      fetch('./', {cache: 'reload'}),
+      fetch('index.html', {cache: 'reload'}),
+      fetch('./?v=' + bust, {cache: 'reload'}),
+      fetch('manifest.webmanifest', {cache: 'reload'})
+    ]);
+    const u = new URL(location.href);
+    u.searchParams.set('v', bust);
+    location.replace(u.toString());
+  });
+
+  check();
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') check(); });
+  setInterval(check, 30 * 60 * 1000);
+})();
+</script>
+</body>
+</html>

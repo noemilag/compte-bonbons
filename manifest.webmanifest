@@ -1,0 +1,21 @@
+{
+  "name": "Compte-Bonbons",
+  "short_name": "Compte-Bonbons",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#05040a",
+  "theme_color": "#120724",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "description": "Compte ton butin d’Halloween et découvre tes statistiques."
+}
