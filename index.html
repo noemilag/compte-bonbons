@@ -1868,18 +1868,6 @@ window.hwBalance = (el, cats, mode, allItems) => {
   if (!S.shown) { place(0); return; }
 
   /* 4. Le résultat */
-  const eqLine = (ts, total) => {
-    const line = mk('div', 'bl-eq');
-    ts.forEach((t, i) => {
-      if (i) line.append(' + ');
-      const x = mk('b', null, hwFmt.format(t.n)); x.style.color = t.color;
-      line.append(x, mk('span', 'nm', ' ' + t.label));
-    });
-    if (ts.length > 1) line.append(' = ', mk('b', null, hwFmt.format(total)));
-    return line;
-  };
-  const left = mk('div', 'bl-col'); left.append(mk('span', 'bl-h', 'Gauche'), eqLine(TA, A));
-  const right = mk('div', 'bl-col'); right.append(mk('span', 'bl-h', 'Droite'), eqLine(TB, B));
   const stmt = mk('div', 'bl-stmt');
   stmt.append(mk('b', null, hwFmt.format(A)), mk('span', 'op', truth), mk('b', null, hwFmt.format(B)));
   const verdict = mk('p', 'bl-verdict');
@@ -1887,7 +1875,7 @@ window.hwBalance = (el, cats, mode, allItems) => {
   else verdict.textContent = 'Oups! Tu avais choisi « ' + S.guess + ' », mais c’est « ' + truth + ' ».';
   const again = mk('button', 'bl-again', 'Rejouer'); again.type = 'button';
   again.addEventListener('click', reset);
-  res.append(left, right, stmt, verdict, again);
+  res.append(stmt, verdict, again);
 
   if (mode === 'weigh' && hwMotion) {
     res.style.opacity = '0';
@@ -2866,7 +2854,7 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(cbGo); els
 <script>
 /* Bouton « Mettre à jour » : compare la version de cette page à version.json sur GitHub. */
 (function () {
-  const APP_VERSION = '2026.11.01-11';
+  const APP_VERSION = '2026.11.01-12';
   const bar = document.querySelector('.hw-update');
   const msg = bar.querySelector('.msg');
   const btn = bar.querySelector('button');
