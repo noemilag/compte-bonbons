@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Compte-Bonbons · Le butin hanté</title>
-<meta name="description" content="Compte ton butin d’Halloween avec ton enfant et découvre vos statistiques : podium hanté, chaudron de sorcière et plus encore.">
+<meta name="description" content="Compte ton butin d’Halloween, découvre tes statistiques et amuse-toi avec les chiffres!">
 <meta name="theme-color" content="#120724">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="icon" type="image/png" sizes="48x48" href="favicon-48.png">
@@ -333,6 +333,56 @@ button.tn-rod:focus-visible,button.tn-units:focus-visible{outline:2px solid var(
 .hw-bravo{position:fixed;left:50%;top:42%;font-family:'Creepster','Luckiest Guy',ui-rounded,system-ui,sans-serif;font-weight:900;font-size:clamp(4rem,22vw,9rem);line-height:1;color:#7cff4f;
   text-shadow:0 6px 0 #1f6b0c,0 12px 0 #0b2b04,0 0 40px rgba(124,255,79,.8);white-space:nowrap;pointer-events:none}
 .bl-unit{margin:-.3rem 0 0;text-align:center;font-size:var(--cds-font-size-caption);font-weight:700;color:var(--ink-dim)}
+/* Le jeu des dizaines */
+.hw-tgame{display:flex;flex-direction:column;gap:var(--cds-gap-md);min-height:8rem}
+.tg-lead{margin:0;text-align:center;font-weight:700;font-size:var(--cds-font-size-heading);color:var(--ink)}
+.tg-piles{display:flex;flex-wrap:wrap;justify-content:center;gap:.45rem;margin-top:.5rem}
+.tg-piles button{appearance:none;border:0;cursor:pointer;font:inherit;font-weight:700;font-size:.95rem;display:inline-flex;align-items:center;gap:.45rem;padding:.5em 1em;border-radius:999px;background:rgba(10,4,20,.6);color:var(--ink);box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--c) 60%,transparent)}
+.tg-piles button .dot{width:.7rem;height:.7rem;border-radius:50%;background:var(--c);box-shadow:0 0 8px var(--c)}
+.tg-piles button[aria-pressed=true]{background:var(--c);color:#14081f;box-shadow:0 0 16px color-mix(in srgb,var(--c) 55%,transparent)}
+.tg-piles button[aria-pressed=true] .dot{background:#14081f;box-shadow:none}
+.tg-stage{display:flex;flex-direction:column;gap:var(--cds-gap-lg)}
+.tg-step{display:flex;flex-direction:column;align-items:center;gap:.6rem;padding:var(--cds-pad-md);border-radius:1.1rem;background:rgba(255,255,255,.035);box-shadow:inset 0 0 0 1px rgba(180,108,255,.2)}
+.tg-step[hidden]{display:none}
+.tg-h{margin:0;font-family:var(--chunky);font-weight:900;font-size:1.2rem;letter-spacing:.02em;color:var(--candle);text-align:center}
+.tg-p{margin:0;text-align:center;font-weight:500;color:var(--ink);line-height:1.45}
+.tg-msg{margin:0;min-height:1.3em;text-align:center;font-weight:700;color:var(--slime)}
+.tg-area{position:relative;width:100%;border-radius:1rem;background:radial-gradient(ellipse at 50% 100%,color-mix(in srgb,var(--c) 14%,transparent),transparent 70%),rgba(5,2,12,.45);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+.tg-dot{position:absolute;width:20px;height:20px;margin:-10px 0 0 -10px;padding:0;border:0;border-radius:50%;cursor:pointer;background:var(--c);box-shadow:inset -3px -3px 0 rgba(0,0,0,.25),0 0 8px color-mix(in srgb,var(--c) 50%,transparent);transition:transform .25s,opacity .25s;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.tg-dot::after{content:'';position:absolute;inset:-6px}
+.tg-dot.gone{transform:scale(0);opacity:0}
+.tg-area.locked .tg-dot{cursor:default;pointer-events:none}
+.tg-tens-btns{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;justify-content:center}
+.tg-stepper{display:flex;align-items:center;gap:.3rem;padding:.25rem;border-radius:999px;background:rgba(5,2,12,.6);box-shadow:inset 0 0 0 2px rgba(255,214,10,.35)}
+.tg-stepper.ok{box-shadow:inset 0 0 0 3px var(--slime),0 0 14px rgba(124,255,79,.45)}
+.tg-stepper.bad{box-shadow:inset 0 0 0 3px var(--pink),0 0 14px rgba(255,79,163,.4)}
+.tg-s{appearance:none;border:0;cursor:pointer;width:2.4rem;height:2.4rem;border-radius:50%;font-family:var(--chunky);font-size:1.35rem;background:rgba(255,255,255,.1);color:var(--ink);touch-action:manipulation}
+.tg-s[disabled]{opacity:.35;cursor:default}
+.tg-num{appearance:textfield;-moz-appearance:textfield;width:3.6rem;border:0;background:transparent;color:var(--candle);font-family:var(--chunky);font-weight:900;font-size:1.6rem;text-align:center;outline:none}
+.tg-num::-webkit-outer-spin-button,.tg-num::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.tg-num::placeholder{color:rgba(255,214,10,.4)}
+.tg-chip{appearance:none;border:0;cursor:pointer;font-family:var(--chunky);font-weight:900;font-size:.95rem;padding:.5em .8em;border-radius:999px;background:rgba(180,108,255,.2);color:var(--ink);box-shadow:inset 0 0 0 1.5px rgba(180,108,255,.55)}
+.tg-chip[disabled]{opacity:.35;cursor:default}
+.tg-chip[hidden]{display:none}
+.tg-go,.tg-again{appearance:none;border:0;cursor:pointer;font-family:var(--chunky);font-weight:900;font-size:1.15rem;letter-spacing:.03em;padding:.6em 1.5em;border-radius:999px;background:var(--candle);color:#2a1b00;box-shadow:0 4px 0 #8a6a00,0 0 18px rgba(255,214,10,.4)}
+.tg-go:active,.tg-again:active{transform:translateY(2px);box-shadow:0 2px 0 #8a6a00}
+.tg-go[hidden],.tg-again[hidden]{display:none}
+.tg-again{background:var(--purple);color:#1a0730;box-shadow:0 4px 0 #4a1d80,0 0 18px rgba(180,108,255,.45)}
+.tg-rods{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:center;gap:6px 5px;min-height:118px}
+.tg-build{opacity:.95;background:transparent;box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--c) 70%,transparent),0 0 0 3px rgba(255,214,10,.15)}
+.tg-build[hidden]{display:none}
+.tg-slot{background:rgba(255,255,255,.08) !important;box-shadow:none !important;transition:background .2s}
+.tg-slot.on{background:var(--c) !important}
+.tg-count{margin:0;font-weight:700;color:var(--ink-dim);min-height:1.2em}
+.tg-line{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:.4rem .6rem;width:100%}
+.tg-lab{font-weight:700;color:var(--ink)}
+.tg-after{font-weight:700;color:var(--ink-dim)}
+.tg-res{display:flex;flex-direction:column;align-items:center;gap:.35rem;text-align:center}
+.tg-res:empty{display:none}
+.tg-verdict{margin:0;font-family:var(--chunky);font-weight:900;font-size:1.35rem;color:var(--slime);text-shadow:0 0 14px rgba(124,255,79,.5)}
+.tg-win{margin:0;font-weight:700;font-size:1.15rem;color:var(--ink-dim)}
+.hw .tg-win b{font-family:var(--chunky);font-weight:900;font-size:1.6rem;color:var(--candle)}
+.tg-tip{margin:0;font-weight:700;color:var(--pink)}
 .hw-chart text.mnum{font-weight:800;font-size:15px;fill:#1a1020}
 .hw-chart text.tname{fill:#efeaff;font-weight:700;font-size:var(--cds-font-size-caption)}
 .hw-chart text.tnum{font-family:var(--chunky);font-weight:900;font-size:1.9rem;font-variant-numeric:tabular-nums}
@@ -592,7 +642,7 @@ button.tn-rod:focus-visible,button.tn-units:focus-visible{outline:2px solid var(
   <section id="cb-welcome" class="cb-screen cb-welcome" hidden>
     <img class="logo" src="icon-512.png" alt="">
     <h1>Compte-Bonbons</h1>
-    <p class="pitch cb-pitch-first">Compte ton butin d’Halloween et découvre tes statistiques : podium hanté, chaudron de sorcière et plus encore!</p>
+    <p class="pitch cb-pitch-first">Compte ton butin d’Halloween, découvre tes statistiques et amuse-toi avec les chiffres!</p>
     <p class="pitch cb-pitch-more" hidden>Un autre chasseur de bonbons dans la famille?</p>
     <div class="cb-install" hidden>
       <button class="cb-big green cb-install-btn" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><rect x="4" y="18" width="16" height="3" rx="1.5" fill="currentColor"/></svg>Installer sur mon téléphone</button>
@@ -760,6 +810,13 @@ button.tn-rod:focus-visible,button.tn-units:focus-visible{outline:2px solid var(
       <h2>Les bonbons en dizaines</h2>
       <p class="note">Chaque bâton contient 10 bonbons : c’est une dizaine. Les bonbons tout seuls, ce sont les unités.</p>
       <div class="hw-tens dash-skeleton" data-draw="tens" data-source="categories"></div>
+    </div>
+  </section>
+  <section class="hw-grid hw-tens-wrap">
+    <div class="hw-card hw-reveal" id="jeu-dizaines">
+      <h2>Le jeu des dizaines</h2>
+      <p class="note">Choisis un tas, estime-le à l’œil, fais des paquets de 10, puis écris ton nombre!</p>
+      <div class="hw-tgame dash-skeleton" data-draw="tensgame" data-source="categories bonbons"></div>
     </div>
   </section>
 
@@ -1128,7 +1185,7 @@ deltaDraw('d-gros', 'gros', (v) => hwFmt.format(v));
 
 /* Year picker: one button per year in the data. */
 window.HW_DRAWS = ['years', 'annee-inline', 'total', 'total-inline', 'heures-inline', 'minute', 'champion', 'champion-qte', 'heure', 'sortes', 'ratio', 'sacs', 'gros',
-  'd-total', 'd-heure', 'd-sortes', 'd-ratio', 'd-gros', 'podium', 'bocal', 'chart-cat', 'tens', 'balance', 'guess', 'chart-top', 'chart-choco', 'chart-chips', 'chart-special', 'table-body', 'cmp-total', 'cmp-cat'];
+  'd-total', 'd-heure', 'd-sortes', 'd-ratio', 'd-gros', 'podium', 'bocal', 'chart-cat', 'tens', 'tensgame', 'balance', 'guess', 'chart-top', 'chart-choco', 'chart-chips', 'chart-special', 'table-body', 'cmp-total', 'cmp-cat'];
 window.hwSetYear = (y) => {
   if (y === hwYear) return;
   hwYear = y;
@@ -1882,6 +1939,235 @@ dash.draw('guess', (el) => {
   hwGuess(el, qs);
 });
 
+/* ---------- Le jeu des dizaines : estimer, grouper par 10, écrire le nombre ---------- */
+window.hwTensGame = (el, piles) => {
+  el.replaceChildren();
+  const mk = (tag, cls, txt) => { const n = document.createElement(tag); if (cls) n.className = cls; if (txt != null) n.textContent = txt; return n; };
+  if (!piles.length) {
+    el.append(mk('p', 'tg-p', 'Il faut un tas d’au moins 10 bonbons pour jouer. Compte encore un peu!'));
+    return;
+  }
+  const stepper = (start, max, label) => {
+    const box = mk('div', 'tg-stepper');
+    const minus = mk('button', 'tg-s', '−'); minus.type = 'button'; minus.setAttribute('aria-label', label + ' : un de moins');
+    const inp = mk('input', 'tg-num'); inp.type = 'number'; inp.inputMode = 'numeric'; inp.min = '0'; inp.max = String(max); inp.value = start == null ? '' : String(start); inp.setAttribute('aria-label', label); inp.placeholder = '?';
+    const plus = mk('button', 'tg-s', '+'); plus.type = 'button'; plus.setAttribute('aria-label', label + ' : un de plus');
+    const get = () => (inp.value === '' ? null : Math.max(0, Math.min(max, Math.round(Number(inp.value)))));
+    const set = (v) => { inp.value = String(Math.max(0, Math.min(max, v))); box.classList.remove('ok', 'bad'); };
+    minus.addEventListener('click', () => set((get() || 0) - 1));
+    plus.addEventListener('click', () => set((get() || 0) + 1));
+    inp.addEventListener('input', () => box.classList.remove('ok', 'bad'));
+    box.append(minus, inp, plus);
+    return {box, get, set, inp, lock: (v) => { minus.disabled = v; plus.disabled = v; inp.disabled = v; }};
+  };
+
+  const choose = mk('div', 'tg-choose');
+  choose.append(mk('p', 'tg-lead', 'Choisis un tas :'));
+  const btns = mk('div', 'tg-piles');
+  choose.append(btns);
+  const stage = mk('div', 'tg-stage');
+  stage.append(mk('p', 'tg-p', 'Touche un tas pour commencer la partie.'));
+  el.append(choose, stage);
+
+  const start = (pile) => {
+    stage.replaceChildren();
+    const n = pile.n;
+    const st = {loose: n, rods: 0, building: 0, estimate: null, step: 1};
+
+    /* Étape 1 : estimer à l'œil */
+    const s1 = mk('div', 'tg-step');
+    s1.append(mk('h4', 'tg-h', 'Étape 1 · Estime à l’œil'));
+    s1.append(mk('p', 'tg-p', 'Regarde ton tas de ' + pile.label + ' sans compter. Combien de bonbons, selon toi?'));
+    const area = mk('div', 'tg-area locked');
+    area.style.setProperty('--c', pile.color);
+    const cols = Math.max(8, Math.min(13, Math.ceil(Math.sqrt(n * 1.8))));
+    const rows = Math.ceil(n / cols) + 1;
+    area.style.height = Math.max(150, rows * 26) + 'px';
+    const slots = [];
+    for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) slots.push([c, r]);
+    for (let i = slots.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [slots[i], slots[j]] = [slots[j], slots[i]]; }
+    const place = (dot, k) => {
+      const [c, r] = slots[k % slots.length];
+      dot.style.left = ((c + 0.5 + (Math.random() - 0.5) * 0.55) / cols * 100) + '%';
+      dot.style.top = ((r + 0.5 + (Math.random() - 0.5) * 0.55) / rows * 100) + '%';
+    };
+    let slotK = 0;
+    const addDot = (pop) => {
+      const d = mk('button', 'tg-dot');
+      d.type = 'button';
+      d.setAttribute('aria-label', 'Un bonbon');
+      place(d, slotK++);
+      if (pop) d.classList.add('tn-pop');
+      d.addEventListener('click', () => take(d));
+      area.append(d);
+    };
+    for (let i = 0; i < n; i++) addDot(false);
+    const est = stepper(null, 999, 'Ton estimation');
+    const tens = mk('div', 'tg-tens-btns');
+    const m10 = mk('button', 'tg-chip', '−10'); m10.type = 'button';
+    const p10 = mk('button', 'tg-chip', '+10'); p10.type = 'button';
+    m10.addEventListener('click', () => est.set((est.get() || 0) - 10));
+    p10.addEventListener('click', () => est.set((est.get() || 0) + 10));
+    tens.append(m10, est.box, p10);
+    const okEst = mk('button', 'tg-go', 'J’ai estimé!'); okEst.type = 'button';
+    const estMsg = mk('p', 'tg-msg');
+    s1.append(area, tens, okEst, estMsg);
+    stage.append(s1);
+
+    /* Étape 2 : faire des paquets de 10 */
+    const s2 = mk('div', 'tg-step'); s2.hidden = true;
+    s2.append(mk('h4', 'tg-h', 'Étape 2 · Fais des paquets de 10'));
+    s2.append(mk('p', 'tg-p', 'Touche les bonbons un par un pour remplir un bâton de 10. Quand tu as compris, tu peux regrouper 10 d’un coup.'));
+    const rodsRow = mk('div', 'tg-rods');
+    rodsRow.style.setProperty('--c', pile.color);
+    const build = mk('span', 'tn-rod tg-build');
+    const bslots = [];
+    for (let i = 0; i < 10; i++) { const sdot = mk('span', 'tn-dot tg-slot'); bslots.push(sdot); build.append(sdot); }
+    rodsRow.append(build);
+    const counter = mk('p', 'tg-count');
+    const fast = mk('button', 'tg-chip tg-fast', 'Regrouper 10 d’un coup'); fast.type = 'button';
+    const msg2 = mk('p', 'tg-msg');
+    s2.append(rodsRow, counter, fast, msg2);
+    stage.append(s2);
+
+    /* Étape 3 : compter et écrire */
+    const s3 = mk('div', 'tg-step'); s3.hidden = true;
+    s3.append(mk('h4', 'tg-h', 'Étape 3 · Compte et écris ton nombre'));
+    const f1 = stepper(null, 99, 'Nombre de dizaines');
+    const f2 = stepper(null, 99, 'Nombre d’unités');
+    const f3 = stepper(null, 999, 'Nombre de bonbons');
+    const line = (label, f, after) => { const r = mk('div', 'tg-line'); r.append(mk('span', 'tg-lab', label), f.box); if (after) r.append(mk('span', 'tg-after', after)); return r; };
+    s3.append(line('Combien de bâtons de 10?', f1, 'dizaines'), line('Combien de bonbons seuls?', f2, 'unités'), line('Donc ton tas contient', f3, 'bonbons'));
+    const check = mk('button', 'tg-go', 'Vérifier!'); check.type = 'button';
+    const res = mk('div', 'tg-res'); res.setAttribute('aria-live', 'polite');
+    const again = mk('button', 'tg-again', 'Un autre tas'); again.type = 'button'; again.hidden = true;
+    s3.append(check, res, again);
+    stage.append(s3);
+
+    const refresh = () => {
+      bslots.forEach((sd, i) => sd.classList.toggle('on', i < st.building));
+      counter.textContent = st.rods ? (st.rods + (st.rods > 1 ? ' bâtons de 10' : ' bâton de 10') + (st.step === 2 ? ' pour l’instant' : '')) : '';
+      fast.disabled = st.loose + st.building < 10;
+    };
+    const finishRod = () => {
+      st.building = 0;
+      st.rods += 1;
+      const rod = mk('span', 'tn-rod tn-pop');
+      for (let i = 0; i < 10; i++) rod.append(mk('span', 'tn-dot'));
+      rodsRow.insertBefore(rod, build);
+      msg2.textContent = 'Une dizaine de plus!';
+    };
+    const checkDone = () => {
+      if (st.loose + st.building >= 10) return;
+      if (st.building > 0) {
+        for (let i = 0; i < st.building; i++) addDot(true);
+        st.loose += st.building;
+        st.building = 0;
+      }
+      area.classList.add('locked');
+      fast.hidden = true;
+      build.hidden = true;
+      msg2.textContent = st.loose ? 'Il reste moins de 10 bonbons seuls : ce sont les unités!' : 'Il ne reste aucun bonbon seul : zéro unité!';
+      if (st.step < 3) { st.step = 3; s3.hidden = false; if (hwMotion) s3.classList.add('tn-say'); }
+      refresh();
+    };
+    const take = (d) => {
+      if (st.step !== 2 || st.loose <= 0) return;
+      d.disabled = true;
+      d.classList.add('gone');
+      setTimeout(() => d.remove(), 250);
+      st.loose -= 1;
+      st.building += 1;
+      msg2.textContent = '';
+      if (st.building === 10) finishRod();
+      refresh();
+      checkDone();
+    };
+    fast.addEventListener('click', () => {
+      const need = 10 - st.building;
+      if (st.loose < need) return;
+      [...area.querySelectorAll('.tg-dot:not(.gone)')].slice(0, need).forEach((d) => { d.classList.add('gone'); setTimeout(() => d.remove(), 250); });
+      st.loose -= need;
+      finishRod();
+      refresh();
+      checkDone();
+    });
+
+    okEst.addEventListener('click', () => {
+      const v = est.get();
+      if (v == null) { estMsg.textContent = 'Choisis d’abord un nombre avec les boutons.'; return; }
+      st.estimate = v;
+      est.lock(true); m10.disabled = true; p10.disabled = true;
+      okEst.hidden = true;
+      estMsg.textContent = 'Ton estimation : ' + v + '. Voyons voir!';
+      st.step = 2;
+      area.classList.remove('locked');
+      s2.hidden = false;
+      if (hwMotion) s2.classList.add('tn-say');
+      refresh();
+    });
+
+    check.addEventListener('click', () => {
+      const t = Math.floor(n / 10), u = n % 10;
+      const a = f1.get(), b = f2.get(), c = f3.get();
+      const ok1 = a === t, ok2 = b === u, ok3 = c === n;
+      [[f1, ok1], [f2, ok2], [f3, ok3]].forEach(([f, ok]) => { f.box.classList.remove('ok', 'bad'); f.box.classList.add(ok ? 'ok' : 'bad'); });
+      res.replaceChildren();
+      if (ok1 && ok2 && ok3) {
+        const big = mk('p', 'tg-win');
+        big.append(mk('b', null, String(n)), ' = ', mk('b', null, String(t)), t > 1 ? ' dizaines + ' : ' dizaine + ', mk('b', null, String(u)), u > 1 ? ' unités' : ' unité');
+        const diff = Math.abs(st.estimate - n);
+        const e = mk('p', 'tg-p', diff === 0 ? 'Et ton estimation était parfaite! Wow!' : 'Tu avais estimé ' + st.estimate + ' : tu étais à ' + diff + ' bonbon' + (diff > 1 ? 's' : '') + ' près.');
+        res.append(mk('p', 'tg-verdict', 'Bravo! C’est exactement ça!'), big, e);
+        [f1, f2, f3].forEach((f) => f.lock(true));
+        check.hidden = true;
+        again.hidden = false;
+        if (window.hwConfetti) hwConfetti(big);
+      } else {
+        const tips = [];
+        if (!ok1) tips.push('Recompte les bâtons de 10.');
+        if (!ok2) tips.push('Recompte les bonbons seuls.');
+        if (!ok3 && ok1 && ok2) tips.push('Indice : ' + t + ' dizaines, ça fait ' + (t * 10) + '. Ajoute les ' + u + ' unités.');
+        else if (!ok3) tips.push('Le nombre total se construit avec les dizaines et les unités.');
+        tips.forEach((tx) => res.append(mk('p', 'tg-tip', tx)));
+      }
+    });
+    again.addEventListener('click', () => {
+      btns.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', 'false'));
+      stage.replaceChildren(mk('p', 'tg-p', 'Touche un tas pour commencer une nouvelle partie.'));
+      choose.scrollIntoView({behavior: hwMotion ? 'smooth' : 'auto', block: 'center'});
+    });
+    refresh();
+  };
+
+  piles.forEach((pile) => {
+    const b = mk('button');
+    b.type = 'button';
+    b.style.setProperty('--c', pile.color);
+    b.append(mk('span', 'dot'), pile.label);
+    b.setAttribute('aria-pressed', 'false');
+    b.addEventListener('click', () => {
+      btns.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', x === b ? 'true' : 'false'));
+      start(pile);
+    });
+    btns.append(b);
+  });
+};
+
+dash.draw('tensgame', (el) => {
+  const d = dash.data('categories');
+  const b = dash.data('bonbons');
+  const t = dash.data('totaux');
+  if (!hwState(el, d.status !== 'ok' ? d : b.status !== 'ok' ? b : t)) return;
+  hwSelYear(t.data);
+  const piles = [], seen = new Set();
+  const add = (label, n, color) => { if (!seen.has(label)) { seen.add(label); piles.push({label, n, color}); } };
+  hwOfYear(d.data).filter((c) => c.quantite >= 10 && c.quantite <= 99).forEach((c) => add(c.categorie, c.quantite, hwColor(c.categorie)));
+  hwOfYear(b.data).map((r) => ({...r, q: Number(r.quantite)})).filter((r) => r.q >= 10 && r.q <= 99)
+    .sort((x, y) => y.q - x.q).forEach((r) => add(r.bonbon, r.q, hwColor(r.categorie)));
+  hwTensGame(el, piles.slice(0, 10));
+});
+
 /* ---------- Year-over-year comparison ---------- */
 window.hwColumns = (el, items, mode) => {
   el.replaceChildren();
@@ -2518,7 +2804,7 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(cbGo); els
 <script>
 /* Bouton « Mettre à jour » : compare la version de cette page à version.json sur GitHub. */
 (function () {
-  const APP_VERSION = '2026.11.01-9';
+  const APP_VERSION = '2026.11.01-10';
   const bar = document.querySelector('.hw-update');
   const msg = bar.querySelector('.msg');
   const btn = bar.querySelector('button');
