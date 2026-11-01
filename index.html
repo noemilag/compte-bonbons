@@ -1764,7 +1764,7 @@ window.hwBalance = (el, cats, mode, allItems) => {
     if (oc && names.includes(oc)) {
       const sub = mk('div', 'bl-sub');
       sub.style.setProperty('--c', hwColor(oc));
-      famItems(oc).forEach((i) => {
+      famItems(oc).slice().sort((x, y) => x.name.localeCompare(y.name, 'fr', {sensitivity: 'base'})).forEach((i) => {
         const k = key(i);
         const on = S[side].includes(k);
         const b = mk('button', 'bl-item' + (on ? ' on' : '') + (!on && S[other].includes(k) ? ' elsewhere' : ''));
@@ -2922,7 +2922,7 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(cbGo); els
 <script>
 /* Bouton « Mettre à jour » : compare la version de cette page à version.json sur GitHub. */
 (function () {
-  const APP_VERSION = '2026.11.01-14';
+  const APP_VERSION = '2026.11.01-15';
   const bar = document.querySelector('.hw-update');
   const msg = bar.querySelector('.msg');
   const btn = bar.querySelector('button');
