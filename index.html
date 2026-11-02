@@ -423,6 +423,10 @@ button.tn-rod:focus-visible,button.tn-units:focus-visible{outline:2px solid var(
 .tg-rods:empty{display:none}
 .hw-mouse{display:none}
 @media (hover: hover) and (pointer: fine){ .hw-touch{display:none} .hw-mouse{display:inline} }
+.tn-form{display:flex;flex-direction:column;align-items:center;gap:.6rem}
+.hw-tens .tg-piles{margin-top:0}
+.hw-tens .tn-fam{align-items:center}
+.hw-tens .tn-blocks{justify-content:center}
 .hw-chart text.mnum{font-weight:800;font-size:15px;fill:#1a1020}
 .hw-chart text.tname{fill:#efeaff;font-weight:700;font-size:var(--cds-font-size-caption)}
 .hw-chart text.tnum{font-family:var(--chunky);font-weight:900;font-size:1.9rem;font-variant-numeric:tabular-nums}
@@ -774,8 +778,36 @@ body.cb-has-installbar .hw-update{bottom:calc(92px + env(safe-area-inset-bottom)
     <p class="say">En <b data-draw="annee-inline" data-source="totaux" data-field="annee" class="dash-skeleton">—</b>, après <b data-draw="heures-inline" data-source="totaux" data-field="heures" class="dash-skeleton">—</b> heures à cogner aux portes, <span class="cb-kid">—</span> a ramassé <b data-draw="total-inline" data-source="totaux" data-field="total" class="dash-skeleton">—</b> bonbons! Ça fait <b data-draw="minute" data-source="totaux" data-field="parMinute" class="dash-skeleton">—</b> bonbons par minute. Le roi de la nuit : les <b data-draw="champion" data-source="totaux" data-field="champion" class="dash-skeleton">—</b>, avec <b data-draw="champion-qte" data-source="totaux" data-field="championQte" class="dash-skeleton">—</b> morceaux.</p>
     <div class="hw-years" data-draw="years" data-source="totaux" role="group" aria-label="Choisir l’année"></div>
   </header>
-
-  <div class="hw-chapter hw-reveal"><svg class="ico" viewBox="0 0 48 48" aria-hidden="true"><path d="M6 21 Q6 8 24 8 Q42 8 42 21 Z" fill="#c8682a"/><circle cx="16" cy="14" r="3.5" fill="#7cff4f"/><circle cx="24" cy="11" r="3.5" fill="#ff4fa3"/><circle cx="32" cy="14" r="3.5" fill="#b46cff"/><rect x="6" y="21" width="36" height="20" rx="3" fill="#8f4417"/><rect x="6" y="19" width="36" height="5" fill="#ffd60a"/><rect x="20.5" y="19" width="7" height="11" rx="2" fill="#ffd60a"/><circle cx="24" cy="25.5" r="1.6" fill="#5a2a0c"/></svg><div><span class="k">Chapitre 1</span><h3>Le trésor de la nuit</h3></div></div>
+  <div class="hw-chapter hw-reveal"><svg class="ico" viewBox="0 0 48 48" aria-hidden="true"><path d="M12 14 H36 Q46 14 46 27 Q46 40 38 40 Q34 40 31 34 H17 Q14 40 10 40 Q2 40 2 27 Q2 14 12 14 Z" fill="#6a2fa0"/><rect x="10" y="22" width="12" height="4" rx="1.5" fill="#ffd60a"/><rect x="14" y="18" width="4" height="12" rx="1.5" fill="#ffd60a"/><circle cx="33" cy="21" r="3" fill="#7cff4f"/><circle cx="39" cy="26" r="3" fill="#ff4fa3"/><circle cx="33" cy="31" r="3" fill="#ff7a1a"/><circle cx="27" cy="26" r="3" fill="#00e5ff"/></svg><div><span class="k">Chapitre 1</span><h3>À toi de jouer!</h3></div></div>
+  <section class="hw-grid hw-tens-wrap">
+    <div class="hw-card hw-reveal" id="devine">
+      <h2>Devine combien!</h2>
+      <p class="note">Fais ta prédiction avec le curseur, puis vérifie si tu étais proche.</p>
+      <div class="hw-guess dash-skeleton" data-draw="guess" data-source="categories bonbons"></div>
+    </div>
+  </section>
+  <section class="hw-grid hw-tens-wrap">
+    <div class="hw-card hw-reveal" id="balance">
+      <h2>La balance</h2>
+      <p class="note">Coche des bonbons de chaque côté (la flèche ▾ montre les sortes), choisis ton symbole, puis touche la balance!</p>
+      <div class="hw-balance dash-skeleton" data-draw="balance" data-source="categories bonbons"></div>
+    </div>
+  </section>
+  <section class="hw-grid hw-tens-wrap">
+    <div class="hw-card hw-reveal" id="dizaines">
+      <h2>Les bonbons en dizaines</h2>
+      <p class="note">Choisis une famille, compte les bâtons de 10 et les bonbons seuls, puis écris ton nombre!</p>
+      <div class="hw-tens dash-skeleton" data-draw="tens" data-source="categories"></div>
+    </div>
+  </section>
+  <section class="hw-grid hw-tens-wrap">
+    <div class="hw-card hw-reveal" id="jeu-dizaines">
+      <h2>Le jeu des dizaines</h2>
+      <p class="note">Choisis un tas, estime-le à l’œil, glisse <span class="hw-touch">ton doigt</span><span class="hw-mouse">ta souris</span> pour faire des paquets de 10, puis écris ton nombre!</p>
+      <div class="hw-tgame dash-skeleton" data-draw="tensgame" data-source="categories bonbons"></div>
+    </div>
+  </section>
+  <div class="hw-chapter hw-reveal"><svg class="ico" viewBox="0 0 48 48" aria-hidden="true"><path d="M6 21 Q6 8 24 8 Q42 8 42 21 Z" fill="#c8682a"/><circle cx="16" cy="14" r="3.5" fill="#7cff4f"/><circle cx="24" cy="11" r="3.5" fill="#ff4fa3"/><circle cx="32" cy="14" r="3.5" fill="#b46cff"/><rect x="6" y="21" width="36" height="20" rx="3" fill="#8f4417"/><rect x="6" y="19" width="36" height="5" fill="#ffd60a"/><rect x="20.5" y="19" width="7" height="11" rx="2" fill="#ffd60a"/><circle cx="24" cy="25.5" r="1.6" fill="#5a2a0c"/></svg><div><span class="k">Chapitre 2</span><h3>Le trésor de la nuit</h3></div></div>
   <section class="hw-tiles" id="chiffres">
     <div class="hw-tile hw-reveal">
       <svg class="ico" viewBox="0 0 48 48" aria-hidden="true"><path d="M15 24 L4 14 L4 34 Z" fill="#ffb066"/><path d="M33 24 L44 14 L44 34 Z" fill="#ffb066"/><circle cx="24" cy="24" r="12" fill="#ff7a1a"/><path d="M16 16 Q22 22 20 33" stroke="#ffd2a6" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M24 12.5 Q31 20 29 35" stroke="#ffd2a6" stroke-width="3" fill="none" stroke-linecap="round"/></svg>
@@ -813,22 +845,7 @@ body.cb-has-installbar .hw-update{bottom:calc(92px + env(safe-area-inset-bottom)
       <span class="note">Les « gros » du sac</span>
     </div>
   </section>
-  <section class="hw-grid hw-tens-wrap">
-    <div class="hw-card hw-reveal" id="devine">
-      <h2>Devine combien!</h2>
-      <p class="note">Fais ta prédiction avec le curseur, puis vérifie si tu étais proche.</p>
-      <div class="hw-guess dash-skeleton" data-draw="guess" data-source="categories bonbons"></div>
-    </div>
-  </section>
-  <section class="hw-grid hw-tens-wrap">
-    <div class="hw-card hw-reveal" id="balance">
-      <h2>La balance</h2>
-      <p class="note">Coche des bonbons de chaque côté (la flèche ▾ montre les sortes), choisis ton symbole, puis touche la balance!</p>
-      <div class="hw-balance dash-skeleton" data-draw="balance" data-source="categories bonbons"></div>
-    </div>
-  </section>
-
-  <div class="hw-chapter hw-reveal"><svg class="ico" viewBox="0 0 48 48" aria-hidden="true"><path d="M14 11 H8 Q8 23 17 24" stroke="#e0a800" stroke-width="3.5" fill="none" stroke-linecap="round"/><path d="M34 11 H40 Q40 23 31 24" stroke="#e0a800" stroke-width="3.5" fill="none" stroke-linecap="round"/><path d="M13 6 H35 V17 Q35 31 24 31 Q13 31 13 17 Z" fill="#ffd60a"/><path d="M18 10 V18 Q18 24 22 26" stroke="#fff3b0" stroke-width="2.5" fill="none" stroke-linecap="round" opacity=".7"/><rect x="21" y="31" width="6" height="5" fill="#e0a800"/><rect x="14" y="36" width="20" height="6" rx="2" fill="#a86f00"/></svg><div><span class="k">Chapitre 2</span><h3>Qui a gagné la nuit?</h3></div></div>
+  <div class="hw-chapter hw-reveal"><svg class="ico" viewBox="0 0 48 48" aria-hidden="true"><path d="M14 11 H8 Q8 23 17 24" stroke="#e0a800" stroke-width="3.5" fill="none" stroke-linecap="round"/><path d="M34 11 H40 Q40 23 31 24" stroke="#e0a800" stroke-width="3.5" fill="none" stroke-linecap="round"/><path d="M13 6 H35 V17 Q35 31 24 31 Q13 31 13 17 Z" fill="#ffd60a"/><path d="M18 10 V18 Q18 24 22 26" stroke="#fff3b0" stroke-width="2.5" fill="none" stroke-linecap="round" opacity=".7"/><rect x="21" y="31" width="6" height="5" fill="#e0a800"/><rect x="14" y="36" width="20" height="6" rx="2" fill="#a86f00"/></svg><div><span class="k">Chapitre 3</span><h3>Qui a gagné la nuit?</h3></div></div>
   <section class="hw-grid">
     <div class="hw-card hw-reveal" id="podium">
       <h2>Le podium hanté</h2>
@@ -842,8 +859,7 @@ body.cb-has-installbar .hw-update{bottom:calc(92px + env(safe-area-inset-bottom)
       <button class="hw-refill" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/><path d="M20.5 3.5v5h-5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Remplir à nouveau</button>
     </div>
   </section>
-
-  <div class="hw-chapter hw-reveal"><svg class="ico" viewBox="0 0 48 48" aria-hidden="true"><rect x="14" y="4" width="20" height="6" rx="2" fill="#b46cff"/><path d="M12 12 H36 Q40 12 40 17 V38 Q40 43 35 43 H13 Q8 43 8 38 V17 Q8 12 12 12 Z" fill="#2a1645"/><circle cx="15" cy="37" r="4" fill="#ff7a1a"/><circle cx="24" cy="37" r="4" fill="#ff7a1a"/><circle cx="33" cy="37" r="4" fill="#d4915b"/><circle cx="19.5" cy="29.5" r="4" fill="#7cff4f"/><circle cx="28.5" cy="29.5" r="4" fill="#b46cff"/><circle cx="15" cy="22" r="4" fill="#ffd60a"/><circle cx="24" cy="22" r="4" fill="#ff4f6d"/><path d="M34 17 V24" stroke="#5c3a8a" stroke-width="2.5" stroke-linecap="round"/></svg><div><span class="k">Chapitre 3</span><h3>Les familles de bonbons</h3></div></div>
+  <div class="hw-chapter hw-reveal"><svg class="ico" viewBox="0 0 48 48" aria-hidden="true"><rect x="14" y="4" width="20" height="6" rx="2" fill="#b46cff"/><path d="M12 12 H36 Q40 12 40 17 V38 Q40 43 35 43 H13 Q8 43 8 38 V17 Q8 12 12 12 Z" fill="#2a1645"/><circle cx="15" cy="37" r="4" fill="#ff7a1a"/><circle cx="24" cy="37" r="4" fill="#ff7a1a"/><circle cx="33" cy="37" r="4" fill="#d4915b"/><circle cx="19.5" cy="29.5" r="4" fill="#7cff4f"/><circle cx="28.5" cy="29.5" r="4" fill="#b46cff"/><circle cx="15" cy="22" r="4" fill="#ffd60a"/><circle cx="24" cy="22" r="4" fill="#ff4f6d"/><path d="M34 17 V24" stroke="#5c3a8a" stroke-width="2.5" stroke-linecap="round"/></svg><div><span class="k">Chapitre 4</span><h3>Les familles de bonbons</h3></div></div>
   <section class="hw-grid">
     <div class="hw-card hw-reveal" id="categories">
       <h2>Par famille</h2>
@@ -856,22 +872,7 @@ body.cb-has-installbar .hw-update{bottom:calc(92px + env(safe-area-inset-bottom)
       <div class="hw-chart dash-skeleton" data-draw="chart-top" data-source="bonbons"></div>
     </div>
   </section>
-  <section class="hw-grid hw-tens-wrap">
-    <div class="hw-card hw-reveal" id="dizaines">
-      <h2>Les bonbons en dizaines</h2>
-      <p class="note">Chaque bâton contient 10 bonbons : c’est une dizaine. Les bonbons tout seuls, ce sont les unités.</p>
-      <div class="hw-tens dash-skeleton" data-draw="tens" data-source="categories"></div>
-    </div>
-  </section>
-  <section class="hw-grid hw-tens-wrap">
-    <div class="hw-card hw-reveal" id="jeu-dizaines">
-      <h2>Le jeu des dizaines</h2>
-      <p class="note">Choisis un tas, estime-le à l’œil, glisse <span class="hw-touch">ton doigt</span><span class="hw-mouse">ta souris</span> pour faire des paquets de 10, puis écris ton nombre!</p>
-      <div class="hw-tgame dash-skeleton" data-draw="tensgame" data-source="categories bonbons"></div>
-    </div>
-  </section>
-
-  <div class="hw-chapter hw-reveal"><svg class="ico" viewBox="0 0 48 48" aria-hidden="true"><rect x="9" y="5" width="30" height="38" rx="3" fill="#6a2fa0"/><rect x="9" y="5" width="6" height="38" rx="2" fill="#44186b"/><rect x="36" y="20" width="6" height="9" rx="2" fill="#ffd60a"/><path d="M29 14 A8 8 0 1 0 29 32 A6.2 6.2 0 1 1 29 14 Z" fill="#ffd60a"/><circle cx="31" cy="12" r="1.3" fill="#7cff4f"/><circle cx="34" cy="34" r="1.3" fill="#7cff4f"/></svg><div><span class="k">Chapitre 4</span><h3>Les secrets du grimoire</h3></div></div>
+  <div class="hw-chapter hw-reveal"><svg class="ico" viewBox="0 0 48 48" aria-hidden="true"><rect x="9" y="5" width="30" height="38" rx="3" fill="#6a2fa0"/><rect x="9" y="5" width="6" height="38" rx="2" fill="#44186b"/><rect x="36" y="20" width="6" height="9" rx="2" fill="#ffd60a"/><path d="M29 14 A8 8 0 1 0 29 32 A6.2 6.2 0 1 1 29 14 Z" fill="#ffd60a"/><circle cx="31" cy="12" r="1.3" fill="#7cff4f"/><circle cx="34" cy="34" r="1.3" fill="#7cff4f"/></svg><div><span class="k">Chapitre 5</span><h3>Les secrets du grimoire</h3></div></div>
   <section class="hw-grid">
     <div class="hw-card hw-reveal" id="chocolat">
       <h2>La crypte au chocolat</h2>
@@ -906,8 +907,7 @@ body.cb-has-installbar .hw-update{bottom:calc(92px + env(safe-area-inset-bottom)
       </div>
     </div>
   </section>
-
-  <div class="hw-chapter hw-reveal"><svg class="ico" viewBox="0 0 48 48" aria-hidden="true"><rect x="6" y="10" width="36" height="32" rx="4" fill="#2a1645"/><rect x="6" y="10" width="36" height="10" rx="4" fill="#ff7a1a"/><rect x="6" y="16" width="36" height="4" fill="#ff7a1a"/><rect x="14" y="5" width="4" height="10" rx="2" fill="#ffd60a"/><rect x="30" y="5" width="4" height="10" rx="2" fill="#ffd60a"/><rect x="12" y="30" width="7" height="8" rx="1.5" fill="#b46cff"/><rect x="21" y="25" width="7" height="13" rx="1.5" fill="#ff7a1a"/><rect x="30" y="22" width="7" height="16" rx="1.5" fill="#7cff4f"/></svg><div><span class="k">Chapitre 5</span><h3>D’une année à l’autre</h3></div></div>
+  <div class="hw-chapter hw-reveal"><svg class="ico" viewBox="0 0 48 48" aria-hidden="true"><rect x="6" y="10" width="36" height="32" rx="4" fill="#2a1645"/><rect x="6" y="10" width="36" height="10" rx="4" fill="#ff7a1a"/><rect x="6" y="16" width="36" height="4" fill="#ff7a1a"/><rect x="14" y="5" width="4" height="10" rx="2" fill="#ffd60a"/><rect x="30" y="5" width="4" height="10" rx="2" fill="#ffd60a"/><rect x="12" y="30" width="7" height="8" rx="1.5" fill="#b46cff"/><rect x="21" y="25" width="7" height="13" rx="1.5" fill="#ff7a1a"/><rect x="30" y="22" width="7" height="16" rx="1.5" fill="#7cff4f"/></svg><div><span class="k">Chapitre 6</span><h3>D’une année à l’autre</h3></div></div>
   <section class="hw-grid hw-compare-wait">
     <div class="hw-card hw-wait hw-reveal">
       <svg class="ball" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="28" r="21" fill="#3d1c66"/><circle cx="32" cy="28" r="21" fill="none" stroke="#b46cff" stroke-width="2.5"/><ellipse cx="25" cy="20" rx="6" ry="3.5" fill="#d9c4ff" opacity=".45" transform="rotate(-30 25 20)"/><path d="M34 22 l1.6 3.4 3.7.5 -2.7 2.6 .7 3.7 -3.3 -1.8 -3.3 1.8 .7 -3.7 -2.7 -2.6 3.7 -.5 Z" fill="#ffd60a"/><circle cx="41" cy="33" r="1.6" fill="#7cff4f"/><circle cx="24" cy="35" r="1.3" fill="#ff7a1a"/><path d="M18 46 H46 L50 58 H14 Z" fill="#8f4417"/><rect x="12" y="56" width="40" height="5" rx="2" fill="#5a2a0c"/></svg>
@@ -1550,94 +1550,113 @@ dash.draw('chart-special', (el) => {
 });
 
 /* Dizaines et unités : chaque famille en bâtons de 10 et en bonbons seuls. */
+window.hwTensState = {fam: null};
 window.hwTens = (el, cats, mode) => {
   el.replaceChildren();
   el.classList.toggle('tn-wait', mode === 'zero');
-  const mk = (tag, cls) => { const n = document.createElement(tag); if (cls) n.className = cls; return n; };
+  const mk = (tag, cls, txt) => { const n = document.createElement(tag); if (cls) n.className = cls; if (txt != null) n.textContent = txt; return n; };
+  if (!cats.length) return;
+  const S = hwTensState;
+  if (!cats.some((c) => c.categorie === S.fam)) S.fam = cats[0].categorie;
+  const c = cats.find((x) => x.categorie === S.fam);
+  const tens = Math.floor(c.quantite / 10), units = c.quantite % 10;
+
+  /* Legend */
   const legend = mk('div', 'tn-legend');
   const lr = mk('span'); const rodL = mk('span', 'tn-rod'); for (let i = 0; i < 10; i++) rodL.append(mk('span', 'tn-dot'));
   rodL.style.setProperty('--c', '#b3a9d6');
   lr.append(rodL, ' = 1 dizaine (10 bonbons)');
   const lu = mk('span'); const ld = mk('span', 'tn-dot'); ld.style.background = '#b3a9d6'; lu.append(ld, ' = 1 unité');
   legend.append(lr, lu);
-  const hint = mk('p', 'tn-hint');
-  hint.textContent = 'À toi de jouer : touche un bâton pour le casser en 10 bonbons. Touche les bonbons seuls pour en regrouper 10 dans un bâton.';
-  el.append(legend, hint);
+
+  /* Pick a family */
+  const pick = mk('div', 'tg-piles');
+  cats.forEach((x) => {
+    const b = mk('button');
+    b.type = 'button';
+    b.style.setProperty('--c', hwColor(x.categorie));
+    b.append(mk('span', 'dot'), x.categorie);
+    b.setAttribute('aria-pressed', x.categorie === S.fam ? 'true' : 'false');
+    b.addEventListener('click', () => { S.fam = x.categorie; hwTens(el, cats, 'animate'); });
+    pick.append(b);
+  });
+  el.append(pick, legend);
+
+  /* The family's rods and loose candies, no numbers */
+  const fam = mk('div', 'tn-fam');
+  fam.style.setProperty('--c', hwColor(c.categorie));
+  const blocks = mk('div', 'tn-blocks');
+  blocks.setAttribute('role', 'img');
+  blocks.setAttribute('aria-label', 'Des bâtons de 10 et des bonbons seuls de la famille ' + c.categorie);
   let k = 0;
-  cats.forEach((c) => {
-    const st = {tens: Math.floor(c.quantite / 10), units: c.quantite % 10};
-    const fam = mk('div', 'tn-fam');
-    fam.style.setProperty('--c', hwColor(c.categorie));
-    const head = mk('div', 'tn-head');
-    const nm = mk('span', 'tn-name'); nm.textContent = c.categorie;
-    const eq = mk('span', 'tn-eq');
-    head.append(nm, eq);
-    const blocks = mk('div', 'tn-blocks');
-    const msg = mk('p', 'tn-msg');
-    msg.setAttribute('aria-live', 'polite');
-    const b = (v) => { const x = mk('b'); x.textContent = hwFmt.format(v); return x; };
-    const drawEq = () => {
-      eq.replaceChildren(b(c.quantite), ' = ');
-      if (st.tens) eq.append(b(st.tens), st.tens > 1 ? ' dizaines' : ' dizaine');
-      if (st.tens && st.units) eq.append(' + ');
-      if (st.units || !st.tens) eq.append(b(st.units), st.units > 1 ? ' unités' : ' unité');
-      blocks.setAttribute('aria-label', c.categorie + ' : ' + st.tens + ' dizaines et ' + st.units + ' unités');
-    };
-    let msgT = null;
-    const say = (text, bad) => {
-      msg.textContent = text;
-      msg.classList.toggle('bad', !!bad);
-      msg.classList.remove('tn-say'); void msg.offsetWidth; msg.classList.add('tn-say');
-      clearTimeout(msgT);
-      msgT = setTimeout(() => { msg.textContent = ''; }, 3200);
-    };
-    const units = mk('button', 'tn-units');
-    units.type = 'button';
-    units.setAttribute('aria-label', 'Regrouper 10 unités de ' + c.categorie + ' en une dizaine');
-    const addUnit = (delay) => {
+  const anim = mode === 'animate';
+  for (let t = 0; t < tens; t++) {
+    const rod = mk('span', 'tn-rod');
+    for (let i = 0; i < 10; i++) rod.append(mk('span', 'tn-dot'));
+    if (anim) { rod.classList.add('tn-pop'); rod.style.setProperty('--d', (k++ * 45) + 'ms'); }
+    blocks.append(rod);
+  }
+  if (units) {
+    const u = mk('span', 'tn-units');
+    for (let i = 0; i < units; i++) {
       const d = mk('span', 'tn-dot');
-      if (delay != null) { d.classList.add('tn-pop'); d.style.setProperty('--d', delay + 'ms'); }
-      units.append(d);
-    };
-    const makeRod = (delay) => {
-      const r = mk('button', 'tn-rod');
-      r.type = 'button';
-      r.setAttribute('aria-label', 'Casser une dizaine de ' + c.categorie + ' en 10 unités');
-      for (let i = 0; i < 10; i++) r.append(mk('span', 'tn-dot'));
-      if (delay != null) { r.classList.add('tn-pop'); r.style.setProperty('--d', delay + 'ms'); }
-      r.addEventListener('click', () => {
-        r.remove();
-        st.tens -= 1;
-        st.units += 10;
-        for (let i = 0; i < 10; i++) addUnit(i * 35);
-        drawEq();
-        say('Crac! 1 dizaine = 10 unités. Il y a toujours ' + hwFmt.format(c.quantite) + ' bonbons.');
-      });
-      return r;
-    };
-    units.addEventListener('click', () => {
-      if (st.units >= 10) {
-        const dots = [...units.querySelectorAll('.tn-dot')].slice(-10);
-        dots.forEach((d) => d.remove());
-        st.units -= 10;
-        st.tens += 1;
-        blocks.insertBefore(makeRod(0), units);
-        drawEq();
-        say('Hop! 10 unités = 1 dizaine.');
-      } else {
-        units.classList.remove('tn-no'); void units.offsetWidth; units.classList.add('tn-no');
-        const missing = 10 - st.units;
-        say('Il faut 10 unités pour faire une dizaine. Il en manque ' + missing + '.', true);
-      }
-    });
-    const anim = mode === 'animate';
-    for (let t = 0; t < st.tens; t++) blocks.append(makeRod(anim ? (k++ * 45) : null));
-    for (let u = 0; u < st.units; u++) addUnit(anim ? (k++ * 45) : null);
-    blocks.append(units);
-    blocks.setAttribute('role', 'group');
-    drawEq();
-    fam.append(head, blocks, msg);
-    el.append(fam);
+      if (anim) { d.classList.add('tn-pop'); d.style.setProperty('--d', (k++ * 45) + 'ms'); }
+      u.append(d);
+    }
+    blocks.append(u);
+  }
+  fam.append(blocks);
+  el.append(fam);
+
+  /* Write the numbers */
+  const stepper = (max, label) => {
+    const box = mk('div', 'tg-stepper');
+    const minus = mk('button', 'tg-s', '−'); minus.type = 'button'; minus.setAttribute('aria-label', label + ' : un de moins');
+    const inp = mk('input', 'tg-num'); inp.type = 'number'; inp.inputMode = 'numeric'; inp.min = '0'; inp.max = String(max); inp.placeholder = '?'; inp.setAttribute('aria-label', label);
+    const plus = mk('button', 'tg-s', '+'); plus.type = 'button'; plus.setAttribute('aria-label', label + ' : un de plus');
+    const get = () => (inp.value === '' ? null : Math.max(0, Math.min(max, Math.round(Number(inp.value)))));
+    const set = (v) => { inp.value = String(Math.max(0, Math.min(max, v))); box.classList.remove('ok', 'bad'); };
+    minus.addEventListener('click', () => set((get() || 0) - 1));
+    plus.addEventListener('click', () => set((get() || 0) + 1));
+    inp.addEventListener('input', () => box.classList.remove('ok', 'bad'));
+    box.append(minus, inp, plus);
+    return {box, get, lock: () => { minus.disabled = true; plus.disabled = true; inp.disabled = true; }};
+  };
+  const f1 = stepper(99, 'Nombre de dizaines');
+  const f2 = stepper(99, 'Nombre d’unités');
+  const f3 = stepper(999, 'Nombre de bonbons');
+  const line = (label, f, after) => { const r = mk('div', 'tg-line'); r.append(mk('span', 'tg-lab', label), f.box, mk('span', 'tg-after', after)); return r; };
+  const form = mk('div', 'tn-form');
+  form.append(line('Combien de bâtons de 10?', f1, 'dizaines'), line('Combien de bonbons seuls?', f2, 'unités'), line('Donc, en tout :', f3, 'bonbons'));
+  const check = mk('button', 'tg-go', 'Vérifier!'); check.type = 'button';
+  const res = mk('div', 'tg-res'); res.setAttribute('aria-live', 'polite');
+  const next = mk('button', 'tg-again', 'Une autre famille'); next.type = 'button'; next.hidden = true;
+  form.append(check, res, next);
+  el.append(form);
+
+  check.addEventListener('click', () => {
+    const ok1 = f1.get() === tens, ok2 = f2.get() === units, ok3 = f3.get() === c.quantite;
+    [[f1, ok1], [f2, ok2], [f3, ok3]].forEach(([f, ok]) => { f.box.classList.remove('ok', 'bad'); f.box.classList.add(ok ? 'ok' : 'bad'); });
+    res.replaceChildren();
+    if (ok1 && ok2 && ok3) {
+      const eq = mk('p', 'tg-win');
+      eq.append(mk('b', null, hwFmt.format(c.quantite)), ' = ', mk('b', null, String(tens)), tens > 1 ? ' dizaines + ' : ' dizaine + ', mk('b', null, String(units)), units > 1 ? ' unités' : ' unité');
+      res.append(mk('p', 'tg-verdict', 'Bravo! Tu as bien compté!'), eq);
+      [f1, f2, f3].forEach((f) => f.lock());
+      check.hidden = true;
+      next.hidden = false;
+      if (window.hwConfetti) hwConfetti(eq);
+    } else {
+      if (!ok1) res.append(mk('p', 'tg-tip', 'Recompte les bâtons de 10.'));
+      if (!ok2) res.append(mk('p', 'tg-tip', 'Recompte les bonbons seuls.'));
+      if (!ok3 && ok1 && ok2) res.append(mk('p', 'tg-tip', 'Indice : ' + tens + ' dizaines, ça fait ' + (tens * 10) + '. Ajoute les ' + units + ' unités.'));
+      else if (!ok3) res.append(mk('p', 'tg-tip', 'Le total se construit avec les dizaines et les unités.'));
+    }
+  });
+  next.addEventListener('click', () => {
+    const i = cats.findIndex((x) => x.categorie === S.fam);
+    S.fam = cats[(i + 1) % cats.length].categorie;
+    hwTens(el, cats, 'animate');
   });
 };
 
@@ -2927,7 +2946,7 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(cbGo); els
 <script>
 /* Bouton « Mettre à jour » : compare la version de cette page à version.json sur GitHub. */
 (function () {
-  const APP_VERSION = '2026.11.01-16';
+  const APP_VERSION = '2026.11.01-17';
   const bar = document.querySelector('.hw-update');
   const msg = bar.querySelector('.msg');
   const btn = bar.querySelector('button');
