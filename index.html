@@ -749,6 +749,8 @@ body.cb-has-installbar .hw-update{bottom:calc(92px + env(safe-area-inset-bottom)
 .cb-brand img{width:2.1rem;height:2.1rem;border-radius:0}
 .cb-welcome .logo{width:11rem;height:11rem;margin:-1.7rem 0 -1.9rem}
 .cb-brand img{width:2.9rem;height:2.9rem;margin:-.45rem -.35rem -.45rem -.5rem}
+.cb-welcome .hw-credit{color:rgba(196,176,240,.36);margin:1.1rem 0 .2rem;font-size:.66rem;letter-spacing:.01em}
+.cb-welcome .hw-credit a:hover{color:rgba(210,192,248,.55)}
 </style>
 
 <div class="hw">
@@ -3128,7 +3130,7 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(cbGo); els
 <script>
 /* Bouton « Mettre à jour » : compare la version de cette page à version.json sur GitHub. */
 (function () {
-  const APP_VERSION = '2026.11.01-34';
+  const APP_VERSION = '2026.11.01-35';
   const bar = document.querySelector('.hw-update');
   const msg = bar.querySelector('.msg');
   const btn = bar.querySelector('button');
