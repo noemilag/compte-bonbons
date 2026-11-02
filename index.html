@@ -378,6 +378,12 @@ button.tn-rod:focus-visible,button.tn-units:focus-visible{outline:2px solid var(
 .tg-count{margin:0;font-weight:700;color:var(--ink-dim);min-height:1.2em}
 .tg-line{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:.4rem .6rem;width:100%}
 .tg-lab{font-weight:700;color:var(--ink)}
+.tn-form .tg-line,.tg-step .tg-line{display:grid;grid-template-columns:minmax(0,1fr) 10.5rem minmax(0,1fr);width:100%;grid-template-areas:"lab lab lab" ". box after";gap:.4rem .6rem;align-items:center;justify-items:center}
+.tn-form .tg-lab,.tg-step .tg-lab{grid-area:lab;text-align:center}
+.tn-form .tg-stepper,.tg-step .tg-stepper{grid-area:box;width:10.5rem;box-sizing:border-box;justify-content:space-between}
+.tn-form .tg-after,.tg-step .tg-after{grid-area:after;justify-self:start;font-size:.9rem;white-space:nowrap}
+.tn-form .tg-num,.tg-step .tg-num{flex:1;min-width:0;width:auto}
+
 .tg-after{font-weight:700;color:var(--ink-dim)}
 .tg-res{display:flex;flex-direction:column;align-items:center;gap:.35rem;text-align:center}
 .tg-res:empty{display:none}
@@ -3130,7 +3136,7 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(cbGo); els
 <script>
 /* Bouton « Mettre à jour » : compare la version de cette page à version.json sur GitHub. */
 (function () {
-  const APP_VERSION = '2026.11.01-35';
+  const APP_VERSION = '2026.11.01-37';
   const bar = document.querySelector('.hw-update');
   const msg = bar.querySelector('.msg');
   const btn = bar.querySelector('button');
