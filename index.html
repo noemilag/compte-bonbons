@@ -460,9 +460,44 @@ button.tn-rod:focus-visible,button.tn-units:focus-visible{outline:2px solid var(
 .hw-cellbar{display:flex;align-items:center;gap:var(--cds-gap-sm)}
 .hw-cellbar span.b{display:block;height:.7rem;border-radius:999px;min-width:4px}
 
-.hw-credit{text-align:center;font-size:var(--cds-font-size-caption);color:var(--muted,#a99bc4);opacity:.85;margin:var(--cds-gap-lg) 0 var(--cds-gap-md)}
-.hw-credit a{color:var(--orange);text-decoration:none;font-weight:700}
-.hw-credit a:hover{text-decoration:underline}
+.hw-share-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));gap:var(--cds-gap-sm);margin-top:var(--cds-gap-sm)}
+.hw-share-opt{display:flex;align-items:center;gap:.9rem;text-align:left;padding:.9rem 1rem;border-radius:1.1rem;border:0;background:rgba(255,255,255,.055);color:var(--ink);font:inherit;cursor:pointer;transition:transform .15s,background .15s}
+.hw-share-opt:hover{background:rgba(180,108,255,.16);transform:translateY(-2px)}
+.hw-share-opt:active{transform:scale(.97)}
+.hw-share-opt svg{width:3rem;height:3rem;flex:none;filter:drop-shadow(0 0 8px rgba(255,122,26,.35))}
+.hw-share-opt b{display:block;font-family:var(--chunky);font-weight:400;font-size:1.15rem;letter-spacing:.02em;color:var(--candle)}
+.hw-share-opt small{display:block;font-size:var(--cds-font-size-caption);color:var(--ink-dim);margin-top:.15rem}
+.hw-sharedlg{position:fixed;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;padding:max(16px,env(safe-area-inset-top)) 16px max(16px,env(safe-area-inset-bottom));background:rgba(8,3,18,.84);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.hw-sharedlg[hidden]{display:none}
+.hw-sharebox{position:relative;width:100%;max-width:36rem;max-height:100%;overflow:auto;background:linear-gradient(180deg,#24113f,#150a28);border-radius:1.5rem;padding:1.4rem 1.2rem 1.2rem;box-shadow:0 20px 60px rgba(0,0,0,.6),0 0 0 1px rgba(180,108,255,.25);text-align:center;color:var(--ink);font-family:var(--round)}
+.hw-sharebox h3{margin:.2rem 2rem .3rem;font-family:var(--spooky);font-weight:400;font-size:clamp(1.6rem,5vw,2.1rem);color:var(--orange);text-shadow:0 3px 0 #6b2200,0 0 16px rgba(255,122,26,.45)}
+.hw-share-sub{margin:0 0 .9rem;color:var(--ink-dim);font-size:.95rem}
+.hw-share-x{position:absolute;top:.6rem;right:.7rem;width:2.4rem;height:2.4rem;border:0;border-radius:50%;background:rgba(255,255,255,.08);color:var(--ink);font-size:1.5rem;line-height:1;cursor:pointer}
+.hw-share-prev{display:flex;gap:.7rem;overflow-x:auto;scroll-snap-type:x mandatory;padding:.2rem .1rem .6rem;justify-content:flex-start}
+.hw-share-prev img{flex:none;height:min(52vh,22rem);width:auto;border-radius:.9rem;scroll-snap-align:center;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+.hw-share-prev.is-cards img:first-child{margin-left:auto}.hw-share-prev.is-cards img:last-child{margin-right:auto}
+.hw-share-prev.is-diplome img,.hw-share-prev.is-defi img{height:auto;width:100%;max-height:52vh;object-fit:contain;margin:0 auto}
+.hw-share-prev.is-lien{display:none}
+.hw-share-wait{margin:2rem auto;color:var(--ink-dim);animation:hw-pulse 1.2s ease-in-out infinite}
+@keyframes hw-pulse{50%{opacity:.4}}
+.hw-share-link input{width:100%;box-sizing:border-box;padding:.75rem .9rem;border-radius:.8rem;border:0;background:rgba(0,0,0,.35);color:var(--slime);font:600 .9rem var(--round);text-overflow:ellipsis}
+.hw-share-acts{display:flex;flex-wrap:wrap;gap:.6rem;justify-content:center;margin-top:.9rem}
+.hw-sbtn{border:0;border-radius:999px;padding:.8rem 1.4rem;font-family:var(--chunky);font-size:1.1rem;letter-spacing:.03em;cursor:pointer;background:rgba(180,108,255,.2);color:var(--ink)}
+.hw-sbtn.is-main{background:var(--orange);color:#1a0d2e;box-shadow:0 5px 0 #8a3300,0 0 22px rgba(255,122,26,.45)}
+.hw-sbtn:active{transform:translateY(2px)}
+.hw-share-msg{min-height:1.2em;margin:.7rem 0 0;color:var(--slime);font-size:.9rem;word-break:break-all}
+html.hw-noscroll,html.hw-noscroll body{overflow:hidden}
+#hw-print{display:none}
+@media print{
+  @page{size:letter landscape;margin:0}
+  body.hw-printing > :not(#hw-print){display:none !important}
+  body.hw-printing{background:#fff !important}
+  body.hw-printing #hw-print{display:block}
+  #hw-print img{width:100%;height:auto;display:block}
+}
+.hw-credit{text-align:center;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-weight:400;font-size:.75rem;letter-spacing:.02em;color:#6e5a96;margin:var(--cds-gap-lg) 0 var(--cds-gap-md)}
+.hw-credit a{color:inherit;text-decoration:none;font-weight:inherit}
+.hw-credit a:hover{color:#8f7cb8}
 .hw-end{text-align:center;font-family:var(--spooky);font-weight:900;font-size:clamp(1.4rem,4vw,2rem);color:var(--orange);text-shadow:0 3px 0 #6b2200;margin:var(--cds-gap-lg) 0 0}
 .hw-end .ico{display:block;width:4rem;height:4rem;margin:0 auto var(--cds-gap-xs);filter:drop-shadow(0 0 14px rgba(255,122,26,.7))}
 
@@ -718,7 +753,7 @@ body.cb-has-installbar .hw-update{bottom:calc(92px + env(safe-area-inset-bottom)
     <button class="cb-brand" type="button" aria-label="Compte-Bonbons, accueil"><img src="logo.svg" alt="">Compte-Bonbons</button>
     <div class="cb-kids" role="group" aria-label="Choisir l’enfant"></div>
     <button class="cb-iconbtn cb-menu-btn" type="button" aria-label="Menu"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="2.2" fill="currentColor"/><circle cx="12" cy="12" r="2.2" fill="currentColor"/><circle cx="12" cy="19" r="2.2" fill="currentColor"/></svg></button>
-    <div class="cb-demo-note" hidden>Exemple : le butin de Léo <button class="cb-link cb-leave-demo" type="button">Créer le mien</button></div>
+    <div class="cb-demo-note" hidden><span class="cb-demo-label">Exemple : le butin de Léo</span> <button class="cb-link cb-leave-demo" type="button">Créer le mien</button></div>
   </nav>
 
   <section id="cb-welcome" class="cb-screen cb-welcome" hidden>
@@ -967,6 +1002,29 @@ body.cb-has-installbar .hw-update{bottom:calc(92px + env(safe-area-inset-bottom)
     </div>
   </section>
 
+  <section class="hw-grid">
+    <div class="hw-card hw-reveal" id="partager">
+      <h2>Partage ton butin</h2>
+      <p class="note">Montre ta récolte à la famille et aux amis.</p>
+      <div class="hw-share-grid">
+        <button type="button" class="hw-share-opt" data-share="cards"><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="13" y="6" width="26" height="34" rx="4" fill="#6a2fa0" transform="rotate(10 26 23)"/><rect x="8" y="9" width="26" height="34" rx="4" fill="#2a1645" stroke="#ff7a1a" stroke-width="2.5"/><rect x="13" y="30" width="4" height="8" rx="1" fill="#7cff4f"/><rect x="19" y="24" width="4" height="14" rx="1" fill="#ff7a1a"/><rect x="25" y="18" width="4" height="20" rx="1" fill="#ffd60a"/></svg><span><b>Cartes-images</b><small>Les grands chiffres et les graphiques</small></span></button>
+        <button type="button" class="hw-share-opt" data-share="diplome"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M17 28 L12 44 L18 41 L21 46 L24 32 Z" fill="#b46cff"/><path d="M31 28 L36 44 L30 41 L27 46 L24 32 Z" fill="#8a3fd1"/><circle cx="24" cy="20" r="15" fill="#ffd60a"/><circle cx="24" cy="20" r="10.5" fill="none" stroke="#a86f00" stroke-width="2"/><path d="M24 13 L26 18 L31 18 L27 21 L28.5 26 L24 23 L19.5 26 L21 21 L17 18 L22 18 Z" fill="#ff7a1a"/></svg><span><b>Diplôme à imprimer</b><small>Grand chasseur de bonbons</small></span></button>
+        <button type="button" class="hw-share-opt" data-share="lien"><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="5" y="17" width="22" height="14" rx="7" fill="none" stroke="#7cff4f" stroke-width="5" transform="rotate(-35 16 24)"/><rect x="21" y="17" width="22" height="14" rx="7" fill="none" stroke="#00e5ff" stroke-width="5" transform="rotate(-35 32 24)"/></svg><span><b>Lien vers mon butin</b><small>Le tableau complet, à ouvrir</small></span></button>
+        <button type="button" class="hw-share-opt" data-share="defi"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M8 8 H40 Q44 8 44 12 V30 Q44 34 40 34 H22 L13 42 V34 H8 Q4 34 4 30 V12 Q4 8 8 8 Z" fill="#ff4fa3"/><path d="M19 17 Q19 12 24 12 Q29 12 29 16.5 Q29 19.5 25.5 21 Q24 21.8 24 24" stroke="#1a0d2e" stroke-width="3.6" fill="none" stroke-linecap="round"/><circle cx="24" cy="29" r="2.3" fill="#1a0d2e"/></svg><span><b>Lance un défi</b><small>« Et toi, combien? »</small></span></button>
+      </div>
+    </div>
+  </section>
+  <div class="hw-sharedlg" hidden role="dialog" aria-modal="true" aria-labelledby="hw-share-t">
+    <div class="hw-sharebox">
+      <button type="button" class="hw-share-x" aria-label="Fermer">×</button>
+      <h3 id="hw-share-t"></h3>
+      <p class="hw-share-sub"></p>
+      <div class="hw-share-prev"></div>
+      <div class="hw-share-link" hidden><input type="text" readonly aria-label="Lien à partager"></div>
+      <div class="hw-share-acts"></div>
+      <p class="hw-share-msg" aria-live="polite"></p>
+    </div>
+  </div>
   <div class="cb-newyear-row hw-reveal">
     <button class="cb-big green cb-newyear" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>Ajouter une nouvelle année</button>
   </div>
@@ -2581,6 +2639,10 @@ document.querySelectorAll('.hw-search').forEach((inp) => {
       });
     }
     $('.cb-demo-note').hidden = !demo;
+    if (demo) {
+      $('.cb-demo-label').textContent = demo.shared ? 'Le butin de ' + demo.prenom + ', partagé avec toi' : 'Exemple : le butin de L\u00e9o';
+      $('.cb-leave-demo').textContent = demo.shared ? 'Compter le mien' : 'Créer le mien';
+    }
     $$('.cb-newyear-row').forEach((e) => { e.hidden = !!demo; });
     $('.cb-menu-btn').hidden = !!demo;
   };
@@ -2987,8 +3049,49 @@ document.querySelectorAll('.hw-search').forEach((inp) => {
     window.scrollTo(0, 0);
   };
 
-  window.cbStart = () => {
+
+  /* ---------- Lien « Mon butin » : les chiffres voyagent dans le lien ---------- */
+  const b64u = (bytes) => { let t = ''; for (let i = 0; i < bytes.length; i++) t += String.fromCharCode(bytes[i]); return btoa(t).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); };
+  const unb64u = (t) => { t = t.replace(/-/g, '+').replace(/_/g, '/'); while (t.length % 4) t += '='; const bin = atob(t); return Uint8Array.from(bin, (ch) => ch.charCodeAt(0)); };
+  const squeeze = async (bytes, Stream) => new Uint8Array(await new Response(new Blob([bytes]).stream().pipeThrough(new Stream('deflate-raw'))).arrayBuffer());
+  window.cbShareLink = async () => {
+    const k = kid();
+    const y = String(window.hwYear || year);
+    const yd = (k && k.annees[y]) || {heures: null, sacs: null, bonbons: []};
+    const payload = {v: 1, p: k ? k.prenom : '', y, h: yd.heures, s: yd.sacs,
+      b: yd.bonbons.filter((b) => b.quantite > 0).map((b) => { const ci = CATS.indexOf(b.categorie); return [ci >= 0 ? ci : b.categorie, b.bonbon, b.quantite, b.gros || 0]; })};
+    const raw = new TextEncoder().encode(JSON.stringify(payload));
+    let tag = 'j', bytes = raw;
+    if (window.CompressionStream) { try { bytes = await squeeze(raw, CompressionStream); tag = 'z'; } catch (e) { tag = 'j'; bytes = raw; } }
+    return location.origin + location.pathname + '#butin=' + tag + b64u(bytes);
+  };
+  const readShared = async () => {
+    const m = location.hash.match(/^#butin=([zj])([A-Za-z0-9_-]+)$/);
+    if (!m) return null;
+    try {
+      let bytes = unb64u(m[2]);
+      if (m[1] === 'z') bytes = await squeeze(bytes, DecompressionStream);
+      const o = JSON.parse(new TextDecoder().decode(bytes));
+      const y = String(o.y).replace(/\D/g, '').slice(0, 4);
+      if (!/^\d{4}$/.test(y) || !Array.isArray(o.b)) return null;
+      const num = (v) => (v == null || v === '' || !isFinite(+v) ? null : Math.max(0, Math.min(999, +v)));
+      const bonbons = o.b.slice(0, 400).map((r) => {
+        const q = Math.max(0, Math.min(99999, Math.round(+r[2]) || 0));
+        return {categorie: typeof r[0] === 'number' ? (CATS[r[0]] || 'Spécial') : String(r[0]).slice(0, 40), bonbon: String(r[1]).slice(0, 60), quantite: q, gros: Math.max(0, Math.min(q, Math.round(+r[3]) || 0))};
+      }).filter((b) => b.bonbon && b.quantite > 0);
+      return {id: 'partage', shared: true, prenom: String(o.p || 'Un ami').slice(0, 40), annees: {[y]: {heures: num(o.h), sacs: num(o.s), bonbons}}};
+    } catch (e) { return null; }
+  };
+  window.cbStart = async () => {
     if (!state.active && state.kids[0]) state.active = state.kids[0].id;
+    const sh = await readShared();
+    if (location.hash.startsWith('#butin=')) history.replaceState(null, '', location.pathname + location.search);
+    if (sh) {
+      demo = sh;
+      year = Object.keys(sh.annees)[0];
+      show('dash');
+      return;
+    }
     show(homeView());
   };
 })();
@@ -3018,7 +3121,7 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(cbGo); els
 <script>
 /* Bouton « Mettre à jour » : compare la version de cette page à version.json sur GitHub. */
 (function () {
-  const APP_VERSION = '2026.11.01-23';
+  const APP_VERSION = '2026.11.01-25';
   const bar = document.querySelector('.hw-update');
   const msg = bar.querySelector('.msg');
   const btn = bar.querySelector('button');
@@ -3075,6 +3178,367 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(cbGo); els
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') check(); });
   setInterval(check, 30 * 60 * 1000);
 })();
+</script>
+<script>
+/* ---------- Partager : cartes-images, diplôme, lien, défi ---------- */
+(() => {
+  const CB_URL = 'https://noemilag.github.io/compte-bonbons/';
+  const isCB = () => !!document.getElementById('cb-dash');
+  const kidName = () => {
+    const e = document.querySelector('.cb-kid');
+    const t = e ? e.textContent.trim() : '';
+    return t && t !== '—' ? t : 'Léo';
+  };
+  const fmt = new Intl.NumberFormat('fr-CA', {maximumFractionDigits: 1});
+  const pct = new Intl.NumberFormat('fr-CA', {style: 'percent', maximumFractionDigits: 0});
+  const C = {orange: '#ff7a1a', slime: '#7cff4f', purple: '#b46cff', pink: '#ff4fa3', candle: '#ffd60a', ink: '#f1ecff', dim: '#b3a9d6', cyan: '#00e5ff'};
+  const F = {
+    spooky: (s) => `400 ${s}px 'Creepster', 'Luckiest Guy', system-ui, sans-serif`,
+    chunky: (s) => `400 ${s}px 'Luckiest Guy', system-ui, sans-serif`,
+    round: (s, w = 600) => `${w} ${s}px 'Fredoka', ui-rounded, system-ui, sans-serif`
+  };
+
+  const stats = () => {
+    const t = dash.data('totaux'), b = dash.data('bonbons'), c = dash.data('categories');
+    if (t.status !== 'ok' || !t.data.length) return null;
+    const y = String(window.hwYear || t.data[t.data.length - 1].annee);
+    const tot = t.data.find((r) => String(r.annee) === y) || t.data[t.data.length - 1];
+    const rows = b.data.filter((r) => String(r.annee) === y && Number(r.quantite) > 0)
+      .map((r) => ({...r, q: Number(r.quantite)}))
+      .sort((p, q) => q.q - p.q || p.bonbon.localeCompare(q.bonbon, 'fr'));
+    const cats = c.status === 'ok' ? c.data.filter((r) => String(r.annee) === y) : [];
+    return {y, t: tot, rows, cats, name: kidName()};
+  };
+
+  /* ---------- Dessin ---------- */
+  const fontsReady = async () => {
+    if (!document.fonts) return;
+    try {
+      await Promise.race([
+        Promise.all(['80px Creepster', '80px "Luckiest Guy"', '600 40px Fredoka', '700 40px Fredoka'].map((f) => document.fonts.load(f))),
+        new Promise((r) => setTimeout(r, 2500))
+      ]);
+    } catch (e) { /* polices de secours */ }
+  };
+  const mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return [c, c.getContext('2d')]; };
+  const rr = (g, x, y, w, h, r) => {
+    g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r);
+    g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath();
+  };
+  const fit = (g, text, font, maxW, size, min = 18) => {
+    while (size > min) { g.font = font(size); if (g.measureText(text).width <= maxW) break; size -= 2; }
+    g.font = font(size);
+    return size;
+  };
+  const txt = (g, s, x, y, o) => {
+    g.save();
+    g.font = o.font; g.textAlign = o.align || 'center'; g.textBaseline = o.base || 'alphabetic';
+    if (o.drop) { g.fillStyle = o.drop; g.fillText(s, x, y + (o.dropY || 6)); }
+    if (o.glow) { g.shadowColor = o.glow; g.shadowBlur = o.blur || 28; }
+    g.fillStyle = o.color || C.ink;
+    g.fillText(s, x, y);
+    g.restore();
+  };
+  const night = (g, w, h, seed = 7) => {
+    const bgr = g.createRadialGradient(w / 2, h * 0.12, 40, w / 2, h * 0.4, Math.max(w, h));
+    bgr.addColorStop(0, '#3a1766'); bgr.addColorStop(0.45, '#1c0b36'); bgr.addColorStop(1, '#0a0414');
+    g.fillStyle = bgr; g.fillRect(0, 0, w, h);
+    let s = seed;
+    const rnd = () => { s = (s * 9301 + 49297) % 233280; return s / 233280; };
+    for (let i = 0; i < 90; i++) {
+      g.globalAlpha = 0.25 + rnd() * 0.6; g.fillStyle = rnd() > 0.85 ? C.candle : '#ffffff';
+      g.beginPath(); g.arc(rnd() * w, rnd() * h, 0.8 + rnd() * 2.2, 0, Math.PI * 2); g.fill();
+    }
+    g.globalAlpha = 1;
+    /* lune */
+    g.save(); g.shadowColor = 'rgba(255,214,10,.55)'; g.shadowBlur = 50; g.fillStyle = '#ffe680';
+    g.beginPath(); g.arc(w - 92, 84, 38, 0, Math.PI * 2); g.fill(); g.restore();
+    g.fillStyle = '#2f145a'; g.beginPath(); g.arc(w - 76, 74, 34, 0, Math.PI * 2); g.fill();
+  };
+  const footer = (g, w, h) => {
+    const t = isCB() ? 'Compte-Bonbons · noemilag.github.io/compte-bonbons' : 'Halloween Dashboard · Le butin hanté';
+    txt(g, t, w / 2, h - 46, {font: F.round(30, 600), color: C.dim});
+  };
+  const kicker = (g, s, x, y) => txt(g, s.toUpperCase(), x, y, {font: F.round(34, 700), color: C.purple});
+
+  /* Carte 1 : les grands chiffres */
+  const card1 = (S) => {
+    const W = 1080, H = 1350, [c, g] = mk(W, H);
+    night(g, W, H, 11);
+    kicker(g, 'Halloween ' + S.y, W / 2, 120);
+    let sz = fit(g, 'Le butin hanté', F.spooky, W - 140, 120);
+    txt(g, 'Le butin hanté', W / 2, 250, {font: F.spooky(sz), color: C.orange, drop: '#6b2200', glow: 'rgba(255,122,26,.5)'});
+    sz = fit(g, 'de ' + S.name, F.spooky, W - 140, 104);
+    txt(g, 'de ' + S.name, W / 2, 370, {font: F.spooky(sz), color: C.candle, drop: '#7a5a00', glow: 'rgba(255,214,10,.45)'});
+    sz = fit(g, fmt.format(S.t.total), F.chunky, W - 160, 300);
+    txt(g, fmt.format(S.t.total), W / 2, 680, {font: F.chunky(sz), color: C.candle, drop: '#7a5a00', dropY: 12, glow: 'rgba(255,214,10,.55)', blur: 50});
+    txt(g, 'bonbons ramassés', W / 2, 760, {font: F.round(52, 700), color: C.ink});
+    const tiles = [
+      [S.t.heures != null ? fmt.format(S.t.heures) + ' h' : '—', 'de marche', C.slime],
+      [S.t.parHeure != null ? fmt.format(S.t.parHeure) : '—', 'bonbons à l’heure', C.orange],
+      [fmt.format(S.t.sortes), 'sortes différentes', C.purple],
+      [S.t.sacs != null ? fmt.format(S.t.sacs) : fmt.format(S.t.gros), S.t.sacs != null ? 'sacs donnés à la porte' : 'formats géants', C.pink]
+    ];
+    const tw = 440, th = 200, gx = 40, x0 = (W - tw * 2 - gx) / 2, y0 = 830;
+    tiles.forEach(([v, l, col], i) => {
+      const x = x0 + (i % 2) * (tw + gx), y = y0 + Math.floor(i / 2) * (th + 30);
+      rr(g, x, y, tw, th, 34); g.fillStyle = 'rgba(255,255,255,.06)'; g.fill();
+      g.lineWidth = 3; g.strokeStyle = col + '88'; g.stroke();
+      const s2 = fit(g, v, F.chunky, tw - 50, 96);
+      txt(g, v, x + tw / 2, y + 118, {font: F.chunky(s2), color: col, glow: col + '99', blur: 22});
+      txt(g, l, x + tw / 2, y + 168, {font: F.round(32, 600), color: C.dim});
+    });
+    footer(g, W, H);
+    return c;
+  };
+
+  /* Carte 2 : le palmarès */
+  const card2 = (S) => {
+    const W = 1080, H = 1350, [c, g] = mk(W, H);
+    night(g, W, H, 23);
+    kicker(g, 'Halloween ' + S.y + ' · ' + S.name, W / 2, 120);
+    txt(g, 'Le palmarès', W / 2, 240, {font: F.spooky(fit(g, 'Le palmarès', F.spooky, W - 140, 124)), color: C.orange, drop: '#6b2200', glow: 'rgba(255,122,26,.5)'});
+    const top = S.rows[0];
+    if (top) {
+      txt(g, 'LE CHAMPION', W / 2, 330, {font: F.round(32, 700), color: C.dim});
+      const s = fit(g, top.bonbon, F.chunky, W - 160, 120);
+      txt(g, top.bonbon, W / 2, 450, {font: F.chunky(s), color: C.candle, drop: '#7a5a00', dropY: 8, glow: 'rgba(255,214,10,.5)', blur: 36});
+      txt(g, fmt.format(top.q) + ' bonbons', W / 2, 520, {font: F.round(44, 700), color: C.ink});
+    }
+    const list = S.rows.slice(0, 8), max = list.length ? list[0].q : 1;
+    const lx = 420, bx = 444, bw = 470, rowH = 86, y0 = 610;
+    list.forEach((r, i) => {
+      const y = y0 + i * rowH, col = hwColor(r.categorie);
+      g.font = F.round(38, 600);
+      let label = r.bonbon;
+      while (g.measureText(label).width > lx - 70 && label.length > 3) label = label.slice(0, -2).trimEnd() + '…';
+      txt(g, label, lx, y + 13, {font: F.round(38, 600), color: C.ink, align: 'right'});
+      const w = Math.max(14, bw * r.q / max);
+      rr(g, bx, y - 22, w, 44, 22);
+      const lg = g.createLinearGradient(bx, 0, bx + w, 0); lg.addColorStop(0, col + '55'); lg.addColorStop(1, col);
+      g.fillStyle = lg; g.save(); g.shadowColor = col; g.shadowBlur = 18; g.fill(); g.restore();
+      txt(g, fmt.format(r.q), bx + w + 18, y + 16, {font: F.chunky(44), color: col, align: 'left'});
+    });
+    footer(g, W, H);
+    return c;
+  };
+
+  /* Carte 3 : les familles */
+  const card3 = (S) => {
+    const W = 1080, H = 1350, [c, g] = mk(W, H);
+    night(g, W, H, 41);
+    kicker(g, 'Halloween ' + S.y + ' · ' + S.name, W / 2, 120);
+    const ttl = 'Les familles de bonbons';
+    txt(g, ttl, W / 2, 230, {font: F.spooky(fit(g, ttl, F.spooky, W - 120, 104)), color: C.orange, drop: '#6b2200', glow: 'rgba(255,122,26,.5)'});
+    const cx = W / 2, cy = 590, R = 280, r0 = 165;
+    const tot = S.cats.reduce((s, x) => s + x.quantite, 0) || 1;
+    let a = -Math.PI / 2;
+    S.cats.forEach((k) => {
+      const da = Math.PI * 2 * k.quantite / tot, col = hwColor(k.categorie);
+      g.beginPath(); g.arc(cx, cy, R, a + 0.012, a + da - 0.012); g.arc(cx, cy, r0, a + da - 0.012, a + 0.012, true); g.closePath();
+      g.save(); g.shadowColor = col; g.shadowBlur = 24; g.fillStyle = col; g.fill(); g.restore();
+      if (k.part >= 0.05) {
+        const m = a + da / 2, tx = cx + Math.cos(m) * (R + r0) / 2, ty = cy + Math.sin(m) * (R + r0) / 2;
+        txt(g, pct.format(k.part), tx, ty + 14, {font: F.chunky(40), color: '#1a0d2e'});
+      }
+      a += da;
+    });
+    txt(g, fmt.format(S.t.total), cx, cy + 22, {font: F.chunky(fit(g, fmt.format(S.t.total), F.chunky, r0 * 1.6, 110)), color: C.candle, glow: 'rgba(255,214,10,.5)'});
+    txt(g, 'bonbons', cx, cy + 74, {font: F.round(36, 600), color: C.dim});
+    const n = S.cats.length, cols = 2, cw = 430, ch = 96, gx0 = (W - cols * cw) / 2, ly = 940;
+    S.cats.forEach((k, i) => {
+      const x = gx0 + (i % cols) * cw + 20, y = ly + Math.floor(i / cols) * ch, col = hwColor(k.categorie);
+      g.save(); g.shadowColor = col; g.shadowBlur = 14; g.fillStyle = col; g.beginPath(); g.arc(x + 20, y, 18, 0, Math.PI * 2); g.fill(); g.restore();
+      txt(g, k.categorie, x + 56, y + 6, {font: F.round(38, 700), color: C.ink, align: 'left', base: 'middle'});
+      txt(g, fmt.format(k.quantite) + ' · ' + pct.format(k.part), x + 56, y + 46, {font: F.round(30, 600), color: C.dim, align: 'left', base: 'middle'});
+    });
+    if (!n) txt(g, 'Pas encore de bonbons', cx, ly, {font: F.round(40), color: C.dim});
+    footer(g, W, H);
+    return c;
+  };
+
+  /* Diplôme (format lettre paysage, pour l'imprimante) */
+  const diploma = (S) => {
+    const W = 1650, H = 1275, [c, g] = mk(W, H);
+    const pg = g.createRadialGradient(W / 2, H / 2, 200, W / 2, H / 2, W * 0.7);
+    pg.addColorStop(0, '#fffaf0'); pg.addColorStop(1, '#f3dfb4');
+    g.fillStyle = pg; g.fillRect(0, 0, W, H);
+    g.lineWidth = 22; g.strokeStyle = C.orange; rr(g, 46, 46, W - 92, H - 92, 34); g.stroke();
+    g.lineWidth = 5; g.strokeStyle = '#6a2fa0'; rr(g, 88, 88, W - 176, H - 176, 22); g.stroke();
+    [[88, 88], [W - 88, 88], [88, H - 88], [W - 88, H - 88]].forEach(([x, y], i) => {
+      const cols = [C.orange, '#8a3fd1', '#3fae22', '#e0408a'];
+      g.fillStyle = cols[i]; g.beginPath(); g.arc(x, y, 30, 0, Math.PI * 2); g.fill();
+      g.fillStyle = 'rgba(255,255,255,.55)'; g.beginPath(); g.arc(x - 9, y - 9, 9, 0, Math.PI * 2); g.fill();
+    });
+    const ink = '#3d1c66';
+    txt(g, 'DIPLÔME', W / 2, 205, {font: F.chunky(84), color: C.orange, drop: '#b04a00', dropY: 5});
+    txt(g, 'du Grand chasseur de bonbons', W / 2, 305, {font: F.spooky(fit(g, 'du Grand chasseur de bonbons', F.spooky, W - 300, 100)), color: '#6a2fa0'});
+    txt(g, 'décerné à', W / 2, 385, {font: F.round(42, 500), color: ink});
+    const ns = fit(g, S.name, F.chunky, W - 400, 170);
+    txt(g, S.name, W / 2, 535, {font: F.chunky(ns), color: C.orange, drop: '#8a3300', dropY: 8});
+    g.strokeStyle = '#c9a76a'; g.lineWidth = 3; g.beginPath(); g.moveTo(W / 2 - 420, 568); g.lineTo(W / 2 + 420, 568); g.stroke();
+    const l1 = 'pour une récolte légendaire de ' + fmt.format(S.t.total) + ' bonbons';
+    txt(g, l1, W / 2, 640, {font: F.round(fit(g, l1, (s) => F.round(s, 600), W - 300, 50), 600), color: ink});
+    txt(g, 'à l’Halloween ' + S.y, W / 2, 700, {font: F.round(46, 600), color: ink});
+    const meds = [
+      [S.rows[0] ? fmt.format(S.rows[0].q) : '—', S.rows[0] ? S.rows[0].bonbon : 'Champion', 'champion', C.orange],
+      [S.t.parHeure != null ? fmt.format(S.t.parHeure) : '—', 'à l’heure', 'record de vitesse', '#8a3fd1'],
+      [fmt.format(S.t.sortes), 'sortes', 'collection', '#3fae22']
+    ];
+    meds.forEach(([v, l, k], i) => {
+      const x = W / 2 + (i - 1) * 320, y = 830;
+      g.save(); g.fillStyle = meds[i][3]; g.shadowColor = 'rgba(0,0,0,.18)'; g.shadowBlur = 12; g.shadowOffsetY = 6;
+      g.beginPath(); g.arc(x, y, 88, 0, Math.PI * 2); g.fill(); g.restore();
+      g.strokeStyle = 'rgba(255,255,255,.7)'; g.lineWidth = 4; g.beginPath(); g.arc(x, y, 75, 0, Math.PI * 2); g.stroke();
+      txt(g, v, x, y + 20, {font: F.chunky(fit(g, v, F.chunky, 140, 64)), color: '#fff'});
+      const ls = fit(g, l, (s) => F.round(s, 700), 280, 34);
+      txt(g, l, x, y + 132, {font: F.round(ls, 700), color: ink});
+      txt(g, k, x, y + 168, {font: F.round(26, 500), color: '#7a6a90'});
+    });
+    /* signature + sceau */
+    txt(g, 'Grande Citrouille', 330, 1095, {font: F.spooky(54), color: '#6a2fa0'});
+    g.strokeStyle = ink; g.lineWidth = 2; g.beginPath(); g.moveTo(180, 1112); g.lineTo(480, 1112); g.stroke();
+    txt(g, 'Le comité des citrouilles', 330, 1146, {font: F.round(26, 600), color: '#7a6a90'});
+    const sx = W - 320, sy = 1080;
+    g.save(); g.fillStyle = C.orange; g.beginPath();
+    for (let i = 0; i < 24; i++) { const ang = i * Math.PI / 12, rad = i % 2 ? 78 : 92; g.lineTo(sx + Math.cos(ang) * rad, sy + Math.sin(ang) * rad); }
+    g.closePath(); g.fill(); g.restore();
+    g.strokeStyle = '#fff3d6'; g.lineWidth = 3; g.beginPath(); g.arc(sx, sy, 64, 0, Math.PI * 2); g.stroke();
+    txt(g, S.y, sx, sy + 8, {font: F.chunky(46), color: '#fff'});
+    txt(g, 'OFFICIEL', sx, sy + 40, {font: F.round(18, 700), color: '#fff3d6'});
+    return c;
+  };
+
+  /* Image du défi */
+  const challenge = async (S) => {
+    const W = 1080, H = 1080, [c, g] = mk(W, H);
+    night(g, W, H, 61);
+    if (isCB()) {
+      try {
+        const im = new Image(); im.src = 'logo.svg';
+        await im.decode();
+        g.drawImage(im, W / 2 - 110, 30, 220, 220);
+      } catch (e) { /* sans logo */ }
+    }
+    txt(g, S.name + ' a récolté', W / 2, 300, {font: F.round(fit(g, S.name + ' a récolté', (s) => F.round(s, 700), W - 200, 60), 700), color: C.ink});
+    const v = fmt.format(S.t.total);
+    txt(g, v, W / 2, 560, {font: F.chunky(fit(g, v, F.chunky, W - 200, 270)), color: C.candle, drop: '#7a5a00', dropY: 12, glow: 'rgba(255,214,10,.55)', blur: 50});
+    txt(g, 'bonbons à l’Halloween ' + S.y + '!', W / 2, 640, {font: F.round(fit(g, 'bonbons à l’Halloween ' + S.y + '!', (s) => F.round(s, 700), W - 160, 54), 700), color: C.ink});
+    txt(g, 'Et toi, combien?', W / 2, 800, {font: F.spooky(fit(g, 'Et toi, combien?', F.spooky, W - 140, 120)), color: C.slime, drop: '#1f6b0a', glow: 'rgba(124,255,79,.5)'});
+    rr(g, 150, 870, W - 300, 110, 55); g.fillStyle = C.orange; g.save(); g.shadowColor = 'rgba(255,122,26,.6)'; g.shadowBlur = 30; g.fill(); g.restore();
+    txt(g, 'Compte les tiens sur Compte-Bonbons', W / 2, 940, {font: F.chunky(fit(g, 'Compte les tiens sur Compte-Bonbons', F.chunky, W - 360, 44)), color: '#1a0d2e'});
+    txt(g, 'noemilag.github.io/compte-bonbons', W / 2, 1040, {font: F.round(30, 600), color: C.dim});
+    return c;
+  };
+
+  /* ---------- Fenêtre de partage ---------- */
+  const $ = (s, r = document) => r.querySelector(s);
+  let dlg = null, ready = null;
+  const blob = (cv) => new Promise((res) => cv.toBlob(res, 'image/png'));
+  const fileOf = async (cv, name) => new File([await blob(cv)], name, {type: 'image/png'});
+  const slug = (s) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'butin';
+  const canFiles = (files) => !!(navigator.canShare && navigator.share && navigator.canShare({files}));
+  const download = (files) => files.forEach((f, i) => setTimeout(() => {
+    const a = document.createElement('a'); a.href = URL.createObjectURL(f); a.download = f.name;
+    document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+  }, i * 350));
+  const say = (m) => { $('.hw-share-msg', dlg).textContent = m; };
+  const copy = async (t) => {
+    try { await navigator.clipboard.writeText(t); return true; } catch (e) {
+      const inp = $('.hw-share-link input', dlg); inp.select();
+      try { return document.execCommand('copy'); } catch (e2) { return false; }
+    }
+  };
+  const shareFiles = async (files, extra = {}) => {
+    if (canFiles(files)) {
+      try { await navigator.share({files, ...extra}); return; } catch (e) { if (e && e.name === 'AbortError') return; }
+    }
+    download(files);
+    say(files.length > 1 ? 'Les images sont enregistrées dans tes téléchargements.' : 'L’image est enregistrée dans tes téléchargements.');
+  };
+  const btn = (label, cls, fn) => {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'hw-sbtn ' + cls; b.textContent = label;
+    b.addEventListener('click', fn); return b;
+  };
+
+  const close = () => { if (dlg) dlg.hidden = true; document.documentElement.classList.remove('hw-noscroll'); };
+  const open = async (mode) => {
+    const S = stats();
+    if (!S) return;
+    dlg.hidden = false;
+    document.documentElement.classList.add('hw-noscroll');
+    const prev = $('.hw-share-prev', dlg), acts = $('.hw-share-acts', dlg), link = $('.hw-share-link', dlg);
+    prev.replaceChildren(); acts.replaceChildren(); link.hidden = true; say('');
+    prev.className = 'hw-share-prev is-' + mode;
+    const T = {
+      cards: ['Des cartes-images', 'Trois images prêtes à envoyer : les grands chiffres, le palmarès et les familles.'],
+      diplome: ['Un diplôme à imprimer', 'Le diplôme officiel du Grand chasseur de bonbons, au format lettre.'],
+      lien: ['Un lien vers ton butin', isCB()
+        ? 'Ce lien ouvre le tableau de ' + S.name + ' en lecture seule. Les chiffres voyagent dans le lien lui-même : rien n’est envoyé sur un serveur.'
+        : 'Ce lien ouvre ce tableau de bord, avec tous les chiffres et les graphiques.'],
+      defi: ['Lance un défi!', 'Une image et un message pour inviter tes amis à compter leurs bonbons, eux aussi.']
+    };
+    $('#hw-share-t', dlg).textContent = T[mode][0];
+    $('.hw-share-sub', dlg).textContent = T[mode][1];
+    const wait = document.createElement('p'); wait.className = 'hw-share-wait'; wait.textContent = 'Préparation…'; prev.append(wait);
+    const token = ready = {};
+    await fontsReady();
+    if (token !== ready || dlg.hidden) return;
+    const base = slug(S.name) + '-' + S.y;
+    if (mode === 'cards' || mode === 'diplome' || mode === 'defi') {
+      const cvs = mode === 'cards' ? [card1(S), card2(S), card3(S)] : mode === 'diplome' ? [diploma(S)] : [await challenge(S)];
+      const names = mode === 'cards' ? ['chiffres', 'palmares', 'familles'] : [mode];
+      const files = await Promise.all(cvs.map((cv, i) => fileOf(cv, `${base}-${names[i]}.png`)));
+      if (token !== ready) return;
+      prev.replaceChildren(...cvs.map((cv, i) => { const im = new Image(); im.src = cv.toDataURL('image/png'); im.alt = names[i]; return im; }));
+      const shareLbl = canFiles(files) ? 'Partager' : 'Enregistrer';
+      if (mode === 'cards') acts.append(btn(canFiles(files) ? 'Partager les images' : 'Enregistrer les images', 'is-main', () => shareFiles(files)));
+      if (mode === 'diplome') {
+        acts.append(btn('Imprimer', 'is-main', () => printImg(prev.querySelector('img').src)));
+        acts.append(btn(shareLbl, '', () => shareFiles(files)));
+      }
+      if (mode === 'defi') {
+        const msg = `${S.name} a récolté ${fmt.format(S.t.total)} bonbons à l’Halloween ${S.y}! Et toi, combien? Compte les tiens : ${CB_URL}`;
+        acts.append(btn(canFiles(files) ? 'Lancer le défi' : 'Enregistrer l’image', 'is-main', async () => {
+          await shareFiles(files, {text: msg});
+        }));
+        acts.append(btn('Copier le message', '', async () => { say(await copy(msg) ? 'Message copié! Colle-le où tu veux.' : msg); }));
+      }
+    }
+    if (mode === 'lien') {
+      const url = window.cbShareLink ? await window.cbShareLink() : location.origin + location.pathname;
+      if (token !== ready) return;
+      prev.replaceChildren();
+      link.hidden = false;
+      $('input', link).value = url;
+      const text = `Viens voir le butin hanté de ${S.name} (Halloween ${S.y})!`;
+      if (navigator.share) acts.append(btn('Partager le lien', 'is-main', async () => { try { await navigator.share({title: 'Le butin hanté de ' + S.name, text, url}); } catch (e) { /* annulé */ } }));
+      acts.append(btn('Copier le lien', navigator.share ? '' : 'is-main', async () => { say(await copy(url) ? 'Lien copié!' : 'Sélectionne le lien pour le copier.'); }));
+    }
+  };
+
+  const printImg = (src) => {
+    let box = document.getElementById('hw-print');
+    if (!box) { box = document.createElement('div'); box.id = 'hw-print'; document.body.append(box); }
+    const im = new Image(); im.src = src; box.replaceChildren(im);
+    document.body.classList.add('hw-printing');
+    const done = () => { document.body.classList.remove('hw-printing'); window.removeEventListener('afterprint', done); };
+    window.addEventListener('afterprint', done);
+    (im.decode ? im.decode() : Promise.resolve()).catch(() => {}).then(() => { window.print(); setTimeout(done, 1500); });
+  };
+
+  const init = () => {
+    dlg = document.querySelector('.hw-sharedlg');
+    if (!dlg) return;
+    document.body.append(dlg);
+    dlg.addEventListener('click', (e) => { if (e.target === dlg) close(); });
+    $('.hw-share-x', dlg).addEventListener('click', close);
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !dlg.hidden) close(); });
+    document.querySelectorAll('[data-share]').forEach((b) => b.addEventListener('click', () => open(b.dataset.share)));
+  };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+})();
+
 </script>
 </body>
 </html>
