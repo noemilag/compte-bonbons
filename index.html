@@ -6,6 +6,7 @@
 <title>Compte-Bonbons · Le butin hanté</title>
 <meta name="description" content="Compte ton butin d’Halloween, découvre tes statistiques et amuse-toi avec les chiffres!">
 <meta name="theme-color" content="#120724">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="icon" type="image/png" sizes="48x48" href="favicon-48.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
@@ -699,19 +700,25 @@ body.cb-has-installbar .hw-update{bottom:calc(92px + env(safe-area-inset-bottom)
 .cb-year-pick .cb-iconbtn{color:var(--ink)}
 .cb-ny-note{margin:0;font-size:.9rem;color:var(--ink-dim)}
 .cb-sheet .cb-link{all:unset;cursor:pointer;font-weight:700;color:var(--slime);text-decoration:underline;text-underline-offset:3px;margin-top:.2rem}
+
+/* Logo sans fond */
+.cb-welcome .logo{width:9rem;height:9rem;border-radius:0;box-shadow:none;filter:drop-shadow(0 10px 22px rgba(0,0,0,.45)) drop-shadow(0 0 26px rgba(124,255,79,.22))}
+.cb-brand img{width:2.1rem;height:2.1rem;border-radius:0}
+.cb-welcome .logo{width:13rem;height:13rem;margin:-2rem 0 -2.2rem}
+.cb-brand img{width:2.9rem;height:2.9rem;margin:-.45rem -.35rem -.45rem -.5rem}
 </style>
 
 <div class="hw">
   <svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="hw-wobble" x="-5%" y="-15%" width="110%" height="140%"><feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="2" seed="7"/><feDisplacementMap in="SourceGraphic" scale="3"/></filter></svg>
   <nav class="cb-bar" hidden>
-    <button class="cb-brand" type="button" aria-label="Compte-Bonbons, accueil"><img src="icon-192.png" alt="">Compte-Bonbons</button>
+    <button class="cb-brand" type="button" aria-label="Compte-Bonbons, accueil"><img src="logo.svg" alt="">Compte-Bonbons</button>
     <div class="cb-kids" role="group" aria-label="Choisir l’enfant"></div>
     <button class="cb-iconbtn cb-menu-btn" type="button" aria-label="Menu"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="2.2" fill="currentColor"/><circle cx="12" cy="12" r="2.2" fill="currentColor"/><circle cx="12" cy="19" r="2.2" fill="currentColor"/></svg></button>
     <div class="cb-demo-note" hidden>Exemple : le butin de Léo <button class="cb-link cb-leave-demo" type="button">Créer le mien</button></div>
   </nav>
 
   <section id="cb-welcome" class="cb-screen cb-welcome" hidden>
-    <img class="logo" src="icon-512.png" alt="">
+    <img class="logo" src="logo.svg" alt="">
     <h1>Compte-Bonbons</h1>
     <p class="pitch cb-pitch-first">Compte ton butin d’Halloween, découvre tes statistiques et amuse-toi avec les chiffres!</p>
     <p class="pitch cb-pitch-more" hidden>Un autre chasseur de bonbons dans la famille?</p>
@@ -3010,7 +3017,7 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(cbGo); els
 <script>
 /* Bouton « Mettre à jour » : compare la version de cette page à version.json sur GitHub. */
 (function () {
-  const APP_VERSION = '2026.11.01-19';
+  const APP_VERSION = '2026.11.01-20';
   const bar = document.querySelector('.hw-update');
   const msg = bar.querySelector('.msg');
   const btn = bar.querySelector('button');

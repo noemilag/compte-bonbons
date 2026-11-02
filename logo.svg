@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1254" height="1254" viewBox="0 0 1254 1254" role="img" aria-labelledby="titre description">
+<title id="titre">Compte-Bonbons</title>
+<desc id="description">Trois bonbons orange, lilas et vert forment un graphique à barres de hauteurs croissantes. Chaque emballage est torsadé en haut et en bas.</desc>
+<defs>
+ <radialGradient id="fond" cx=".52" cy=".46" r=".76"><stop stop-color="#381242"/><stop offset=".52" stop-color="#2b0c36"/><stop offset="1" stop-color="#1d0829"/></radialGradient>
+ <linearGradient id="shine" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fffef0" stop-opacity=".98"/><stop offset="1" stop-color="#fff6c4" stop-opacity=".45"/></linearGradient>
+ <linearGradient id="soft-shine" x1="0" y1="0" x2=".18" y2="1"><stop stop-color="#fffce9" stop-opacity=".83"/><stop offset="1" stop-color="#fffce9" stop-opacity=".29"/></linearGradient>
+ <linearGradient id="white-shine" x1="0" y1="0" x2=".2" y2="1"><stop stop-color="#fffef2" stop-opacity=".98"/><stop offset=".43" stop-color="#fffce8" stop-opacity=".8"/><stop offset="1" stop-color="#fffce8" stop-opacity=".05"/></linearGradient>
+ <linearGradient id="rim-shine" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fffbea" stop-opacity=".85"/><stop offset=".4" stop-color="#fffbea" stop-opacity=".36"/><stop offset="1" stop-color="#fffbea" stop-opacity="0"/></linearGradient>
+<linearGradient id="orange-rim" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#fff380"/><stop offset=".24" stop-color="#ffc429"/>
+      <stop offset=".57" stop-color="#ff9209"/><stop offset="1" stop-color="#ff6800"/>
+    </linearGradient>
+    <linearGradient id="orange-edge" x1="0" y1=".2" x2="1" y2=".65">
+      <stop stop-color="#ffc429"/><stop offset=".32" stop-color="#ff9209"/>
+      <stop offset=".78" stop-color="#ff6800"/><stop offset="1" stop-color="#e54800"/>
+    </linearGradient>
+    <radialGradient id="orange-body" cx=".19" cy=".08" r="1.05" gradientTransform="translate(0 -.06) scale(1 1.12)">
+      <stop stop-color="#ffc429"/><stop offset=".38" stop-color="#ff9209"/>
+      <stop offset=".8" stop-color="#ff6800"/><stop offset="1" stop-color="#e54800"/>
+    </radialGradient>
+    <linearGradient id="orange-fold" x1=".1" y1=".05" x2=".6" y2="1">
+      <stop stop-color="#fff380"/><stop offset=".22" stop-color="#ffc429"/>
+      <stop offset=".62" stop-color="#ff9209"/><stop offset="1" stop-color="#e54800"/>
+    </linearGradient>
+    <linearGradient id="orange-petal" x1=".1" y1="0" x2=".9" y2=".4">
+      <stop stop-color="#fff380"/><stop offset=".24" stop-color="#ffc429"/>
+      <stop offset=".63" stop-color="#ff9209"/><stop offset="1" stop-color="#ff6800"/>
+    </linearGradient>
+    <linearGradient id="orange-neck" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#fff380"/><stop offset=".28" stop-color="#ffc429"/>
+      <stop offset=".65" stop-color="#ff6800"/><stop offset="1" stop-color="#e54800"/>
+    </linearGradient><linearGradient id="lilas-rim" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#ffeaff"/><stop offset=".24" stop-color="#e6b4ff"/>
+      <stop offset=".57" stop-color="#bf74ff"/><stop offset="1" stop-color="#9943f5"/>
+    </linearGradient>
+    <linearGradient id="lilas-edge" x1="0" y1=".2" x2="1" y2=".65">
+      <stop stop-color="#e6b4ff"/><stop offset=".32" stop-color="#bf74ff"/>
+      <stop offset=".78" stop-color="#9943f5"/><stop offset="1" stop-color="#6b1cd4"/>
+    </linearGradient>
+    <radialGradient id="lilas-body" cx=".19" cy=".08" r="1.05" gradientTransform="translate(0 -.06) scale(1 1.12)">
+      <stop stop-color="#e6b4ff"/><stop offset=".38" stop-color="#bf74ff"/>
+      <stop offset=".8" stop-color="#9943f5"/><stop offset="1" stop-color="#6b1cd4"/>
+    </radialGradient>
+    <linearGradient id="lilas-fold" x1=".1" y1=".05" x2=".6" y2="1">
+      <stop stop-color="#ffeaff"/><stop offset=".22" stop-color="#e6b4ff"/>
+      <stop offset=".62" stop-color="#bf74ff"/><stop offset="1" stop-color="#6b1cd4"/>
+    </linearGradient>
+    <linearGradient id="lilas-petal" x1=".1" y1="0" x2=".9" y2=".4">
+      <stop stop-color="#ffeaff"/><stop offset=".24" stop-color="#e6b4ff"/>
+      <stop offset=".63" stop-color="#bf74ff"/><stop offset="1" stop-color="#9943f5"/>
+    </linearGradient>
+    <linearGradient id="lilas-neck" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#ffeaff"/><stop offset=".28" stop-color="#e6b4ff"/>
+      <stop offset=".65" stop-color="#9943f5"/><stop offset="1" stop-color="#6b1cd4"/>
+    </linearGradient><linearGradient id="vert-rim" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#f8ff9b"/><stop offset=".24" stop-color="#dbff45"/>
+      <stop offset=".57" stop-color="#acfa00"/><stop offset="1" stop-color="#7de300"/>
+    </linearGradient>
+    <linearGradient id="vert-edge" x1="0" y1=".2" x2="1" y2=".65">
+      <stop stop-color="#dbff45"/><stop offset=".32" stop-color="#acfa00"/>
+      <stop offset=".78" stop-color="#7de300"/><stop offset="1" stop-color="#48ba00"/>
+    </linearGradient>
+    <radialGradient id="vert-body" cx=".19" cy=".08" r="1.05" gradientTransform="translate(0 -.06) scale(1 1.12)">
+      <stop stop-color="#dbff45"/><stop offset=".38" stop-color="#acfa00"/>
+      <stop offset=".8" stop-color="#7de300"/><stop offset="1" stop-color="#48ba00"/>
+    </radialGradient>
+    <linearGradient id="vert-fold" x1=".1" y1=".05" x2=".6" y2="1">
+      <stop stop-color="#f8ff9b"/><stop offset=".22" stop-color="#dbff45"/>
+      <stop offset=".62" stop-color="#acfa00"/><stop offset="1" stop-color="#48ba00"/>
+    </linearGradient>
+    <linearGradient id="vert-petal" x1=".1" y1="0" x2=".9" y2=".4">
+      <stop stop-color="#f8ff9b"/><stop offset=".24" stop-color="#dbff45"/>
+      <stop offset=".63" stop-color="#acfa00"/><stop offset="1" stop-color="#7de300"/>
+    </linearGradient>
+    <linearGradient id="vert-neck" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#f8ff9b"/><stop offset=".28" stop-color="#dbff45"/>
+      <stop offset=".65" stop-color="#7de300"/><stop offset="1" stop-color="#48ba00"/>
+    </linearGradient>
+</defs>
+<g id="bonbon-orange" aria-label="Bonbon orange">
+      <g transform="translate(357 618) scale(0.91 0.91)">
+      <path d="M-37-10 C-72-25-126-56-132-88 C-138-116-116-134-88-132 C-62-131-53-143-36-157 C-14-175 17-172 40-154 C61-136 67-131 91-132 C120-134 140-115 134-89 C126-57 78-25 37-10 Z" fill="url(#orange-fold)" stroke="#ffc429" stroke-width="2"/>
+      <path d="M-36-11 C-69-40-101-80-116-115 C-108-127-97-131-83-131 C-68-130-60-136-49-145 L-3-11 Z" fill="url(#orange-petal)"/>
+      <path d="M-21-11 L-47-146 C-36-160-21-168-7-168 C10-170 24-164 39-153 L17-11 Z" fill="url(#orange-petal)"/>
+      <path d="M14-11 L48-146 C62-133 73-130 91-132 C108-133 122-127 129-117 C112-77 68-34 36-11 Z" fill="url(#orange-petal)"/>
+      <path d="M-36-11 C-48-44-67-99-79-132 L-50-144 L-9-11 Z" fill="#e54800" opacity=".32"/>
+      <path d="M20-11 L48-145 L70-131 C52-91 37-47 35-11 Z" fill="#e54800" opacity=".34"/>
+      <path d="M-16-53 C-25-78-31-128-20-146 C-12-158 6-161 17-155 C29-148 9-140 4-122 C-2-100-6-77-9-55 Q-12-45-16-53 Z" fill="url(#shine)"/>
+      <path d="M-68-65 C-83-80-106-89-115-101 C-117-111-106-119-96-118 C-84-118-86-109-93-105 C-85-93-76-79-68-65 Z" fill="url(#shine)"/>
+      <path d="M63-66 C78-82 102-92 111-105 C115-116 105-120 96-116 C86-112 74-87 63-66 Z" fill="url(#shine)"/>
+      <path d="M-130-93 C-133-117-113-132-87-130 C-62-129-52-142-35-155 C-15-171 16-170 38-153" fill="none" stroke="#fff380" stroke-opacity=".66" stroke-width="3" stroke-linecap="round"/>
+    </g>
+      <g transform="translate(357 972) scale(0.9 -0.9)">
+      <path d="M-37-10 C-72-25-126-56-132-88 C-138-116-116-134-88-132 C-62-131-53-143-36-157 C-14-175 17-172 40-154 C61-136 67-131 91-132 C120-134 140-115 134-89 C126-57 78-25 37-10 Z" fill="url(#orange-fold)" stroke="#ffc429" stroke-width="2"/>
+      <path d="M-36-11 C-69-40-101-80-116-115 C-108-127-97-131-83-131 C-68-130-60-136-49-145 L-3-11 Z" fill="url(#orange-petal)"/>
+      <path d="M-21-11 L-47-146 C-36-160-21-168-7-168 C10-170 24-164 39-153 L17-11 Z" fill="url(#orange-petal)"/>
+      <path d="M14-11 L48-146 C62-133 73-130 91-132 C108-133 122-127 129-117 C112-77 68-34 36-11 Z" fill="url(#orange-petal)"/>
+      <path d="M-36-11 C-48-44-67-99-79-132 L-50-144 L-9-11 Z" fill="#e54800" opacity=".32"/>
+      <path d="M20-11 L48-145 L70-131 C52-91 37-47 35-11 Z" fill="#e54800" opacity=".34"/>
+      <path d="M-16-53 C-25-78-31-128-20-146 C-12-158 6-161 17-155 C29-148 9-140 4-122 C-2-100-6-77-9-55 Q-12-45-16-53 Z" fill="url(#shine)"/>
+      <path d="M-68-65 C-83-80-106-89-115-101 C-117-111-106-119-96-118 C-84-118-86-109-93-105 C-85-93-76-79-68-65 Z" fill="url(#shine)"/>
+      <path d="M63-66 C78-82 102-92 111-105 C115-116 105-120 96-116 C86-112 74-87 63-66 Z" fill="url(#shine)"/>
+      <path d="M-130-93 C-133-117-113-132-87-130 C-62-129-52-142-35-155 C-15-171 16-170 38-153" fill="none" stroke="#fff380" stroke-opacity=".66" stroke-width="3" stroke-linecap="round"/>
+    </g>
+      <g transform="translate(357 625)">
+      <rect x="-119.0" width="238" height="340" rx="105" fill="url(#orange-rim)"/>
+      <rect x="-110.0" y="12" width="220" height="316" rx="97" fill="url(#orange-edge)"/>
+      <rect x="-100.0" y="23" width="200" height="295" rx="88" fill="url(#orange-body)"/>
+      <path d="M-97.0 227 C-100.0 297 -67.0 319 0 322 C68.0 324 100.0 295 99.0 225 L89.0 205 C91.0 274 66.0 301 0 303 C-64.0 303 -90.0 278 -89.0 207 Z" fill="#e54800" opacity=".22"/>
+      <path d="M-64 29 C-92 35-105 60-106 100 L-103 187.0 C-102 227.8-92 244.8-87 207.4 L-80 126 C-76 91-62 72-35 49 C-21 38-30 26-46 27 Z" fill="url(#soft-shine)"/>
+      <path d="M-72 36 C-94 45-104 71-103 112 L-101 163.2 C-98 187.0-94 163.2-93 139.4 L-88 123 C-84 88-71 68-45 47 C-34 37-47 29-60 32 Z" fill="url(#white-shine)"/>
+      <path d="M67 37 C98 47 106 78 107 111 L107 236 C107 282 90 309 62 316 C86 298 97 278 97 229 L97 112 C96 76 88 55 67 37 Z" fill="url(#rim-shine)"/>
+      <path d="M-104 95 C-103 53-78 18-35 15 C25 7 57 17 82 40" fill="none" stroke="#fff380" stroke-width="3" stroke-opacity=".5" stroke-linecap="round"/>
+    </g>
+      <g transform="translate(357 618)">
+      <ellipse rx="45.5" ry="13" fill="url(#orange-neck)"/>
+      <path d="M-33.67-3 C-13.65-12 11.83-12 30.94-5" fill="none" stroke="#fff380" stroke-width="5" stroke-linecap="round"/>
+      <ellipse cy="8" rx="32.76" ry="3" fill="#e54800" opacity=".35"/>
+    </g>
+      <g transform="translate(357 972)">
+      <ellipse rx="45.5" ry="13" fill="url(#orange-neck)"/>
+      <path d="M-33.67-3 C-13.65-12 11.83-12 30.94-5" fill="none" stroke="#fff380" stroke-width="5" stroke-linecap="round"/>
+      <ellipse cy="8" rx="32.76" ry="3" fill="#e54800" opacity=".35"/>
+    </g>
+    </g>
+<g id="bonbon-lilas" aria-label="Bonbon lilas">
+      <g transform="translate(625 471) scale(0.96 0.96)">
+      <path d="M-37-10 C-72-25-126-56-132-88 C-138-116-116-134-88-132 C-62-131-53-143-36-157 C-14-175 17-172 40-154 C61-136 67-131 91-132 C120-134 140-115 134-89 C126-57 78-25 37-10 Z" fill="url(#lilas-fold)" stroke="#e6b4ff" stroke-width="2"/>
+      <path d="M-36-11 C-69-40-101-80-116-115 C-108-127-97-131-83-131 C-68-130-60-136-49-145 L-3-11 Z" fill="url(#lilas-petal)"/>
+      <path d="M-21-11 L-47-146 C-36-160-21-168-7-168 C10-170 24-164 39-153 L17-11 Z" fill="url(#lilas-petal)"/>
+      <path d="M14-11 L48-146 C62-133 73-130 91-132 C108-133 122-127 129-117 C112-77 68-34 36-11 Z" fill="url(#lilas-petal)"/>
+      <path d="M-36-11 C-48-44-67-99-79-132 L-50-144 L-9-11 Z" fill="#6b1cd4" opacity=".32"/>
+      <path d="M20-11 L48-145 L70-131 C52-91 37-47 35-11 Z" fill="#6b1cd4" opacity=".34"/>
+      <path d="M-16-53 C-25-78-31-128-20-146 C-12-158 6-161 17-155 C29-148 9-140 4-122 C-2-100-6-77-9-55 Q-12-45-16-53 Z" fill="url(#shine)"/>
+      <path d="M-68-65 C-83-80-106-89-115-101 C-117-111-106-119-96-118 C-84-118-86-109-93-105 C-85-93-76-79-68-65 Z" fill="url(#shine)"/>
+      <path d="M63-66 C78-82 102-92 111-105 C115-116 105-120 96-116 C86-112 74-87 63-66 Z" fill="url(#shine)"/>
+      <path d="M-130-93 C-133-117-113-132-87-130 C-62-129-52-142-35-155 C-15-171 16-170 38-153" fill="none" stroke="#ffeaff" stroke-opacity=".66" stroke-width="3" stroke-linecap="round"/>
+    </g>
+      <g transform="translate(625 972) scale(0.9 -0.9)">
+      <path d="M-37-10 C-72-25-126-56-132-88 C-138-116-116-134-88-132 C-62-131-53-143-36-157 C-14-175 17-172 40-154 C61-136 67-131 91-132 C120-134 140-115 134-89 C126-57 78-25 37-10 Z" fill="url(#lilas-fold)" stroke="#e6b4ff" stroke-width="2"/>
+      <path d="M-36-11 C-69-40-101-80-116-115 C-108-127-97-131-83-131 C-68-130-60-136-49-145 L-3-11 Z" fill="url(#lilas-petal)"/>
+      <path d="M-21-11 L-47-146 C-36-160-21-168-7-168 C10-170 24-164 39-153 L17-11 Z" fill="url(#lilas-petal)"/>
+      <path d="M14-11 L48-146 C62-133 73-130 91-132 C108-133 122-127 129-117 C112-77 68-34 36-11 Z" fill="url(#lilas-petal)"/>
+      <path d="M-36-11 C-48-44-67-99-79-132 L-50-144 L-9-11 Z" fill="#6b1cd4" opacity=".32"/>
+      <path d="M20-11 L48-145 L70-131 C52-91 37-47 35-11 Z" fill="#6b1cd4" opacity=".34"/>
+      <path d="M-16-53 C-25-78-31-128-20-146 C-12-158 6-161 17-155 C29-148 9-140 4-122 C-2-100-6-77-9-55 Q-12-45-16-53 Z" fill="url(#shine)"/>
+      <path d="M-68-65 C-83-80-106-89-115-101 C-117-111-106-119-96-118 C-84-118-86-109-93-105 C-85-93-76-79-68-65 Z" fill="url(#shine)"/>
+      <path d="M63-66 C78-82 102-92 111-105 C115-116 105-120 96-116 C86-112 74-87 63-66 Z" fill="url(#shine)"/>
+      <path d="M-130-93 C-133-117-113-132-87-130 C-62-129-52-142-35-155 C-15-171 16-170 38-153" fill="none" stroke="#ffeaff" stroke-opacity=".66" stroke-width="3" stroke-linecap="round"/>
+    </g>
+      <g transform="translate(625 478)">
+      <rect x="-119.0" width="238" height="487" rx="105" fill="url(#lilas-rim)"/>
+      <rect x="-110.0" y="12" width="220" height="463" rx="97" fill="url(#lilas-edge)"/>
+      <rect x="-100.0" y="23" width="200" height="442" rx="88" fill="url(#lilas-body)"/>
+      <path d="M-97.0 374 C-100.0 444 -67.0 466 0 469 C68.0 471 100.0 442 99.0 372 L89.0 352 C91.0 421 66.0 448 0 450 C-64.0 450 -90.0 425 -89.0 354 Z" fill="#6b1cd4" opacity=".22"/>
+      <path d="M-64 29 C-92 35-105 60-106 100 L-103 267.9 C-102 326.3-92 350.6-87 297.1 L-80 126 C-76 91-62 72-35 49 C-21 38-30 26-46 27 Z" fill="url(#soft-shine)"/>
+      <path d="M-72 36 C-94 45-104 71-103 112 L-101 233.8 C-98 267.9-94 233.8-93 199.7 L-88 123 C-84 88-71 68-45 47 C-34 37-47 29-60 32 Z" fill="url(#white-shine)"/>
+      <path d="M67 37 C98 47 106 78 107 111 L107 383 C107 429 90 456 62 463 C86 445 97 425 97 376 L97 112 C96 76 88 55 67 37 Z" fill="url(#rim-shine)"/>
+      <path d="M-104 95 C-103 53-78 18-35 15 C25 7 57 17 82 40" fill="none" stroke="#ffeaff" stroke-width="3" stroke-opacity=".5" stroke-linecap="round"/>
+    </g>
+      <g transform="translate(625 471)">
+      <ellipse rx="48.0" ry="13" fill="url(#lilas-neck)"/>
+      <path d="M-35.519999999999996-3 C-14.399999999999999-12 12.48-12 32.64-5" fill="none" stroke="#ffeaff" stroke-width="5" stroke-linecap="round"/>
+      <ellipse cy="8" rx="34.56" ry="3" fill="#6b1cd4" opacity=".35"/>
+    </g>
+      <g transform="translate(625 972)">
+      <ellipse rx="48.0" ry="13" fill="url(#lilas-neck)"/>
+      <path d="M-35.519999999999996-3 C-14.399999999999999-12 12.48-12 32.64-5" fill="none" stroke="#ffeaff" stroke-width="5" stroke-linecap="round"/>
+      <ellipse cy="8" rx="34.56" ry="3" fill="#6b1cd4" opacity=".35"/>
+    </g>
+    </g>
+<g id="bonbon-vert" aria-label="Bonbon vert">
+      <g transform="translate(896 323) scale(1.06 1.06)">
+      <path d="M-37-10 C-72-25-126-56-132-88 C-138-116-116-134-88-132 C-62-131-53-143-36-157 C-14-175 17-172 40-154 C61-136 67-131 91-132 C120-134 140-115 134-89 C126-57 78-25 37-10 Z" fill="url(#vert-fold)" stroke="#dbff45" stroke-width="2"/>
+      <path d="M-36-11 C-69-40-101-80-116-115 C-108-127-97-131-83-131 C-68-130-60-136-49-145 L-3-11 Z" fill="url(#vert-petal)"/>
+      <path d="M-21-11 L-47-146 C-36-160-21-168-7-168 C10-170 24-164 39-153 L17-11 Z" fill="url(#vert-petal)"/>
+      <path d="M14-11 L48-146 C62-133 73-130 91-132 C108-133 122-127 129-117 C112-77 68-34 36-11 Z" fill="url(#vert-petal)"/>
+      <path d="M-36-11 C-48-44-67-99-79-132 L-50-144 L-9-11 Z" fill="#48ba00" opacity=".32"/>
+      <path d="M20-11 L48-145 L70-131 C52-91 37-47 35-11 Z" fill="#48ba00" opacity=".34"/>
+      <path d="M-16-53 C-25-78-31-128-20-146 C-12-158 6-161 17-155 C29-148 9-140 4-122 C-2-100-6-77-9-55 Q-12-45-16-53 Z" fill="url(#shine)"/>
+      <path d="M-68-65 C-83-80-106-89-115-101 C-117-111-106-119-96-118 C-84-118-86-109-93-105 C-85-93-76-79-68-65 Z" fill="url(#shine)"/>
+      <path d="M63-66 C78-82 102-92 111-105 C115-116 105-120 96-116 C86-112 74-87 63-66 Z" fill="url(#shine)"/>
+      <path d="M-130-93 C-133-117-113-132-87-130 C-62-129-52-142-35-155 C-15-171 16-170 38-153" fill="none" stroke="#f8ff9b" stroke-opacity=".66" stroke-width="3" stroke-linecap="round"/>
+    </g>
+      <g transform="translate(896 972) scale(0.9 -0.9)">
+      <path d="M-37-10 C-72-25-126-56-132-88 C-138-116-116-134-88-132 C-62-131-53-143-36-157 C-14-175 17-172 40-154 C61-136 67-131 91-132 C120-134 140-115 134-89 C126-57 78-25 37-10 Z" fill="url(#vert-fold)" stroke="#dbff45" stroke-width="2"/>
+      <path d="M-36-11 C-69-40-101-80-116-115 C-108-127-97-131-83-131 C-68-130-60-136-49-145 L-3-11 Z" fill="url(#vert-petal)"/>
+      <path d="M-21-11 L-47-146 C-36-160-21-168-7-168 C10-170 24-164 39-153 L17-11 Z" fill="url(#vert-petal)"/>
+      <path d="M14-11 L48-146 C62-133 73-130 91-132 C108-133 122-127 129-117 C112-77 68-34 36-11 Z" fill="url(#vert-petal)"/>
+      <path d="M-36-11 C-48-44-67-99-79-132 L-50-144 L-9-11 Z" fill="#48ba00" opacity=".32"/>
+      <path d="M20-11 L48-145 L70-131 C52-91 37-47 35-11 Z" fill="#48ba00" opacity=".34"/>
+      <path d="M-16-53 C-25-78-31-128-20-146 C-12-158 6-161 17-155 C29-148 9-140 4-122 C-2-100-6-77-9-55 Q-12-45-16-53 Z" fill="url(#shine)"/>
+      <path d="M-68-65 C-83-80-106-89-115-101 C-117-111-106-119-96-118 C-84-118-86-109-93-105 C-85-93-76-79-68-65 Z" fill="url(#shine)"/>
+      <path d="M63-66 C78-82 102-92 111-105 C115-116 105-120 96-116 C86-112 74-87 63-66 Z" fill="url(#shine)"/>
+      <path d="M-130-93 C-133-117-113-132-87-130 C-62-129-52-142-35-155 C-15-171 16-170 38-153" fill="none" stroke="#f8ff9b" stroke-opacity=".66" stroke-width="3" stroke-linecap="round"/>
+    </g>
+      <g transform="translate(896 330)">
+      <rect x="-119.0" width="238" height="635" rx="105" fill="url(#vert-rim)"/>
+      <rect x="-110.0" y="12" width="220" height="611" rx="97" fill="url(#vert-edge)"/>
+      <rect x="-100.0" y="23" width="200" height="590" rx="88" fill="url(#vert-body)"/>
+      <path d="M-97.0 522 C-100.0 592 -67.0 614 0 617 C68.0 619 100.0 590 99.0 520 L89.0 500 C91.0 569 66.0 596 0 598 C-64.0 598 -90.0 573 -89.0 502 Z" fill="#48ba00" opacity=".22"/>
+      <path d="M-64 29 C-92 35-105 60-106 100 L-103 349.2 C-102 425.5-92 457.2-87 387.3 L-80 126 C-76 91-62 72-35 49 C-21 38-30 26-46 27 Z" fill="url(#soft-shine)"/>
+      <path d="M-72 36 C-94 45-104 71-103 112 L-101 304.8 C-98 349.2-94 304.8-93 260.3 L-88 123 C-84 88-71 68-45 47 C-34 37-47 29-60 32 Z" fill="url(#white-shine)"/>
+      <path d="M67 37 C98 47 106 78 107 111 L107 531 C107 577 90 604 62 611 C86 593 97 573 97 524 L97 112 C96 76 88 55 67 37 Z" fill="url(#rim-shine)"/>
+      <path d="M-104 95 C-103 53-78 18-35 15 C25 7 57 17 82 40" fill="none" stroke="#f8ff9b" stroke-width="3" stroke-opacity=".5" stroke-linecap="round"/>
+    </g>
+      <g transform="translate(896 323)">
+      <ellipse rx="53.0" ry="13" fill="url(#vert-neck)"/>
+      <path d="M-39.22-3 C-15.899999999999999-12 13.780000000000001-12 36.04-5" fill="none" stroke="#f8ff9b" stroke-width="5" stroke-linecap="round"/>
+      <ellipse cy="8" rx="38.16" ry="3" fill="#48ba00" opacity=".35"/>
+    </g>
+      <g transform="translate(896 972)">
+      <ellipse rx="53.0" ry="13" fill="url(#vert-neck)"/>
+      <path d="M-39.22-3 C-15.899999999999999-12 13.780000000000001-12 36.04-5" fill="none" stroke="#f8ff9b" stroke-width="5" stroke-linecap="round"/>
+      <ellipse cy="8" rx="38.16" ry="3" fill="#48ba00" opacity=".35"/>
+    </g>
+    </g>
+</svg>
