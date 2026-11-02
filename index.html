@@ -2139,7 +2139,8 @@ dash.draw('guess', (el) => {
   const candies = hwOfYear(b.data).filter((r) => Number(r.quantite) >= 3);
   const tot = hwOfYear(t.data)[0];
   const qs = [];
-  candies.forEach((r) => qs.push({text: 'Combien de ' + r.bonbon + ' as-tu ramassés?', answer: Number(r.quantite)}));
+  const de = (n) => (/^[AEIOUYÀÂÄÉÈÊËÎÏÔÖÙÛÜŒ]/i.test(n) ? 'd’' : 'de ') + n;
+  candies.forEach((r) => qs.push({text: 'Combien ' + de(r.bonbon) + ' as-tu dans ton butin?', answer: Number(r.quantite)}));
   fams.forEach((f) => qs.push({text: 'Combien de bonbons dans la famille ' + f.categorie + '?', answer: f.quantite}));
   if (tot) {
     qs.push({text: 'Combien de bonbons as-tu ramassés en tout?', answer: tot.total});
@@ -3143,7 +3144,7 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(cbGo); els
 <script>
 /* Bouton « Mettre à jour » : compare la version de cette page à version.json sur GitHub. */
 (function () {
-  const APP_VERSION = '2026.11.01-39';
+  const APP_VERSION = '2026.11.01-40';
   const bar = document.querySelector('.hw-update');
   const msg = bar.querySelector('.msg');
   const btn = bar.querySelector('button');
