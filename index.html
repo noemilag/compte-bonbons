@@ -181,6 +181,7 @@ html body #dash-root .hw{padding-top:calc(var(--cds-pad-xl) + env(safe-area-inse
 .hw-card .note{margin:0;font-size:var(--cds-font-size-body);color:var(--ink-dim)}
 
 .hw-chart{position:relative;min-height:12rem}
+:is(#chocolat,#jujubes,#durs,#chips,#reglisse,#special) .hw-chart:not(.dash-skeleton){min-height:4rem}
 .hw-chart.tall{min-height:18rem}
 .hw-chart svg{display:block;overflow:visible}
 .hw-chart text{font-size:var(--cds-font-size-body);font-family:var(--round);font-weight:600}
@@ -459,6 +460,9 @@ button.tn-rod:focus-visible,button.tn-units:focus-visible{outline:2px solid var(
 .hw-cellbar{display:flex;align-items:center;gap:var(--cds-gap-sm)}
 .hw-cellbar span.b{display:block;height:.7rem;border-radius:999px;min-width:4px}
 
+.hw-credit{text-align:center;font-size:var(--cds-font-size-caption);color:var(--muted,#a99bc4);opacity:.85;margin:var(--cds-gap-lg) 0 var(--cds-gap-md)}
+.hw-credit a{color:var(--orange);text-decoration:none;font-weight:700}
+.hw-credit a:hover{text-decoration:underline}
 .hw-end{text-align:center;font-family:var(--spooky);font-weight:900;font-size:clamp(1.4rem,4vw,2rem);color:var(--orange);text-shadow:0 3px 0 #6b2200;margin:var(--cds-gap-lg) 0 0}
 .hw-end .ico{display:block;width:4rem;height:4rem;margin:0 auto var(--cds-gap-xs);filter:drop-shadow(0 0 14px rgba(255,122,26,.7))}
 
@@ -730,6 +734,7 @@ body.cb-has-installbar .hw-update{bottom:calc(92px + env(safe-area-inset-bottom)
     </form>
     <button class="cb-link cb-demo" type="button">Voir l’exemple de Léo</button>
     <p class="cb-privacy">Tout reste dans ce téléphone : pas de compte, aucune donnée envoyée ailleurs.</p>
+    <p class="hw-credit">Une création de <a href="https://noemilaganiere.com" target="_blank" rel="noopener">Noémi Laganière</a> · <a href="https://noemilaganiere.com" target="_blank" rel="noopener">noemilaganiere.com</a></p>
   </section>
 
   <section id="cb-count" class="cb-screen" hidden>
@@ -898,10 +903,25 @@ body.cb-has-installbar .hw-update{bottom:calc(92px + env(safe-area-inset-bottom)
       <p class="note">Toutes les sortes de chocolat, de la plus à la moins nombreuse.</p>
       <div class="hw-chart dash-skeleton" data-draw="chart-choco" data-source="bonbons"></div>
     </div>
+    <div class="hw-card hw-reveal" id="jujubes">
+      <h2>La marmite à jujubes</h2>
+      <p class="note">Toutes les sortes de jujubes, de la plus à la moins nombreuse.</p>
+      <div class="hw-chart dash-skeleton" data-draw="chart-jujubes" data-source="bonbons"></div>
+    </div>
+    <div class="hw-card hw-reveal" id="durs">
+      <h2>Les cailloux du sorcier</h2>
+      <p class="note">Tous les bonbons durs et suçons, du plus au moins nombreux.</p>
+      <div class="hw-chart dash-skeleton" data-draw="chart-durs" data-source="bonbons"></div>
+    </div>
     <div class="hw-card hw-reveal" id="chips">
       <h2>Le sac de chips</h2>
       <p class="note">Toutes les sortes de chips, de la plus à la moins nombreuse.</p>
       <div class="hw-chart dash-skeleton" data-draw="chart-chips" data-source="bonbons"></div>
+    </div>
+    <div class="hw-card hw-reveal" id="reglisse">
+      <h2>Les serpents de réglisse</h2>
+      <p class="note">Toutes les sortes de réglisse, de la plus à la moins nombreuse.</p>
+      <div class="hw-chart dash-skeleton" data-draw="chart-reglisse" data-source="bonbons"></div>
     </div>
     <div class="hw-card hw-reveal" id="special">
       <h2>Les trésors spéciaux</h2>
@@ -951,6 +971,7 @@ body.cb-has-installbar .hw-update{bottom:calc(92px + env(safe-area-inset-bottom)
     <button class="cb-big green cb-newyear" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>Ajouter une nouvelle année</button>
   </div>
   <p class="hw-end hw-reveal"><svg class="ico" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 7 Q22 2 27 1" stroke="#3fbf2a" stroke-width="3.5" fill="none" stroke-linecap="round"/><ellipse cx="15" cy="27" rx="10" ry="15" fill="#e2611a"/><ellipse cx="33" cy="27" rx="10" ry="15" fill="#e2611a"/><ellipse cx="24" cy="27" rx="11" ry="17" fill="#ff7a1a"/><path d="M15 22 l4 -4 4 4 Z M25 22 l4 -4 4 4 Z" fill="#ffd60a"/><path d="M13 30 Q24 40 35 30 L31 32 L28 29 L24 33 L20 29 L17 32 Z" fill="#ffd60a"/></svg>Joyeuse Halloween, <span class="cb-kid">—</span>! Garde-en pour demain…</p>
+  <p class="hw-credit">Une création de <a href="https://noemilaganiere.com" target="_blank" rel="noopener">Noémi Laganière</a> · <a href="https://noemilaganiere.com" target="_blank" rel="noopener">noemilaganiere.com</a></p>
   </div>
 </div>
   <div class="cb-menu" hidden>
@@ -1278,7 +1299,7 @@ deltaDraw('d-gros', 'gros', (v) => hwFmt.format(v));
 
 /* Year picker: one button per year in the data. */
 window.HW_DRAWS = ['years', 'annee-inline', 'total', 'total-inline', 'heures-inline', 'minute', 'champion', 'champion-qte', 'heure', 'sortes', 'ratio', 'sacs', 'gros',
-  'd-total', 'd-heure', 'd-sortes', 'd-ratio', 'd-gros', 'podium', 'bocal', 'chart-cat', 'tens', 'tensgame', 'balance', 'guess', 'chart-top', 'chart-choco', 'chart-chips', 'chart-special', 'table-body', 'cmp-total', 'cmp-cat'];
+  'd-total', 'd-heure', 'd-sortes', 'd-ratio', 'd-gros', 'podium', 'bocal', 'chart-cat', 'tens', 'tensgame', 'balance', 'guess', 'chart-top', 'chart-choco', 'chart-jujubes', 'chart-durs', 'chart-chips', 'chart-reglisse', 'chart-special', 'table-body', 'cmp-total', 'cmp-cat'];
 window.hwSetYear = (y) => {
   if (y === hwYear) return;
   hwYear = y;
@@ -1543,47 +1564,27 @@ dash.draw('chart-top', (el) => {
   hwReveal('chart-top', el, (mode) => hwBars(el, items, 'Bonbons les plus nombreux', mode, '👻'));
 });
 
-dash.draw('chart-choco', (el) => {
+const hwFamChart = (id, cat, aria, subLabel, rider) => dash.draw(id, (el) => {
   const d = dash.data('bonbons');
   const t = dash.data('totaux');
   if (!hwState(el, d.status === 'ok' ? t : d)) return;
   hwSelYear(t.data);
-  const rows = hwOfYear(d.data).filter((r) => r.categorie === 'Chocolat').sort((a, b) => Number(b.quantite) - Number(a.quantite));
+  const rows = hwOfYear(d.data).filter((r) => r.categorie === cat && Number(r.quantite) > 0).sort((a, b) => Number(b.quantite) - Number(a.quantite) || a.bonbon.localeCompare(b.bonbon, 'fr'));
+  const card = el.closest('.hw-card');
+  if (card) card.hidden = !rows.length;
   const tot = rows.reduce((s, r) => s + Number(r.quantite), 0);
   const items = rows.map((r) => ({
-    label: r.bonbon, value: Number(r.quantite), color: hwColor('Chocolat'),
-    sub: hwPct.format(Number(r.quantite) / tot) + ' du chocolat'
+    label: r.bonbon, value: Number(r.quantite), color: hwColor(cat),
+    sub: hwPct.format(Number(r.quantite) / tot) + ' ' + subLabel
   }));
-  hwReveal('chart-choco', el, (mode) => hwBars(el, items, 'Sortes de chocolat', mode, '🦇'));
+  hwReveal(id, el, (mode) => hwBars(el, items, aria, mode, rider));
 });
-
-dash.draw('chart-chips', (el) => {
-  const d = dash.data('bonbons');
-  const t = dash.data('totaux');
-  if (!hwState(el, d.status === 'ok' ? t : d)) return;
-  hwSelYear(t.data);
-  const rows = hwOfYear(d.data).filter((r) => r.categorie === 'Chips').sort((a, b) => Number(b.quantite) - Number(a.quantite));
-  const tot = rows.reduce((s, r) => s + Number(r.quantite), 0);
-  const items = rows.map((r) => ({
-    label: r.bonbon, value: Number(r.quantite), color: hwColor('Chips'),
-    sub: hwPct.format(Number(r.quantite) / tot) + ' des chips'
-  }));
-  hwReveal('chart-chips', el, (mode) => hwBars(el, items, 'Sortes de chips', mode, null));
-});
-
-dash.draw('chart-special', (el) => {
-  const d = dash.data('bonbons');
-  const t = dash.data('totaux');
-  if (!hwState(el, d.status === 'ok' ? t : d)) return;
-  hwSelYear(t.data);
-  const rows = hwOfYear(d.data).filter((r) => r.categorie === 'Spécial').sort((a, b) => Number(b.quantite) - Number(a.quantite));
-  const tot = rows.reduce((s, r) => s + Number(r.quantite), 0);
-  const items = rows.map((r) => ({
-    label: r.bonbon, value: Number(r.quantite), color: hwColor('Spécial'),
-    sub: hwPct.format(Number(r.quantite) / tot) + ' des spéciaux'
-  }));
-  hwReveal('chart-special', el, (mode) => hwBars(el, items, 'Bonbons spéciaux', mode, null));
-});
+hwFamChart('chart-choco', 'Chocolat', 'Sortes de chocolat', 'du chocolat', '🦇');
+hwFamChart('chart-jujubes', 'Jujubes', 'Sortes de jujubes', 'des jujubes', null);
+hwFamChart('chart-durs', 'Bonbons durs', 'Sortes de bonbons durs', 'des bonbons durs', null);
+hwFamChart('chart-chips', 'Chips', 'Sortes de chips', 'des chips', null);
+hwFamChart('chart-reglisse', 'Réglisse', 'Sortes de réglisse', 'de la réglisse', null);
+hwFamChart('chart-special', 'Spécial', 'Bonbons spéciaux', 'des spéciaux', null);
 
 /* Dizaines et unités : chaque famille en bâtons de 10 et en bonbons seuls. */
 window.hwTensState = {fam: null};
@@ -3017,7 +3018,7 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(cbGo); els
 <script>
 /* Bouton « Mettre à jour » : compare la version de cette page à version.json sur GitHub. */
 (function () {
-  const APP_VERSION = '2026.11.01-21';
+  const APP_VERSION = '2026.11.01-23';
   const bar = document.querySelector('.hw-update');
   const msg = bar.querySelector('.msg');
   const btn = bar.querySelector('button');
