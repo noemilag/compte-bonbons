@@ -477,9 +477,10 @@ button.tn-rod:focus-visible,button.tn-units:focus-visible{outline:2px solid var(
 .hw-share-sub{margin:0 0 .9rem;color:var(--ink-dim);font-size:.95rem}
 .hw-share-x{position:absolute;top:.6rem;right:.7rem;width:2.4rem;height:2.4rem;border:0;border-radius:50%;background:rgba(255,255,255,.08);color:var(--ink);font-size:1.5rem;line-height:1;cursor:pointer}
 .hw-share-prev{display:flex;gap:.7rem;overflow-x:auto;scroll-snap-type:x mandatory;padding:.2rem .1rem .6rem;justify-content:flex-start}
-.hw-share-prev img{flex:none;height:min(52vh,22rem);width:auto;border-radius:.9rem;scroll-snap-align:center;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+.hw-share-prev img{flex:none;height:min(54vh,26rem);width:auto;border-radius:.9rem;scroll-snap-align:center;box-shadow:0 8px 24px rgba(0,0,0,.5)}
 .hw-share-prev.is-cards img:first-child{margin-left:auto}.hw-share-prev.is-cards img:last-child{margin-right:auto}
-.hw-share-prev.is-diplome img,.hw-share-prev.is-defi img{height:auto;width:100%;max-height:52vh;object-fit:contain;margin:0 auto}
+.hw-share-prev.is-diplome img{height:auto;width:100%;max-height:52vh;object-fit:contain;margin:0 auto}
+.hw-share-prev.is-defi{justify-content:center}
 .hw-share-prev.is-lien{display:none}
 .hw-share-wait{margin:2rem auto;color:var(--ink-dim);animation:hw-pulse 1.2s ease-in-out infinite}
 @keyframes hw-pulse{50%{opacity:.4}}
@@ -3127,7 +3128,7 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(cbGo); els
 <script>
 /* Bouton « Mettre à jour » : compare la version de cette page à version.json sur GitHub. */
 (function () {
-  const APP_VERSION = '2026.11.01-30';
+  const APP_VERSION = '2026.11.01-31';
   const bar = document.querySelector('.hw-update');
   const msg = bar.querySelector('.msg');
   const btn = bar.querySelector('button');
@@ -3251,48 +3252,50 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(cbGo); els
     g.fillStyle = bgr; g.fillRect(0, 0, w, h);
     let s = seed;
     const rnd = () => { s = (s * 9301 + 49297) % 233280; return s / 233280; };
-    for (let i = 0; i < 90; i++) {
+    for (let i = 0, n = Math.round(w * h / 11000); i < n; i++) {
       g.globalAlpha = 0.25 + rnd() * 0.6; g.fillStyle = rnd() > 0.85 ? C.candle : '#ffffff';
       g.beginPath(); g.arc(rnd() * w, rnd() * h, 0.8 + rnd() * 2.2, 0, Math.PI * 2); g.fill();
     }
     g.globalAlpha = 1;
     /* lune */
     g.save(); g.shadowColor = 'rgba(255,214,10,.55)'; g.shadowBlur = 50; g.fillStyle = '#ffe680';
-    g.beginPath(); g.arc(w - 92, 84, 38, 0, Math.PI * 2); g.fill(); g.restore();
-    g.fillStyle = '#2f145a'; g.beginPath(); g.arc(w - 76, 74, 34, 0, Math.PI * 2); g.fill();
+    g.beginPath(); g.arc(w - 110, 190, 42, 0, Math.PI * 2); g.fill(); g.restore();
+    g.fillStyle = '#2f145a'; g.beginPath(); g.arc(w - 92, 178, 38, 0, Math.PI * 2); g.fill();
   };
   const footer = (g, w, h) => {
     const t = isCB() ? 'Compte-Bonbons · noemilag.github.io/compte-bonbons' : 'Compte-Bonbons · Le butin d’Halloween de Léo';
-    txt(g, t, w / 2, h - 46, {font: F.round(30, 600), color: C.dim});
+    txt(g, t, w / 2, h - 190, {font: F.round(32, 600), color: C.dim});
   };
   const kicker = (g, s, x, y) => txt(g, s.toUpperCase(), x, y, {font: F.round(34, 700), color: C.purple});
 
-  /* Carte 1 : les grands chiffres */
+  /* Carte 1 : les grands chiffres (format story 9:16) */
+  const SW = 1080, SH = 1920;
   const card1 = (S) => {
-    const W = 1080, H = 1350, [c, g] = mk(W, H);
+    const W = SW, H = SH, [c, g] = mk(W, H);
     night(g, W, H, 11);
-    kicker(g, 'Halloween ' + S.y, W / 2, 120);
-    let sz = fit(g, 'Le butin d’Halloween', F.spooky, W - 140, 120);
-    txt(g, 'Le butin d’Halloween', W / 2, 250, {font: F.spooky(sz), color: C.orange, drop: '#6b2200', glow: 'rgba(255,122,26,.5)'});
-    sz = fit(g, 'de ' + S.name, F.spooky, W - 140, 104);
-    txt(g, 'de ' + S.name, W / 2, 370, {font: F.spooky(sz), color: C.candle, drop: '#7a5a00', glow: 'rgba(255,214,10,.45)'});
-    sz = fit(g, fmt.format(S.t.total), F.chunky, W - 160, 300);
-    txt(g, fmt.format(S.t.total), W / 2, 680, {font: F.chunky(sz), color: C.candle, drop: '#7a5a00', dropY: 12, glow: 'rgba(255,214,10,.55)', blur: 50});
-    txt(g, 'bonbons ramassés', W / 2, 760, {font: F.round(52, 700), color: C.ink});
+    kicker(g, 'Halloween ' + S.y, W / 2, 250);
+    const t1 = 'Le butin d’Halloween';
+    let sz = fit(g, t1, F.spooky, W - 120, 150);
+    txt(g, t1, W / 2, 400, {font: F.spooky(sz), color: C.orange, drop: '#6b2200', glow: 'rgba(255,122,26,.5)'});
+    sz = fit(g, 'de ' + S.name, F.spooky, W - 140, 130);
+    txt(g, 'de ' + S.name, W / 2, 540, {font: F.spooky(sz), color: C.candle, drop: '#7a5a00', glow: 'rgba(255,214,10,.45)'});
+    sz = fit(g, fmt.format(S.t.total), F.chunky, W - 140, 380);
+    txt(g, fmt.format(S.t.total), W / 2, 930, {font: F.chunky(sz), color: C.candle, drop: '#7a5a00', dropY: 14, glow: 'rgba(255,214,10,.55)', blur: 56});
+    txt(g, 'bonbons ramassés', W / 2, 1030, {font: F.round(60, 700), color: C.ink});
     const tiles = [
       [S.t.heures != null ? fmt.format(S.t.heures) + ' h' : '—', 'de marche', C.slime],
       [S.t.parHeure != null ? fmt.format(S.t.parHeure) : '—', 'bonbons à l’heure', C.orange],
       [fmt.format(S.t.sortes), 'sortes différentes', C.purple],
       [S.t.sacs != null ? fmt.format(S.t.sacs) : fmt.format(S.t.gros), S.t.sacs != null ? 'sacs donnés à la porte' : 'formats géants', C.pink]
     ];
-    const tw = 440, th = 200, gx = 40, x0 = (W - tw * 2 - gx) / 2, y0 = 830;
+    const tw = 450, th = 230, gx = 36, x0 = (W - tw * 2 - gx) / 2, y0 = 1130;
     tiles.forEach(([v, l, col], i) => {
-      const x = x0 + (i % 2) * (tw + gx), y = y0 + Math.floor(i / 2) * (th + 30);
-      rr(g, x, y, tw, th, 34); g.fillStyle = 'rgba(255,255,255,.06)'; g.fill();
+      const x = x0 + (i % 2) * (tw + gx), y = y0 + Math.floor(i / 2) * (th + 34);
+      rr(g, x, y, tw, th, 36); g.fillStyle = 'rgba(255,255,255,.06)'; g.fill();
       g.lineWidth = 3; g.strokeStyle = col + '88'; g.stroke();
-      const s2 = fit(g, v, F.chunky, tw - 50, 96);
-      txt(g, v, x + tw / 2, y + 118, {font: F.chunky(s2), color: col, glow: col + '99', blur: 22});
-      txt(g, l, x + tw / 2, y + 168, {font: F.round(32, 600), color: C.dim});
+      const s2 = fit(g, v, F.chunky, tw - 50, 112);
+      txt(g, v, x + tw / 2, y + 134, {font: F.chunky(s2), color: col, glow: col + '99', blur: 24});
+      txt(g, l, x + tw / 2, y + 194, {font: F.round(34, 600), color: C.dim});
     });
     footer(g, W, H);
     return c;
@@ -3300,30 +3303,30 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(cbGo); els
 
   /* Carte 2 : le palmarès */
   const card2 = (S) => {
-    const W = 1080, H = 1350, [c, g] = mk(W, H);
+    const W = SW, H = SH, [c, g] = mk(W, H);
     night(g, W, H, 23);
-    kicker(g, 'Halloween ' + S.y + ' · ' + S.name, W / 2, 120);
-    txt(g, 'Le palmarès', W / 2, 240, {font: F.spooky(fit(g, 'Le palmarès', F.spooky, W - 140, 124)), color: C.orange, drop: '#6b2200', glow: 'rgba(255,122,26,.5)'});
+    kicker(g, 'Halloween ' + S.y + ' · ' + S.name, W / 2, 250);
+    txt(g, 'Le palmarès', W / 2, 400, {font: F.spooky(fit(g, 'Le palmarès', F.spooky, W - 140, 150)), color: C.orange, drop: '#6b2200', glow: 'rgba(255,122,26,.5)'});
     const top = S.rows[0];
     if (top) {
-      txt(g, 'LE CHAMPION', W / 2, 330, {font: F.round(32, 700), color: C.dim});
-      const s = fit(g, top.bonbon, F.chunky, W - 160, 120);
-      txt(g, top.bonbon, W / 2, 450, {font: F.chunky(s), color: C.candle, drop: '#7a5a00', dropY: 8, glow: 'rgba(255,214,10,.5)', blur: 36});
-      txt(g, fmt.format(top.q) + ' bonbons', W / 2, 520, {font: F.round(44, 700), color: C.ink});
+      txt(g, 'LE CHAMPION', W / 2, 520, {font: F.round(34, 700), color: C.dim});
+      const s = fit(g, top.bonbon, F.chunky, W - 160, 140);
+      txt(g, top.bonbon, W / 2, 660, {font: F.chunky(s), color: C.candle, drop: '#7a5a00', dropY: 9, glow: 'rgba(255,214,10,.5)', blur: 36});
+      txt(g, fmt.format(top.q) + ' bonbons', W / 2, 740, {font: F.round(48, 700), color: C.ink});
     }
     const list = S.rows.slice(0, 8), max = list.length ? list[0].q : 1;
-    const lx = 420, bx = 444, bw = 470, rowH = 86, y0 = 610;
+    const lx = 400, bx = 424, bw = 480, rowH = 98, y0 = 880;
     list.forEach((r, i) => {
       const y = y0 + i * rowH, col = hwColor(r.categorie);
-      g.font = F.round(38, 600);
+      g.font = F.round(40, 600);
       let label = r.bonbon;
-      while (g.measureText(label).width > lx - 70 && label.length > 3) label = label.slice(0, -2).trimEnd() + '…';
-      txt(g, label, lx, y + 13, {font: F.round(38, 600), color: C.ink, align: 'right'});
+      while (g.measureText(label).width > lx - 60 && label.length > 3) label = label.slice(0, -2).trimEnd() + '…';
+      txt(g, label, lx, y + 14, {font: F.round(40, 600), color: C.ink, align: 'right'});
       const w = Math.max(14, bw * r.q / max);
-      rr(g, bx, y - 22, w, 44, 22);
+      rr(g, bx, y - 23, w, 46, 23);
       const lg = g.createLinearGradient(bx, 0, bx + w, 0); lg.addColorStop(0, col + '55'); lg.addColorStop(1, col);
       g.fillStyle = lg; g.save(); g.shadowColor = col; g.shadowBlur = 18; g.fill(); g.restore();
-      txt(g, fmt.format(r.q), bx + w + 18, y + 16, {font: F.chunky(44), color: col, align: 'left'});
+      txt(g, fmt.format(r.q), bx + w + 18, y + 17, {font: F.chunky(46), color: col, align: 'left'});
     });
     footer(g, W, H);
     return c;
@@ -3331,34 +3334,34 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(cbGo); els
 
   /* Carte 3 : les familles */
   const card3 = (S) => {
-    const W = 1080, H = 1350, [c, g] = mk(W, H);
+    const W = SW, H = SH, [c, g] = mk(W, H);
     night(g, W, H, 41);
-    kicker(g, 'Halloween ' + S.y + ' · ' + S.name, W / 2, 120);
+    kicker(g, 'Halloween ' + S.y + ' · ' + S.name, W / 2, 250);
     const ttl = 'Les familles de bonbons';
-    txt(g, ttl, W / 2, 230, {font: F.spooky(fit(g, ttl, F.spooky, W - 120, 104)), color: C.orange, drop: '#6b2200', glow: 'rgba(255,122,26,.5)'});
-    const cx = W / 2, cy = 590, R = 280, r0 = 165;
+    txt(g, ttl, W / 2, 390, {font: F.spooky(fit(g, ttl, F.spooky, W - 120, 120)), color: C.orange, drop: '#6b2200', glow: 'rgba(255,122,26,.5)'});
+    const cx = W / 2, cy = 880, R = 340, r0 = 205;
     const tot = S.cats.reduce((s, x) => s + x.quantite, 0) || 1;
     let a = -Math.PI / 2;
     S.cats.forEach((k) => {
       const da = Math.PI * 2 * k.quantite / tot, col = hwColor(k.categorie);
       g.beginPath(); g.arc(cx, cy, R, a + 0.012, a + da - 0.012); g.arc(cx, cy, r0, a + da - 0.012, a + 0.012, true); g.closePath();
-      g.save(); g.shadowColor = col; g.shadowBlur = 24; g.fillStyle = col; g.fill(); g.restore();
+      g.save(); g.shadowColor = col; g.shadowBlur = 26; g.fillStyle = col; g.fill(); g.restore();
       if (k.part >= 0.05) {
         const m = a + da / 2, tx = cx + Math.cos(m) * (R + r0) / 2, ty = cy + Math.sin(m) * (R + r0) / 2;
-        txt(g, pct.format(k.part), tx, ty + 14, {font: F.chunky(40), color: '#1a0d2e'});
+        txt(g, pct.format(k.part), tx, ty + 16, {font: F.chunky(46), color: '#1a0d2e'});
       }
       a += da;
     });
-    txt(g, fmt.format(S.t.total), cx, cy + 22, {font: F.chunky(fit(g, fmt.format(S.t.total), F.chunky, r0 * 1.6, 110)), color: C.candle, glow: 'rgba(255,214,10,.5)'});
-    txt(g, 'bonbons', cx, cy + 74, {font: F.round(36, 600), color: C.dim});
-    const n = S.cats.length, cols = 2, cw = 430, ch = 96, gx0 = (W - cols * cw) / 2, ly = 940;
+    txt(g, fmt.format(S.t.total), cx, cy + 26, {font: F.chunky(fit(g, fmt.format(S.t.total), F.chunky, r0 * 1.6, 130)), color: C.candle, glow: 'rgba(255,214,10,.5)'});
+    txt(g, 'bonbons', cx, cy + 86, {font: F.round(40, 600), color: C.dim});
+    const n = S.cats.length, cols = 2, cw = 500, ch = 118, gx0 = (W - cols * cw) / 2, ly = 1330, nameFont = (s) => F.round(s, 700);
     S.cats.forEach((k, i) => {
       const x = gx0 + (i % cols) * cw + 20, y = ly + Math.floor(i / cols) * ch, col = hwColor(k.categorie);
-      g.save(); g.shadowColor = col; g.shadowBlur = 14; g.fillStyle = col; g.beginPath(); g.arc(x + 20, y, 18, 0, Math.PI * 2); g.fill(); g.restore();
-      txt(g, k.categorie, x + 56, y + 6, {font: F.round(38, 700), color: C.ink, align: 'left', base: 'middle'});
-      txt(g, fmt.format(k.quantite) + ' · ' + pct.format(k.part), x + 56, y + 46, {font: F.round(30, 600), color: C.dim, align: 'left', base: 'middle'});
+      g.save(); g.shadowColor = col; g.shadowBlur = 14; g.fillStyle = col; g.beginPath(); g.arc(x + 20, y, 20, 0, Math.PI * 2); g.fill(); g.restore();
+      txt(g, k.categorie, x + 60, y + 4, {font: nameFont(fit(g, k.categorie, nameFont, cw - 100, 42, 26)), color: C.ink, align: 'left', base: 'middle'});
+      txt(g, fmt.format(k.quantite) + ' · ' + pct.format(k.part), x + 60, y + 50, {font: F.round(32, 600), color: C.dim, align: 'left', base: 'middle'});
     });
-    if (!n) txt(g, 'Pas encore de bonbons', cx, ly, {font: F.round(40), color: C.dim});
+    if (!n) txt(g, 'Pas encore de bonbons', cx, ly, {font: F.round(44), color: C.dim});
     footer(g, W, H);
     return c;
   };
@@ -3415,25 +3418,28 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(cbGo); els
     return c;
   };
 
-  /* Image du défi */
+  /* Image du défi (format story) */
   const challenge = async (S) => {
-    const W = 1080, H = 1080, [c, g] = mk(W, H);
+    const W = SW, H = SH, [c, g] = mk(W, H);
     night(g, W, H, 61);
     if (isCB()) {
       try {
         const im = new Image(); im.src = 'logo.svg';
         await im.decode();
-        g.drawImage(im, W / 2 - 110, 30, 220, 220);
+        g.drawImage(im, W / 2 - 150, 250, 300, 300);
       } catch (e) { /* sans logo */ }
     }
-    txt(g, S.name + ' a récolté', W / 2, 300, {font: F.round(fit(g, S.name + ' a récolté', (s) => F.round(s, 700), W - 200, 60), 700), color: C.ink});
+    const l0 = S.name + ' a récolté';
+    txt(g, l0, W / 2, 700, {font: F.round(fit(g, l0, (s) => F.round(s, 700), W - 200, 70), 700), color: C.ink});
     const v = fmt.format(S.t.total);
-    txt(g, v, W / 2, 560, {font: F.chunky(fit(g, v, F.chunky, W - 200, 270)), color: C.candle, drop: '#7a5a00', dropY: 12, glow: 'rgba(255,214,10,.55)', blur: 50});
-    txt(g, 'bonbons à l’Halloween ' + S.y + '!', W / 2, 640, {font: F.round(fit(g, 'bonbons à l’Halloween ' + S.y + '!', (s) => F.round(s, 700), W - 160, 54), 700), color: C.ink});
-    txt(g, 'Et toi, combien?', W / 2, 800, {font: F.spooky(fit(g, 'Et toi, combien?', F.spooky, W - 140, 120)), color: C.slime, drop: '#1f6b0a', glow: 'rgba(124,255,79,.5)'});
-    rr(g, 150, 870, W - 300, 110, 55); g.fillStyle = C.orange; g.save(); g.shadowColor = 'rgba(255,122,26,.6)'; g.shadowBlur = 30; g.fill(); g.restore();
-    txt(g, 'Compte les tiens sur Compte-Bonbons', W / 2, 940, {font: F.chunky(fit(g, 'Compte les tiens sur Compte-Bonbons', F.chunky, W - 360, 44)), color: '#1a0d2e'});
-    txt(g, 'noemilag.github.io/compte-bonbons', W / 2, 1040, {font: F.round(30, 600), color: C.dim});
+    txt(g, v, W / 2, 1040, {font: F.chunky(fit(g, v, F.chunky, W - 160, 360)), color: C.candle, drop: '#7a5a00', dropY: 14, glow: 'rgba(255,214,10,.55)', blur: 56});
+    const l1 = 'bonbons à l’Halloween ' + S.y + '!';
+    txt(g, l1, W / 2, 1140, {font: F.round(fit(g, l1, (s) => F.round(s, 700), W - 140, 60), 700), color: C.ink});
+    txt(g, 'Et toi, combien?', W / 2, 1360, {font: F.spooky(fit(g, 'Et toi, combien?', F.spooky, W - 120, 150)), color: C.slime, drop: '#1f6b0a', glow: 'rgba(124,255,79,.5)'});
+    rr(g, 130, 1450, W - 260, 130, 65); g.fillStyle = C.orange; g.save(); g.shadowColor = 'rgba(255,122,26,.6)'; g.shadowBlur = 30; g.fill(); g.restore();
+    const bt = 'Compte les tiens sur Compte-Bonbons';
+    txt(g, bt, W / 2, 1535, {font: F.chunky(fit(g, bt, F.chunky, W - 340, 50)), color: '#1a0d2e'});
+    txt(g, 'noemilag.github.io/compte-bonbons', W / 2, 1650, {font: F.round(34, 600), color: C.dim});
     return c;
   };
 
@@ -3477,7 +3483,7 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(cbGo); els
     prev.replaceChildren(); acts.replaceChildren(); link.hidden = true; say('');
     prev.className = 'hw-share-prev is-' + mode;
     const T = {
-      cards: ['Des cartes-images', 'Trois images prêtes à envoyer : les grands chiffres, le palmarès et les familles.'],
+      cards: ['Des cartes-images', 'Trois images format story, prêtes à envoyer : les grands chiffres, le palmarès et les familles.'],
       diplome: ['Un diplôme à imprimer', 'Le diplôme officiel du Grand chasseur de bonbons, au format lettre.'],
       lien: ['Un lien vers ton butin', isCB()
         ? 'Ce lien ouvre le tableau de ' + S.name + ' en lecture seule. Les chiffres voyagent dans le lien lui-même : rien n’est envoyé sur un serveur.'
