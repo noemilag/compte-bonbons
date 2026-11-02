@@ -3128,7 +3128,7 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(cbGo); els
 <script>
 /* Bouton « Mettre à jour » : compare la version de cette page à version.json sur GitHub. */
 (function () {
-  const APP_VERSION = '2026.11.01-33';
+  const APP_VERSION = '2026.11.01-34';
   const bar = document.querySelector('.hw-update');
   const msg = bar.querySelector('.msg');
   const btn = bar.querySelector('button');
@@ -3367,12 +3367,12 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(cbGo); els
   };
 
   /* Diplôme (format lettre paysage, pour l'imprimante) */
-  const loadImg = async (src) => { const im = new Image(); im.src = src; await im.decode(); return im; };
+  const loadImg = (src) => new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = () => rej(new Error('img')); im.src = src; });
   const tileIcons = async () => {
     const out = [];
     for (const el of document.querySelectorAll('#chiffres .hw-tile svg.ico')) {
       try {
-        const x = new XMLSerializer().serializeToString(el).replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" ');
+        const x = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${el.getAttribute('viewBox') || '0 0 48 48'}" width="192" height="192">${el.innerHTML}</svg>`;
         out.push(await loadImg('data:image/svg+xml;charset=utf-8,' + encodeURIComponent(x)));
       } catch (e) { out.push(null); }
     }
@@ -3391,26 +3391,16 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(cbGo); els
       g.fillStyle = 'rgba(255,255,255,.55)'; g.beginPath(); g.arc(x - 9, y - 9, 9, 0, Math.PI * 2); g.fill();
     });
     const ink = '#3d1c66';
-    /* marque : icône de l'app + nom */
-    let appIcon = null;
-    try { appIcon = await loadImg('icon-512.png'); } catch (e) { /* sans icône */ }
-    const brand = 'Compte-Bonbons', bs = 50, isz = 92;
-    g.font = F.chunky(bs);
-    const bw = g.measureText(brand).width, gw = (appIcon ? isz + 22 : 0) + bw, bx = W / 2 - gw / 2, by = 142;
-    if (appIcon) {
-      g.save(); rr(g, bx, by - isz / 2 - 4, isz, isz, 22); g.clip(); g.drawImage(appIcon, bx, by - isz / 2 - 4, isz, isz); g.restore();
-    }
-    txt(g, brand, bx + (appIcon ? isz + 22 : 0), by + 18, {font: F.chunky(bs), color: '#6a2fa0', align: 'left'});
-    txt(g, 'DIPLÔME', W / 2, 265, {font: F.chunky(70), color: C.orange, drop: '#b04a00', dropY: 5});
+    txt(g, 'DIPLÔME', W / 2, 235, {font: F.chunky(74), color: C.orange, drop: '#b04a00', dropY: 5});
     const sub = 'du Grand chasseur de bonbons';
-    txt(g, sub, W / 2, 345, {font: F.spooky(fit(g, sub, F.spooky, W - 300, 84)), color: '#6a2fa0'});
-    txt(g, 'décerné à', W / 2, 405, {font: F.round(36, 500), color: ink});
-    const ns = fit(g, S.name, F.chunky, W - 400, 140);
-    txt(g, S.name, W / 2, 520, {font: F.chunky(ns), color: C.orange, drop: '#8a3300', dropY: 7});
-    g.strokeStyle = '#c9a76a'; g.lineWidth = 3; g.beginPath(); g.moveTo(W / 2 - 420, 548); g.lineTo(W / 2 + 420, 548); g.stroke();
+    txt(g, sub, W / 2, 325, {font: F.spooky(fit(g, sub, F.spooky, W - 300, 88)), color: '#6a2fa0'});
+    txt(g, 'décerné à', W / 2, 392, {font: F.round(36, 500), color: ink});
+    const ns = fit(g, S.name, F.chunky, W - 500, 96);
+    txt(g, S.name, W / 2, 505, {font: F.chunky(ns), color: C.orange, drop: '#8a3300', dropY: 7});
+    g.strokeStyle = '#c9a76a'; g.lineWidth = 3; g.beginPath(); g.moveTo(W / 2 - 420, 534); g.lineTo(W / 2 + 420, 534); g.stroke();
     const phrase = `${S.name} a compté ${fmt.format(S.t.total)} bonbons!`;
-    txt(g, phrase, W / 2, 626, {font: F.chunky(fit(g, phrase, F.chunky, W - 260, 62, 30)), color: '#6a2fa0', drop: 'rgba(106,47,160,.18)', dropY: 4});
-    txt(g, 'à l’Halloween ' + S.y, W / 2, 682, {font: F.round(38, 600), color: ink});
+    txt(g, phrase, W / 2, 614, {font: F.chunky(fit(g, phrase, F.chunky, W - 260, 62, 30)), color: '#6a2fa0', drop: 'rgba(106,47,160,.18)', dropY: 4});
+    txt(g, 'à l’Halloween ' + S.y, W / 2, 670, {font: F.round(38, 600), color: ink});
     /* les chiffres du chapitre 1 */
     const icons = await tileIcons();
     const tiles = [
@@ -3420,7 +3410,7 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(cbGo); els
       [S.t.ratio != null ? fmt.format(S.t.ratio) : '—', 'par sac donné', C.pink],
       [fmt.format(S.t.gros), 'formats monstres', C.orange]
     ];
-    const tw = 255, th = 232, gap = 20, x0 = (W - (tw * 5 + gap * 4)) / 2, y0 = 722;
+    const tw = 255, th = 232, gap = 20, x0 = (W - (tw * 5 + gap * 4)) / 2, y0 = 714;
     tiles.forEach(([v, l, col], i) => {
       const x = x0 + i * (tw + gap);
       g.save(); g.shadowColor = 'rgba(0,0,0,.18)'; g.shadowBlur = 12; g.shadowOffsetY = 5;
@@ -3431,9 +3421,13 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(cbGo); els
       txt(g, l, x + tw / 2, y0 + 196, {font: F.round(fit(g, l, (z) => F.round(z, 600), tw - 30, 26, 16), 600), color: '#d9cdf5'});
     });
     /* signature + sceau */
-    txt(g, 'Grande Citrouille', 330, 1105, {font: F.spooky(52), color: '#6a2fa0'});
-    g.strokeStyle = ink; g.lineWidth = 2; g.beginPath(); g.moveTo(180, 1122); g.lineTo(480, 1122); g.stroke();
-    txt(g, 'Le comité des citrouilles', 330, 1156, {font: F.round(26, 600), color: '#7a6a90'});
+    let logo = null;
+    try { logo = await loadImg('logo.svg'); } catch (e) { /* sans logo */ }
+    const lx = 150, ly = 1000;
+    if (logo) g.drawImage(logo, lx, ly, 150, 150);
+    txt(g, 'Compte-Bonbons', lx + (logo ? 160 : 0), 1085, {font: F.spooky(60), color: '#6a2fa0', align: 'left'});
+    g.strokeStyle = ink; g.lineWidth = 2; g.beginPath(); g.moveTo(lx + (logo ? 160 : 0), 1106); g.lineTo(lx + (logo ? 160 : 0) + 380, 1106); g.stroke();
+    txt(g, 'Le comité des citrouilles', lx + (logo ? 160 : 0), 1142, {font: F.round(26, 600), color: '#7a6a90', align: 'left'});
     const sx = W - 320, sy = 1090;
     g.save(); g.fillStyle = C.orange; g.beginPath();
     for (let i = 0; i < 24; i++) { const ang = i * Math.PI / 12, rad = i % 2 ? 72 : 86; g.lineTo(sx + Math.cos(ang) * rad, sy + Math.sin(ang) * rad); }
@@ -3450,8 +3444,7 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(cbGo); els
     night(g, W, H, 61);
     if (isCB()) {
       try {
-        const im = new Image(); im.src = 'logo.svg';
-        await im.decode();
+        const im = await loadImg('logo.svg');
         g.drawImage(im, W / 2 - 150, 250, 300, 300);
       } catch (e) { /* sans logo */ }
     }
