@@ -2136,12 +2136,20 @@ dash.draw('guess', (el) => {
   if (!hwState(el, d.status !== 'ok' ? d : b.status !== 'ok' ? b : t)) return;
   hwSelYear(t.data);
   const fams = hwOfYear(d.data).filter((c) => c.quantite > 0);
-  const top = hwOfYear(b.data).sort((x, y) => Number(y.quantite) - Number(x.quantite)).slice(1, 9);
+  const candies = hwOfYear(b.data).filter((r) => Number(r.quantite) >= 3);
+  const tot = hwOfYear(t.data)[0];
   const qs = [];
-  for (let i = 0; i < Math.max(fams.length, top.length); i++) {
-    if (top[i]) qs.push({text: 'Combien de ' + top[i].bonbon + ' as-tu ramassés?', answer: Number(top[i].quantite)});
-    if (fams[i]) qs.push({text: 'Combien de bonbons dans la famille ' + fams[i].categorie + '?', answer: fams[i].quantite});
+  candies.forEach((r) => qs.push({text: 'Combien de ' + r.bonbon + ' as-tu ramassés?', answer: Number(r.quantite)}));
+  fams.forEach((f) => qs.push({text: 'Combien de bonbons dans la famille ' + f.categorie + '?', answer: f.quantite}));
+  if (tot) {
+    qs.push({text: 'Combien de bonbons as-tu ramassés en tout?', answer: tot.total});
+    if (tot.sortes >= 3) qs.push({text: 'Combien de sortes de bonbons différentes as-tu trouvées?', answer: tot.sortes});
+    if (tot.gros >= 3) qs.push({text: 'Combien de formats géants (XL) as-tu ramassés?', answer: tot.gros});
+    if (tot.parHeure >= 3) qs.push({text: 'En moyenne, combien de bonbons as-tu ramassés à l’heure?', answer: tot.parHeure});
+    if (tot.sacs >= 3) qs.push({text: 'Combien de sacs de bonbons avez-vous donnés à la porte?', answer: tot.sacs});
   }
+  for (let i = qs.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [qs[i], qs[j]] = [qs[j], qs[i]]; }
+  hwGuessState.i = 0;
   hwGuess(el, qs);
 });
 
@@ -3135,7 +3143,7 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(cbGo); els
 <script>
 /* Bouton « Mettre à jour » : compare la version de cette page à version.json sur GitHub. */
 (function () {
-  const APP_VERSION = '2026.11.01-38';
+  const APP_VERSION = '2026.11.01-39';
   const bar = document.querySelector('.hw-update');
   const msg = bar.querySelector('.msg');
   const btn = bar.querySelector('button');
