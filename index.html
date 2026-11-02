@@ -467,6 +467,9 @@ button.tn-rod:focus-visible,button.tn-units:focus-visible{outline:2px solid var(
 .hw-share-opt svg{width:3rem;height:3rem;flex:none;filter:drop-shadow(0 0 8px rgba(255,122,26,.35))}
 .hw-share-opt b{display:block;font-family:var(--chunky);font-weight:400;font-size:1.15rem;letter-spacing:.02em;color:var(--candle)}
 .hw-share-opt small{display:block;font-size:var(--cds-font-size-caption);color:var(--ink-dim);margin-top:.15rem}
+.hw-sharedlg{--orange:#ff7a1a;--slime:#7cff4f;--purple:#b46cff;--pink:#ff4fa3;--candle:#ffd60a;--ink:#f1ecff;--ink-dim:#b3a9d6;--round:'Fredoka',ui-rounded,'SF Pro Rounded','Arial Rounded MT Bold',system-ui,sans-serif;--chunky:'Luckiest Guy',ui-rounded,'SF Pro Rounded','Arial Rounded MT Bold',system-ui,sans-serif;--spooky:'Creepster',ui-rounded,'SF Pro Rounded','Arial Rounded MT Bold',system-ui,sans-serif;font-family:var(--round)}
+.hw-sharedlg input{font-family:var(--round)}
+.hw-sharedlg h3{filter:none}
 .hw-sharedlg{position:fixed;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;padding:max(16px,env(safe-area-inset-top)) 16px max(16px,env(safe-area-inset-bottom));background:rgba(8,3,18,.84);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
 .hw-sharedlg[hidden]{display:none}
 .hw-sharebox{position:relative;width:100%;max-width:36rem;max-height:100%;overflow:auto;background:linear-gradient(180deg,#24113f,#150a28);border-radius:1.5rem;padding:1.4rem 1.2rem 1.2rem;box-shadow:0 20px 60px rgba(0,0,0,.6),0 0 0 1px rgba(180,108,255,.25);text-align:center;color:var(--ink);font-family:var(--round)}
@@ -3121,7 +3124,7 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(cbGo); els
 <script>
 /* Bouton « Mettre à jour » : compare la version de cette page à version.json sur GitHub. */
 (function () {
-  const APP_VERSION = '2026.11.01-27';
+  const APP_VERSION = '2026.11.01-28';
   const bar = document.querySelector('.hw-update');
   const msg = bar.querySelector('.msg');
   const btn = bar.querySelector('button');
