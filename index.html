@@ -3121,7 +3121,7 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(cbGo); els
 <script>
 /* Bouton « Mettre à jour » : compare la version de cette page à version.json sur GitHub. */
 (function () {
-  const APP_VERSION = '2026.11.01-25';
+  const APP_VERSION = '2026.11.01-26';
   const bar = document.querySelector('.hw-update');
   const msg = bar.querySelector('.msg');
   const btn = bar.querySelector('button');
@@ -3256,7 +3256,7 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(cbGo); els
     g.fillStyle = '#2f145a'; g.beginPath(); g.arc(w - 76, 74, 34, 0, Math.PI * 2); g.fill();
   };
   const footer = (g, w, h) => {
-    const t = isCB() ? 'Compte-Bonbons · noemilag.github.io/compte-bonbons' : 'Halloween Dashboard · Le butin hanté';
+    const t = isCB() ? 'Compte-Bonbons · noemilag.github.io/compte-bonbons' : 'Compte-Bonbons · Le butin hanté de Léo';
     txt(g, t, w / 2, h - 46, {font: F.round(30, 600), color: C.dim});
   };
   const kicker = (g, s, x, y) => txt(g, s.toUpperCase(), x, y, {font: F.round(34, 700), color: C.purple});
